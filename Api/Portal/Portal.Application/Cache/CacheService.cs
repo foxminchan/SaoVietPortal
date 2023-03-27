@@ -23,7 +23,7 @@ namespace Portal.Application.Cache
                 .SetSlidingExpiration(TimeSpan.FromSeconds(60))
                 .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
                 .SetPriority(CacheItemPriority.High)
-                .SetSize(1024); ;
+                .SetSize(1024);
         }
 
         public void Remove(string key) => _cache.Remove(key);

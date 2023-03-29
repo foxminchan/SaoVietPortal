@@ -1,9 +1,8 @@
-﻿namespace Portal.Domain.Entities
+﻿namespace Portal.Domain.Entities;
+
+public class PaymentMethod
 {
-    public class PaymentMethod
-    {
-        public int paymentMethodId { get; set; }
-        public string? paymentMethodName { get; set; }
-        public List<CourseRegistration>? courseRegistrations { get; set; }
-    }
+    public int paymentMethodId { get; set; }
+    public string? paymentMethodName { get; set; }
+    public List<CourseRegistration>? courseRegistrations { get; set; }
 }

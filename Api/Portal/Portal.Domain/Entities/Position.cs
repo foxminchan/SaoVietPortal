@@ -1,17 +1,8 @@
-﻿namespace Portal.Domain.Entities
-{
-    /**
-    * @Project ASP.NET Core
-    * @Author: Nguyen Xuan Nhan
-    * @Copyright (C) 2023 FoxMinChan. All rights reserved
-    * @License MIT
-    * @Create date Mon 27 Mar 2023 00:00:00 AM +07
-    */
+﻿namespace Portal.Domain.Entities;
 
-    public class Position
-    {
-        public int positionId { get; set; }
-        public string? positionName { get; set; }
-        public List<Staff>? staffs { get; set; }
-    }
+public class Position
+{
+    public int positionId { get; set; }
+    public string? positionName { get; set; }
+    public List<Staff>? staffs { get; set; }
 }

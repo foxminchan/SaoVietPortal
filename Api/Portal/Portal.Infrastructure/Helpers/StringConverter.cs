@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Portal.Infrastructure.Helper
+namespace Portal.Infrastructure.Helpers
 {
     /**
     * @Project ASP.NET Core

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Portal.Infrastructure.Helper
+namespace Portal.Infrastructure.Helpers
 {
     public class JsonConverter : ValueConverter<JsonElement, string>
     {

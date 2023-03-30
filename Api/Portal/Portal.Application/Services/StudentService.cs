@@ -11,5 +11,7 @@ public class StudentService
 
     public StudentService(ApplicationDbContext context) => _studentRepository = new StudentRepository(context);
 
+    public IEnumerable<Student> GetAllStudents() => _studentRepository.GetAllStudents();
+
     public Student? GetStudentById(string id) => _studentRepository.GetStudentById(id);
 }

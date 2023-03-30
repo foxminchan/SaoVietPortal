@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Infrastructure", "Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Application", "Portal.Application\Portal.Application.csproj", "{DBD09C21-8286-420F-B425-5173A03FC43A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portal.Test", "Portal.Test\Portal.Test.csproj", "{E7A3C62F-2DEA-4061-81EC-88571180E004}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Test", "Portal.Test\Portal.Test.csproj", "{E7A3C62F-2DEA-4061-81EC-88571180E004}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

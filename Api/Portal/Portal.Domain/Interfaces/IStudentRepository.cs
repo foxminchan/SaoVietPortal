@@ -7,7 +7,7 @@ public interface IStudentRepository : IGenericRepository<Student>
 {
     public void AddStudent(Student student);
     public void UpdateStudent(Student student);
-    public void DeleteStudent(Student student);
+    public void DeleteStudent(string id);
     public IEnumerable<Student> GetAllStudents();
     public Student? GetStudentById(string id);
 }

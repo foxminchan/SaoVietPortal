@@ -4,10 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Portal.Application.Services;
-using Portal.Application.Utils;
 using Portal.Infrastructure;
 using System.IO.Compression;
+using FluentValidation;
 using Portal.Api.Extensions;
+using Portal.Api.Validations;
+using Portal.Api.Models;
+using Portal.Application.Transaction;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
 
@@ -55,9 +58,9 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddMemoryCache();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
+builder.Services.AddRedisCache(builder.Configuration);
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddAuthorization(options =>
@@ -88,6 +91,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 
 builder.Services.AddTransient<StudentService>();
 builder.Services.AddTransient<TransactionService>();
+
+builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
 builder.AddOpenTelemetry();
 builder.AddSerilog();

@@ -2,7 +2,7 @@
 using FluentValidation;
 using Portal.Domain.Entities;
 
-namespace Portal.Domain.Validations;
+namespace Portal.Api.Validations;
 
 public class StudentProgressValidator : AbstractValidator<StudentProgress>
 {

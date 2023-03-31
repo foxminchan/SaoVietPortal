@@ -14,4 +14,8 @@ public class StudentService
     public IEnumerable<Student> GetAllStudents() => _studentRepository.GetAllStudents();
 
     public Student? GetStudentById(string id) => _studentRepository.GetStudentById(id);
+
+    public void AddStudent(Student student) => _studentRepository.AddStudent(student);
+
+    public void DeleteStudent(string id) => _studentRepository.DeleteStudent(id);
 }

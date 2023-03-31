@@ -1,8 +1,8 @@
-﻿using FluentValidation;
+﻿using System.Globalization;
+using FluentValidation;
 using Portal.Domain.Entities;
-using System.Globalization;
 
-namespace Portal.Domain.Validations;
+namespace Portal.Api.Validations;
 
 public class ReceiptsExpensesValidator : AbstractValidator<ReceiptsExpenses>
 {

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.4" />
 	  <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
 	  <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
@@ -50,23 +51,22 @@
 		<PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.4" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.0.0-rc9.12" />
 		<PackageReference Include="OpenTelemetry.Instrumentation.Process" Version="1.0.0-alpha.5" />
-		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.1.0-beta.4" />
+		<PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.1.0-beta.4">
+			<DependencyInclude>OpenTelemetry.Api</DependencyInclude>
+			<DependencyVersion>1.4.0</DependencyVersion>
+		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
 		<PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
-		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="8.4.1" />
+		<PackageReference Include="Serilog.Sinks.Elasticsearch" Version="9.0.0" />
 		<PackageReference Include="Serilog.Sinks.Seq" Version="5.2.2" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="Portal.Test" />
 	</ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Portal.Application\Portal.Application.csproj" />

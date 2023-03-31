@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Infrastructure", "Po
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Application", "Portal.Application\Portal.Application.csproj", "{DBD09C21-8286-420F-B425-5173A03FC43A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Portal.Test", "Portal.Test\Portal.Test.csproj", "{E7A3C62F-2DEA-4061-81EC-88571180E004}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,10 +33,6 @@ Global
 		{DBD09C21-8286-420F-B425-5173A03FC43A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBD09C21-8286-420F-B425-5173A03FC43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBD09C21-8286-420F-B425-5173A03FC43A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E7A3C62F-2DEA-4061-81EC-88571180E004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E7A3C62F-2DEA-4061-81EC-88571180E004}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E7A3C62F-2DEA-4061-81EC-88571180E004}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E7A3C62F-2DEA-4061-81EC-88571180E004}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

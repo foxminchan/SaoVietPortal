@@ -1,0 +1,8 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "bearer_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IkZveG1pbmNoYW4iLCJzdWIiOiJGb3htaW5jaGFuIiwianRpIjoiNGUxYzExNjUiLCJEZXZDbGFpbSI6ImRldmVsb3BlciIsImF1ZCI6WyJodHRwOi8vbG9jYWxob3N0OjE4NzgyIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6NDQzMDciLCJodHRwOi8vbG9jYWxob3N0OjUwNDEiLCJodHRwczovL2xvY2FsaG9zdDo3MDMxIl0sIm5iZiI6MTY4MDE5NjQ3NSwiZXhwIjoxNjg4MTQ1Mjc1LCJpYXQiOjE2ODAxOTY0NzUsImlzcyI6ImRvdG5ldC11c2VyLWp3dHMifQ.0K2Rah_XB8MoEnlU2_ohi2Nkos6RRnxMiYkiUdxp_Gs",
+      "base_url": "https://localhost:8080/api/v1"
+    }
+  }
+}

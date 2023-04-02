@@ -6,13 +6,13 @@ namespace Portal.Application.Cache;
 
 public class RedisCacheService : IRedisCacheService
 {
-    private const string GET_KEYS_LUA_SCRIPT = "return redis.call('KEYS', @pattern)";
+    private const string GetKeysLuaScript = "return redis.call('KEYS', @pattern)";
 
-    private const string CLEAR_CACHE_LUA_SCRIPT = """
-        for _,k in ipairs(redis.call('KEYS', @pattern)) do
-           redis.call('DEL', k)
-        end
-        """;
+    private const string ClearCacheLuaScript = @"
+            for _,k in ipairs(redis.call('KEYS', @pattern)) do
+               redis.call('DEL', k)
+            end
+            ";
 
     private readonly RedisCacheOption _redisCacheOption;
 
@@ -82,7 +82,7 @@ public class RedisCacheService : IRedisCacheService
     }
 
     public IEnumerable<string> GetKeys(string pattern)
-        => ((RedisResult[])Database.ScriptEvaluate(GET_KEYS_LUA_SCRIPT, values: new RedisValue[] { pattern })!)
+        => ((RedisResult[])Database.ScriptEvaluate(GetKeysLuaScript, values: new RedisValue[] { pattern })!)
             .Where(x => x.ToString()!.StartsWith(_redisCacheOption.Prefix))
             .Select(x => x.ToString())
             .ToArray()!;
@@ -105,7 +105,7 @@ public class RedisCacheService : IRedisCacheService
 
     public void Reset() 
         => Database.ScriptEvaluate(
-            CLEAR_CACHE_LUA_SCRIPT, 
+            ClearCacheLuaScript, 
             values: new RedisValue[] { _redisCacheOption.Prefix + "*" },
             flags: CommandFlags.FireAndForget);
 

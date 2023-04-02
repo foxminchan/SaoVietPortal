@@ -1,0 +1,14 @@
+name: portal
+services:
+- name: website
+  project: client/website/src/Portal.Website.csproj
+  bindings:
+  - protocol: http
+    port: 80
+- name: application
+  project: client/application/src/Portal.Application.csproj
+- name: api
+  project: api/portal/src/Portal.Api/Portal.Api.csproj
+  bindings:
+  - protocol: http
+    port: 5000

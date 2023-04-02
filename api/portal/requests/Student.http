@@ -1,0 +1,5 @@
+@controller=Student
+
+# Get all students
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}

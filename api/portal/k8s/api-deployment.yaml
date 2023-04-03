@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-api
+  labels:
+    app: portal-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portal-api
+  template:
+    metadata:
+      labels:
+        app: portal-api
+    spec:
+      containers:
+      - name: portal-api
+        image: saoviet-portal
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        - name: ASPNETCORE_URLS
+          value: "http://*:80"
+        - name: ConnectionStrings__DefaultConnection
+          value: "Server=saoviet-db;Database=saoviet;User Id=saoviet;Password=saoviet;"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
+          requests:
+            cpu: "0.5"
+            memory: "256Mi"

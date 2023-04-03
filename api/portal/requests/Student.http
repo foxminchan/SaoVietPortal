@@ -3,3 +3,8 @@
 # Get all students
 GET {{base_url}}/{{controller}}
 Authorization: Bearer {{bearer_token}}
+
+###
+
+GET {{base_url}}/{{controller}}/NXN0020802
+Authorization: Bearer {{bearer_token}}

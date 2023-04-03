@@ -8,33 +8,49 @@ receivers:
   redis:
     endpoint: redis:6379
 
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    const_labels:
+      label1: value1
+
+  logging:
+
+  zipkin:
+    endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
+    format: proto
+
+  jaeger:
+    endpoint: jaeger-all-in-one:14250
+    tls:
+      insecure: true
+
+  elasticsearch:
+    endpoints:
+    - "http://elk:9200"
+
 processors:
   batch:
 
-exporters:
-  zipkin:
-    endpoint: http://zipkin:9411/api/v2/spans
-  logging:
-  elasticsearch:
-    endpoint: "http://elasticsearch:9200"
-    index: "otel"
-    pipeline: "otel"
-  prometheus:
-    namespace: otel
-    const_labels:
-      environment: dev
+extensions:
+  health_check:
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
 
 service:
+  extensions: [pprof, zpages, health_check]
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [zipkin, elasticsearch]
+      exporters: [logging, zipkin, jaeger]
     logs:
-      receivers: [redis]
+      receivers: [otlp]
       processors: [batch]
       exporters: [logging, elasticsearch]
     metrics:
       receivers: [otlp]
       processors: [batch]
-      exporters: [prometheus]
+      exporters: [logging, prometheus]

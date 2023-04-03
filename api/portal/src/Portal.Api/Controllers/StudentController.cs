@@ -111,8 +111,9 @@ public class StudentController : ControllerBase
     {
         try
         {
-            return _redisCacheService.GetOrSet($"StudentData:{id}", 
-                    () => _studentService.GetStudentById(id)) switch
+            return _redisCacheService
+                    .GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList())
+                    .FirstOrDefault(s => s.studentId == id) switch
             {
                 { } student => Ok(student),
                 _ => NotFound()
@@ -219,6 +220,14 @@ public class StudentController : ControllerBase
                 return NotFound();
 
             _transactionService.ExecuteTransaction((() => { _studentService.DeleteStudent(id); }));
+
+            // update cache
+            if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
+                { Count: > 0 } students)
+            {
+                students.RemoveAll(s => s.studentId == id);
+            }
+
 
             return Ok();
         }

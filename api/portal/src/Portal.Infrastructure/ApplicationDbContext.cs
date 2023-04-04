@@ -5,7 +5,7 @@ using Portal.Infrastructure.Helpers;
 
 namespace Portal.Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabaseFacade
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Student>? students { get; set; }
     public DbSet<Branch>? branches { get; set; }
@@ -221,7 +221,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabas
             entity.HasKey(e => e.progressId);
             entity.Property(e => e.progressId)
                 .HasColumnName("Id")
-                .HasColumnType("Uniqueidentifier");
+                .HasColumnType("Uniqueidentifier")
+                .HasDefaultValueSql("newid()");
             entity.Property(e => e.lessonName)
                 .HasColumnName("LessonName")
                 .HasColumnType("nvarchar(80)")
@@ -257,7 +258,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabas
             entity.HasKey(e => e.receiptExpenseId);
             entity.Property(e => e.receiptExpenseId)
                 .HasColumnName("Id")
-                .HasColumnType("Uniqueidentifier");
+                .HasColumnType("Uniqueidentifier")
+                .HasDefaultValueSql("newid()");
             entity.Property(e => e.type)
                 .HasColumnName("Type")
                 .HasColumnType("Bit")
@@ -302,7 +304,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabas
             entity.HasKey(e => e.courseRegistrationId);
             entity.Property(e => e.courseRegistrationId)
                 .HasColumnName("Id")
-                .HasColumnType("Uniqueidentifier");
+                .HasColumnType("Uniqueidentifier")
+                .HasDefaultValueSql("newid()");
             entity.Property(e => e.status)
                 .HasColumnName("Status")
                 .HasColumnType("nvarchar(15)");

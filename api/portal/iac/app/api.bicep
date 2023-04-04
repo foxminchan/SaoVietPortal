@@ -64,3 +64,24 @@ resource api 'apps/Deployment@v1' = {
     }
   }
 }
+
+resource apiService 'core/Service@v1' = {
+  metadata: {
+    name: 'api'
+    labels: {
+      app: 'api'
+    }
+  }
+  spec: {
+    type: 'LoadBalancer'
+    ports: [
+      {
+        port: 80
+        targetPort: ''
+      }
+    ]
+    selector: {
+      app: 'api'
+    }
+  }
+}

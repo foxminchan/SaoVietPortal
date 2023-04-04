@@ -19,7 +19,7 @@ module mssql 'app/mssql.bicep' = {
   }
 }
 
-module api 'app/api.bicep' = {
+module saovietportal 'app/api.bicep' = {
   name: 'api'
   params: {
     containerRegistry: containerRegistry.properties.loginServer

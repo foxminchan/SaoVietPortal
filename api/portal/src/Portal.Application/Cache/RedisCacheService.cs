@@ -23,7 +23,7 @@ public class RedisCacheService : IRedisCacheService
     public RedisCacheService(IOptions<RedisCacheOption> options)
     {
         _redisCacheOption = options.Value;
-        _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() => 
+        _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() =>
             ConnectionMultiplexer.Connect(options.Value.GetConnectionString()));
     }
 
@@ -46,7 +46,7 @@ public class RedisCacheService : IRedisCacheService
         }
     }
 
-    public T GetOrSet<T>(string key, Func<T> valueFactory) 
+    public T GetOrSet<T>(string key, Func<T> valueFactory)
         => GetOrSet(key, valueFactory, TimeSpan.FromSeconds(_redisCacheOption.RedisDefaultSlidingExpirationInSecond));
 
     public T GetOrSet<T>(string key, Func<T> valueFactory, TimeSpan expiration)
@@ -103,9 +103,9 @@ public class RedisCacheService : IRedisCacheService
 
     public void Remove(string key) => Database.KeyDelete($"{_redisCacheOption.Prefix}:{key}");
 
-    public void Reset() 
+    public void Reset()
         => Database.ScriptEvaluate(
-            ClearCacheLuaScript, 
+            ClearCacheLuaScript,
             values: new RedisValue[] { _redisCacheOption.Prefix + "*" },
             flags: CommandFlags.FireAndForget);
 

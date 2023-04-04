@@ -2,8 +2,8 @@
 
 public class RedisCacheOption
 {
-    public bool AbortOnConnectFail { get; set; } = false;
-    public bool Ssl { get; set; } = false;
+    public bool AbortOnConnectFail { get; set; }
+    public bool Ssl { get; set; }
     public int ConnectRetry { get; set; } = 5;
     public int ConnectTimeout { get; set; } = 5000;
     public int DeltaBackOff { get; set; } = 1000;

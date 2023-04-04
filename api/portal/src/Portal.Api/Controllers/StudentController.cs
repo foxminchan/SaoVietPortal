@@ -63,6 +63,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
+    [ResponseCache(Duration = 15)]
     public ActionResult GetStudents()
     {
         try
@@ -161,7 +162,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-    public ActionResult AddStudent(
+    public ActionResult InsertStudent(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromBody] Student student)
     {
@@ -170,10 +171,16 @@ public class StudentController : ControllerBase
             if (!_validator.Validate(student).IsValid)
                 return BadRequest();
 
-            if (student.studentId != null && _studentService.GetStudentById(student.studentId) != null) 
+            if (student.studentId != null && _studentService.GetStudentById(student.studentId) != null)
                 return Conflict();
 
-            _transactionService.ExecuteTransaction((() => { _studentService.AddStudent(_mapper.Map<Domain.Entities.Student>(student)); }));
+            var newStudent = _mapper.Map<Domain.Entities.Student>(student);
+
+            _transactionService.ExecuteTransaction((() => { _studentService.AddStudent(newStudent); }));
+
+            var students = _redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList());
+            if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) == null)
+                students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
             return Ok();
         }
@@ -221,19 +228,76 @@ public class StudentController : ControllerBase
 
             _transactionService.ExecuteTransaction((() => { _studentService.DeleteStudent(id); }));
 
-            // update cache
             if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
-            {
                 students.RemoveAll(s => s.studentId == id);
-            }
-
 
             return Ok();
         }
         catch (Exception e)
         {
             _logger.LogError(e, "Error while deleting student");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật thông tin học viên
+    /// </summary>
+    /// <param name="student">Đối tượng học viên</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /api/v1/Student
+    ///     {
+    ///         "fullname": "string",
+    ///         "gender": true,
+    ///         "address": "string",
+    ///         "dob": "string",
+    ///         "pod": "string",
+    ///         "occupation": "string",
+    ///         "socialNetwork": "string"
+    ///     }
+    /// </remarks>
+    /// <respone code="200">Thêm thành công</respone>
+    /// <respone code="400">Dữ liệu không hợp lệ</respone>
+    /// <respone code="401">Không có quyền</respone>
+    /// <respone code="429">Quá nhiều yêu cầu</respone>
+    /// <respone code="500">Lỗi server</respone>
+    [HttpPut]
+    [Authorize]
+    [Consumes(MediaTypeNames.Application.Json)]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(429)]
+    [ProducesResponseType(500)]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+    public ActionResult UpdateStudent(
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [FromBody] Student student)
+    {
+        try
+        {
+            if (!_validator.Validate(student).IsValid)
+                return BadRequest();
+
+            if (student.studentId != null && _studentService.GetStudentById(student.studentId) == null)
+                return BadRequest();
+
+            var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
+            _transactionService.ExecuteTransaction(() => {_studentService.UpdateStudent(updateStudent);});
+
+            if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
+                { Count: > 0 } students)
+                students[students.FindIndex(s => s.studentId == updateStudent.studentId)] = updateStudent;
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while adding student");
             return StatusCode(500);
         }
     }

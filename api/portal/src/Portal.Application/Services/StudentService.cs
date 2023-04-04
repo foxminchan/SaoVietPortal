@@ -18,4 +18,6 @@ public class StudentService
     public void AddStudent(Student student) => _studentRepository.AddStudent(student);
 
     public void DeleteStudent(string id) => _studentRepository.DeleteStudent(id);
+
+    public void UpdateStudent(Student student) => _studentRepository.UpdateStudent(student);
 }

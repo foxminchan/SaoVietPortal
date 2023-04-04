@@ -38,6 +38,7 @@ builder.Services.AddControllers(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
+builder.Services.AddResponseCaching();
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -109,6 +110,7 @@ if (app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseResponseCaching();
 app.UseStaticFiles();
 app.UseRateLimiter();
 app.UseExceptionHandler();

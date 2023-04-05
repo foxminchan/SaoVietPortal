@@ -1,0 +1,17 @@
+All content included on the SaoVietAPI website, including but not limited to text, graphics, logos, images, audio and video clips, software, and any other materials that appear on the website or are made available for download, are owned by SaoVietAPI and protected by copyright laws.
+
+All SaoVietPortal code is Copyright by the original authors. See: https://github.com/foxminchan/SaoVietPortal.
+
+The software code for the SaoVietAPI is licensed under the MIT License. See: https://opensource.org/license/mit/.
+
+The documentation for the SaoVietAPI is licensed under the Creative Commons Attribution 4.0 International License. See: https://creativecommons.org/licenses/by/4.0/.
+
+The reproduction, distribution, display, or transmission of the content on the SaoVietAPI website is strictly prohibited without the prior written consent of SaoVietAPI.
+
+You may use the content on the SaoVietAPI website for personal, non-commercial purposes only, provided that you do not modify the content in any way and you include all copyright and other proprietary notices contained in the content.
+
+If you wish to use the content on the SaoVietAPI website for any other purposes, you must obtain prior written consent from SaoVietAPI.
+
+Unauthorized use of the content on the SaoVietAPI website may violate copyright, trademark, and other laws.
+
+If you have any questions regarding the use of the content on the SaoVietAPI website, please contact SaoVietAPI at nguyenxuannhan407@gmail.com.

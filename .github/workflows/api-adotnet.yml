@@ -21,8 +21,8 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./api/portal/portal-api.sln
     - name: Build
-      run: dotnet build /api/portal/portal-api.sln --no-restore
+      run: dotnet build ./api/portal/portal-api.sln --no-restore
     - name: Test
-      run: dotnet test /api/portal/portal-api.sln --no-build --verbosity normal
+      run: dotnet test ./api/portal/portal-api.sln --no-build --verbosity normal

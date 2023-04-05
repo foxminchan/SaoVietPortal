@@ -11,8 +11,11 @@ using Portal.Api.Extensions;
 using Portal.Api.Validations;
 using Portal.Api.Models;
 using Portal.Application.Transaction;
+using Portal.Infrastructure.Middleware;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
+using Microsoft.AspNetCore.Diagnostics;
+using Portal.Infrastructure.ErrorHandler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,11 +98,16 @@ builder.Services.AddTransient<TransactionService>();
 
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
+builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
+
 builder.AddOpenTelemetry();
 builder.AddSerilog();
 builder.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 app.UseSerilogRequestLogging();
 
@@ -111,6 +119,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseResponseCaching();
+app.UseResponseCompression();
 app.UseStaticFiles();
 app.UseRateLimiter();
 app.UseExceptionHandler();

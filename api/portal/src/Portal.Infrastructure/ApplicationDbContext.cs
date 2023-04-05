@@ -5,7 +5,7 @@ using Portal.Infrastructure.Helpers;
 
 namespace Portal.Infrastructure;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabaseFacade
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     public DbSet<Student>? students { get; set; }
     public DbSet<Branch>? branches { get; set; }

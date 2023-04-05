@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using StackExchange.Redis;
-using System.Text.Json;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Portal.Application.Cache;
 
@@ -58,7 +59,7 @@ public class RedisCacheService : IRedisCacheService
             return GetByteToObject<T>(key);
 
         if (valueFactory() != null)
-            Database.StringSet(key, JsonSerializer.SerializeToUtf8Bytes(valueFactory()), expiration);
+            Database.StringSet(key, JsonConvert.SerializeObject(valueFactory()), expiration);
 
         return valueFactory();
     }
@@ -77,7 +78,7 @@ public class RedisCacheService : IRedisCacheService
             return GetByteToObject<T>(value);
 
         if (valueFactory() != null)
-            Database.HashSet(keyWithPrefix, hashKey.ToLower(), JsonSerializer.SerializeToUtf8Bytes(valueFactory()));
+            Database.HashSet(keyWithPrefix, hashKey.ToLower(), JsonConvert.SerializeObject(valueFactory()));
         return valueFactory();
     }
 
@@ -110,5 +111,5 @@ public class RedisCacheService : IRedisCacheService
             flags: CommandFlags.FireAndForget);
 
     private static T GetByteToObject<T>(RedisValue value)
-        => JsonSerializer.Deserialize<T>(new ReadOnlySpan<byte>(value))!;
+        => JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) ?? default!;
 }

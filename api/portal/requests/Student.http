@@ -24,7 +24,7 @@ Content-Type: application/json
   "dob": "16/01/1989",
   "pod": "Hà Tĩnh",
   "occupation": "Giảng viên Đại học",
-  "socialNetwork": "[{\"name\": \"Facebook\",\"url\": \"https://www.facebook.com/profile.php?id=100079035497566\"},{\"name\": \"Zalo\",\"url\": '0903100305\"}]",
+  "socialNetwork": "",
 }
 
 ###

@@ -1,15 +1,11 @@
-﻿using System.Linq.Expressions;
+﻿using Portal.Domain.Specification;
+using System.Linq.Expressions;
 
 namespace Portal.Domain.Interfaces.Common;
 
-public interface IGenericRepository<T> where T : class
+public interface IGridRepository<T> where T : class
 {
-    public void Insert(T entity);
-    public void Update(T entity);
-    public void Delete(T entity);
-    public void Delete(Expression<Func<T, bool>> where);
-    public int Count(Expression<Func<T, bool>> where);
-    public T? GetById(object? id);
+    public int Count(IGridSpecification<T> spec);
     public IEnumerable<T> GetList(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,

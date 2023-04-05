@@ -9,4 +9,14 @@ public interface IRepository<T> where T : class
     public void Delete(T entity);
     public void Delete(Expression<Func<T, bool>> where);
     public T? GetById(object? id);
+        public int Count(IGridSpecification<T> spec);
+    public IEnumerable<T> GetList(
+        Expression<Func<T, bool>>? filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        string includeProperties = "",
+        int skip = 0,
+        int take = 0);
+    public IEnumerable<T> GetAll();
+    public IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
+    public bool Any(Expression<Func<T, bool>> where);
 }

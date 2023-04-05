@@ -46,7 +46,7 @@ public class ErrorProblemDetailsResult : IResult
     {
         var problemDetails = new ProblemDetails
         {
-            Title = $"An unhandled exception occurred while processing the request",
+            Title = "An unhandled exception occurred while processing the request",
             Detail = $"{_ex.GetType().Name}: {_ex.Message}",
             Status = _ex switch
             {

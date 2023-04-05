@@ -176,7 +176,7 @@ public class StudentController : ControllerBase
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
 
-            _transactionService.ExecuteTransaction((() => { _studentService.AddStudent(newStudent); }));
+            _transactionService.ExecuteTransaction((() => _studentService.AddStudent(newStudent)));
 
             var students = _redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList());
             if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) == null)
@@ -226,7 +226,7 @@ public class StudentController : ControllerBase
             if(_studentService.GetStudentById(id) == null)
                 return NotFound();
 
-            _transactionService.ExecuteTransaction((() => { _studentService.DeleteStudent(id); }));
+            _transactionService.ExecuteTransaction((() => _studentService.DeleteStudent(id)));
 
             if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
@@ -287,7 +287,7 @@ public class StudentController : ControllerBase
                 return BadRequest();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
-            _transactionService.ExecuteTransaction(() => {_studentService.UpdateStudent(updateStudent);});
+            _transactionService.ExecuteTransaction(() => _studentService.UpdateStudent(updateStudent));
 
             if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)

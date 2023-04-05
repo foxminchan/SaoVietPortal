@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Portal.Domain.Interfaces.Common;
-using Portal.Domain.Specification;
 
 namespace Portal.Infrastructure.Repositories.Common;
 
-public abstract class RepositoryBase<T> : IRepository<T>, IGridRepository<T> where T : class
+public abstract class RepositoryBase<T> : IRepository<T> where T : class
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<T> _dbSet;
@@ -40,11 +39,7 @@ public abstract class RepositoryBase<T> : IRepository<T>, IGridRepository<T> whe
             _dbSet.Remove(obj);
     }
 
-    public virtual int Count(IGridSpecification<T> spec)
-    {
-        spec.IsPagingEnabled = false;
-        return GetQuery(_dbSet, spec).LongCount();
-    }
+    public virtual int Count() => _dbSet.Count();
 
     public virtual T? GetById(object? id) => _dbSet.Find(id);
 
@@ -76,92 +71,4 @@ public abstract class RepositoryBase<T> : IRepository<T>, IGridRepository<T> whe
     public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where) => _dbSet.Where(where);
 
     public virtual bool Any(Expression<Func<T, bool>> where) => _dbSet.Any(where);
-
-    private static IQueryable<T> GetQuery(IQueryable<T> inputQuery,
-        ISpecification<T> specification)
-    {
-        var query = inputQuery;
-
-        if (specification.Criteria is not null)
-            query = query.Where(specification.Criteria);
-
-        query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
-
-        query = specification.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
-
-        if (specification.OrderBy is not null)
-        {
-            query = query.OrderBy(specification.OrderBy);
-        }
-        else if (specification.OrderByDescending is not null)
-        {
-            query = query.OrderByDescending(specification.OrderByDescending);
-        }
-
-        if (specification.GroupBy is not null)
-        {
-            query = query
-                .GroupBy(specification.GroupBy)
-                .SelectMany(x => x);
-        }
-
-        if (specification.IsPagingEnabled)
-        {
-            query = query
-                .Skip(specification.Skip - 1)
-                .Take(specification.Take);
-        }
-
-        query = query.AsSplitQuery();
-
-        return query;
-    }
-
-    private static IQueryable<T> GetQuery(IQueryable<T> inputQuery,
-        IGridSpecification<T> specification)
-    {
-        var query = inputQuery;
-
-        if (specification.Criteria is not null && specification.Criteria.Count > 0)
-        {
-            var expr = specification.Criteria.First();
-            for (var i = 1; i < specification.Criteria.Count; i++)
-            {
-                expr = expr.And(specification.Criteria[i]);
-            }
-
-            query = query.Where(expr);
-        }
-
-        query = specification.Includes.Aggregate(query, (current, include) => current.Include(include));
-
-        query = specification.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
-
-        if (specification.OrderBy is not null)
-        {
-            query = query.OrderBy(specification.OrderBy);
-        }
-        else if (specification.OrderByDescending is not null)
-        {
-            query = query.OrderByDescending(specification.OrderByDescending);
-        }
-
-        if (specification.GroupBy is not null)
-        {
-            query = query
-                .GroupBy(specification.GroupBy)
-                .SelectMany(x => x);
-        }
-
-        if (specification.IsPagingEnabled)
-        {
-            query = query
-                .Skip(specification.Skip - 1)
-                .Take(specification.Take);
-        }
-
-        query = query.AsSplitQuery();
-
-        return query;
-    }
 }

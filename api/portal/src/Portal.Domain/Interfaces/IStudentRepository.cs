@@ -3,7 +3,7 @@ using Portal.Domain.Interfaces.Common;
 
 namespace Portal.Domain.Interfaces;
 
-public interface IStudentRepository : IRepository<Student>, IGridRepository<Student>
+public interface IStudentRepository : IRepository<Student>
 {
     public void AddStudent(Student student);
     public void UpdateStudent(Student student);

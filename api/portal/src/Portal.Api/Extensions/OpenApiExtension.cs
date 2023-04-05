@@ -12,7 +12,7 @@ public static class OpenApiExtension
         {
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
             c.SwaggerDoc(
-                "APIs v1",
+                "v1",
                 new OpenApiInfo
                 {
                     Title = "Cổng thông tin Sao Việt",
@@ -62,7 +62,7 @@ public static class OpenApiExtension
                     new List<string>()
                 }
             });
-            c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+            c.ResolveConflictingActions(apiDescription => apiDescription.First());  
         });
     }
 

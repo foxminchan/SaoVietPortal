@@ -10,10 +10,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["./api/portal/src/Portal.Api/Portal.Api.csproj", "src/Portal.Api/"]
-COPY ["./api/portalsrc/Portal.Application/Portal.Application.csproj", "src/Portal.Application/"]
-COPY ["./api/portalsrc/Portal.Infrastructure/Portal.Infrastructure.csproj", "src/Portal.Infrastructure/"]
-COPY ["./api/portalsrc/Portal.Domain/Portal.Domain.csproj", "src/Portal.Domain/"]
+COPY ["src/Portal.Api/Portal.Api.csproj", "src/Portal.Api/"]
+COPY ["src/Portal.Application/Portal.Application.csproj", "src/Portal.Application/"]
+COPY ["src/Portal.Infrastructure/Portal.Infrastructure.csproj", "src/Portal.Infrastructure/"]
+COPY ["src/Portal.Domain/Portal.Domain.csproj", "src/Portal.Domain/"]
 RUN dotnet restore "src/Portal.Api/Portal.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Portal.Api"

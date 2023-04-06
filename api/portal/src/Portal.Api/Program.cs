@@ -15,7 +15,9 @@ using Portal.Infrastructure.Middleware;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
-using Portal.Infrastructure.ErrorHandler;
+using Portal.Domain.Interfaces.Common;
+using Portal.Infrastructure.Errors;
+using Portal.Infrastructure.Repositories.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -96,6 +98,8 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 builder.Services.AddTransient<StudentService>();
 builder.Services.AddTransient<TransactionService>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
@@ -108,6 +112,7 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseMiddleware<TimeoutMiddleware>();
 
 app.UseSerilogRequestLogging();
 

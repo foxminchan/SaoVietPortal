@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Net.Http.Headers;
 
-namespace Portal.Infrastructure.ErrorHandler;
+namespace Portal.Infrastructure.Errors;
 
 public class DeveloperPageExceptionFilter : IDeveloperPageExceptionFilter
 {

@@ -1,23 +1,21 @@
 ﻿using Portal.Domain.Entities;
-using Portal.Domain.Interfaces;
-using Portal.Infrastructure;
-using Portal.Infrastructure.Repositories;
+using Portal.Domain.Interfaces.Common;
 
 namespace Portal.Application.Services;
 
 public class StudentService
 {
-    private readonly IStudentRepository _studentRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public StudentService(ApplicationDbContext context) => _studentRepository = new StudentRepository(context);
+    public StudentService(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork;
 
-    public IEnumerable<Student> GetAllStudents() => _studentRepository.GetAllStudents();
+    public IEnumerable<Student> GetAllStudents() => _unitOfWork.studentRepository.GetAllStudents();
 
-    public Student? GetStudentById(string id) => _studentRepository.GetStudentById(id);
+    public Student? GetStudentById(string id) => _unitOfWork.studentRepository.GetStudentById(id);
 
-    public void AddStudent(Student student) => _studentRepository.AddStudent(student);
+    public void AddStudent(Student student) => _unitOfWork.studentRepository.AddStudent(student);
 
-    public void DeleteStudent(string id) => _studentRepository.DeleteStudent(id);
+    public void DeleteStudent(string id) => _unitOfWork.studentRepository.DeleteStudent(id);
 
-    public void UpdateStudent(Student student) => _studentRepository.UpdateStudent(student);
+    public void UpdateStudent(Student student) => _unitOfWork.studentRepository.UpdateStudent(student);
 }

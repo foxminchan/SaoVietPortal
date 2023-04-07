@@ -17,23 +17,23 @@ public class TransactionService
 
     public void ExecuteTransaction(Action action)
     {
-        var strategy = _context.Database.CreateExecutionStrategy();
-        strategy.Execute(() =>
-        {
-            using var transaction = _context.Database.BeginTransaction();
-            try
+        _context.Database.CreateExecutionStrategy()
+            .Execute(() =>
             {
-                action();
-                _context.SaveChanges();
-                transaction.Commit();
-                _logger.LogInformation("Transaction committed");
-            }
-            catch (Exception e)
-            {
-                transaction.Rollback();
-                _logger.LogError(e, "Transaction rolled back");
-                throw;
-            }
-        });
+                using var transaction = _context.Database.BeginTransaction();
+                try
+                {
+                    action();
+                    _context.SaveChanges();
+                    transaction.Commit();
+                    _logger.LogInformation("Transaction committed");
+                }
+                catch (Exception e)
+                {
+                    transaction.Rollback();
+                    _logger.LogError(e, "Transaction rolled back");
+                    throw;
+                }
+            });
     }
 }

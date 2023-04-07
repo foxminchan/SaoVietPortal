@@ -39,7 +39,7 @@ Sao Viet Portal
 <p style="text-align: justify">
 The SaoViet Portal is a web and app-based platform designed for managers and administrators to efficiently manage student-related data and activities. The platform is intuitive, user-friendly, and accessible from anywhere, at any time. It features advanced security measures, customization options, and is designed to reduce paperwork, save time, and minimize errors.
 
-<b>⚠️Note:</b> This project is currently in development. The project is a university graduation project, and is not intended to be used in production or for commercial purposes. The project is not affiliated with Sao Viet.
+<b>⚠️Note:</b> This project is currently in development. The project is a university graduation project, and is not intended to be used in production or for commercial purposes. The project is not affiliated with Sao Viet. HUTECH University is not responsible for any damage caused by the use of this project.
 
 </p>
 
@@ -118,6 +118,7 @@ The architecture of the application is designed to be highly scalable and flexib
 
 <p style="text-align: justify">
 We welcome contributions from the community. If you would like to contribute to this project, please read our <a href="./.github/CONTRIBUTING.md">contributing guidelines</a> for more information.
+</p>
 
 <table align="center">
   <tbody>
@@ -142,13 +143,18 @@ For contact to my instructor, please contact him at [here](mailto:nd.and@hutech.
 
 # License
 
-Sao Viet Portal is licensed under the MIT License. See the [MIT](LICENSE) file for more details.
+<p style="text-align: justify">
+The Sao Viet Portal project is governed by two distinct licenses. The first license, the MIT License, applies to the codebase of the project. The MIT License permits the use, modification, and distribution of the codebase under certain conditions. The full terms of the MIT License can be found in the <a href="./LICENSE">MIT</a> file.
 
-The documentation of Sao Viet Portal is licensed under the Attribution 4.0 International License. See the [Attribution 4.0 International](LICENSE-docs) file for more details.
+The second license, the Attribution 4.0 International License, applies to the documentation of the project. This license permits the use, reproduction, and distribution of the documentation provided that proper attribution is given to the original authors. The full terms of the Attribution 4.0 International License can be found in the <a href="./LICENSE-docs">LICENSE-docs</a> file.
 
-Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. All product are developed and copyrignt by [Nguyễn Xuân Nhân](https://github.com/foxminchan).
+Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. All product are developed and copyrignt by <a href="https://github.com/foxminchan">Nguyễn Xuân Nhân</a> and <a href="https://github.com/lycaphe8x">Nguyễn Đình Ánh</a>.
 
-See copyrignt notice [here](./COPYRIGHT.txt). All rights reserved.
+<a href="mailto:nd.and@hutech.edu.vn">Nguyễn Đình Ánh</a>, a lecturer at `Hutech University` is co-owner of this project. The Faculty of Information Technology at `Hutech University` will be will act as the project evaluation and grading committee.
+
+For more information about the project's copyright, please refer to the <a href="./COPYRIGHT.txt">COPYRIGHT</a> file. All rights reserved.
+
+</p>
 
 # References
 

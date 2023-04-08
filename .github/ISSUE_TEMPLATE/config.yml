@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: SaoVietPortal Community Support
+    url: https://github.com/foxminchan/SaoVietPortal/discussions
+    about: Please ask and answer questions here.
+  - name: SaoVietPortal Security Bug Bounty
+    url: https://github.com/foxminchan/SaoVietPortal/security/advisories
+    about: Please report security vulnerabilities here.

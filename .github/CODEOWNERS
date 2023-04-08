@@ -16,12 +16,4 @@
 
 # Global rule:
 
-* @foxminchan @NguyenXuanNhan
-
-# IDE rules:
-
-/api/chatbot/.idea/** @jetbrains/idea
-
-# Docusaurus rules:
-
-/docs/docusaurus/** @docusaurus/maintainers
+* @foxminchan

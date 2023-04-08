@@ -1,6 +1,14 @@
+terraform {
+  required_providers {
+    nomad = {
+      source  = "hashicorp/nomad"
+      version = "~> 1.4.0"
+    }
+  }
+}
+
 provider "nomad" {
-	address = "http://localhost:4646"
-	version = "~> 1.4.0"
+  address = "http://localhost:4646"
 }
 
 resource "nomad_job" "redis" {
@@ -28,5 +36,5 @@ resource "nomad" "seq" {
 }
 
 resource "nomad" "otel" {
-	jobspec = file("${path.module}/jobs/otel.nomad.hcl")
+  jobspec = file("${path.module}/jobs/otel.nomad.hcl")
 }

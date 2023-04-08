@@ -27,7 +27,7 @@ exporters:
 
   elasticsearch:
     endpoints:
-    - "http://elk:9200"
+      - "http://elk:9200"
 
 processors:
   batch:

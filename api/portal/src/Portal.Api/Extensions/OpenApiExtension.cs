@@ -62,7 +62,7 @@ public static class OpenApiExtension
                     new List<string>()
                 }
             });
-            c.ResolveConflictingActions(apiDescription => apiDescription.First());  
+            c.ResolveConflictingActions(apiDescription => apiDescription.First());
         });
     }
 

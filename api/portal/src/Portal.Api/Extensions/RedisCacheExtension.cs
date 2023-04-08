@@ -8,10 +8,10 @@ public static class RedisCacheExtension
     public static void AddRedisCache(this IServiceCollection services, IConfiguration config,
         Action<RedisCacheOption>? setupAction = null)
     {
-        if(services is null) 
+        if (services is null)
             throw new ArgumentNullException(nameof(services));
 
-        if(services.Contains(ServiceDescriptor.Singleton<IRedisCacheService, RedisCacheService>())) return;
+        if (services.Contains(ServiceDescriptor.Singleton<IRedisCacheService, RedisCacheService>())) return;
 
         var redisCacheOption = new RedisCacheOption();
         var redisCacheSection = config.GetSection(nameof(RedisCacheOption));

@@ -1,4 +1,49 @@
 version = 1
 
 [[analyzers]]
+name = "sql"
+
+[[analyzers]]
+name = "docker"
+
+[[analyzers]]
+name = "shell"
+
+[[analyzers]]
+name = "terraform"
+
+[[analyzers]]
+name = "python"
+
+  [analyzers.meta]
+  runtime_version = "3.x.x"
+
+[[analyzers]]
+name = "javascript"
+
+  [analyzers.meta]
+  plugins = ["react"]
+
+[[analyzers]]
 name = "csharp"
+
+[[transformers]]
+name = "prettier"
+
+[[transformers]]
+name = "standardjs"
+
+[[transformers]]
+name = "dotnet-format"
+
+[[transformers]]
+name = "yapf"
+
+[[transformers]]
+name = "black"
+
+[[transformers]]
+name = "isort"
+
+[[transformers]]
+name = "autopep8"

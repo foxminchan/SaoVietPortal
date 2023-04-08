@@ -1,9 +1,9 @@
 ---
 name: User Interface Enhancement
 about: Suggest an enhancement to the user interface
-title: ''
-labels: ''
-assignees: ''
+title: ""
+labels: ""
+assignees: ""
 ---
 
 **User Interface Component:**

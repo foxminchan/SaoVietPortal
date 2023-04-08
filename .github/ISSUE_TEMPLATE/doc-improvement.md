@@ -1,9 +1,9 @@
 ---
 name: Documentation Improvements
 about: Create a report to help us improve the documentation
-title: ''
-labels: ''
-assignees: ''
+title: ""
+labels: ""
+assignees: ""
 ---
 
 **Documentation Section:**

@@ -23,9 +23,9 @@ public class StudentController : ControllerBase
     private readonly IRedisCacheService _redisCacheService;
 
     public StudentController(
-        StudentService studentService, 
-        TransactionService transactionService, 
-        ILogger<StudentController> logger, 
+        StudentService studentService,
+        TransactionService transactionService,
+        ILogger<StudentController> logger,
         IMapper mapper,
         IValidator<Student> validator,
         IRedisCacheService redisCacheService
@@ -68,10 +68,10 @@ public class StudentController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet("StudentData", 
+            return (_redisCacheService.GetOrSet("StudentData",
                     () => _studentService.GetAllStudents().ToList())) switch
             {
-                { Count: > 0 } students=> Ok(students),
+                { Count: > 0 } students => Ok(students),
                 _ => NotFound()
             };
         }
@@ -107,7 +107,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     public ActionResult GetStudentById(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromRoute] string id)
     {
         try
@@ -223,7 +223,7 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if(_studentService.GetStudentById(id) == null)
+            if (_studentService.GetStudentById(id) == null)
                 return NotFound();
 
             _transactionService.ExecuteTransaction((() => _studentService.DeleteStudent(id)));
@@ -275,7 +275,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public ActionResult UpdateStudent(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromBody] Student student)
     {
         try

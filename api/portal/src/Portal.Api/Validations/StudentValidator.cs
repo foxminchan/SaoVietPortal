@@ -17,7 +17,8 @@ public class StudentValidator : AbstractValidator<Student>
         RuleFor(x => x.address)
             .MaximumLength(80).WithMessage("Address must not exceed 80 characters");
         RuleFor(x => x.dob)
-            .Must(dobString => {
+            .Must(dobString =>
+            {
                 if (!DateTime.TryParseExact(dobString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dob))
                     return false;
                 return dob < DateTime.Now;

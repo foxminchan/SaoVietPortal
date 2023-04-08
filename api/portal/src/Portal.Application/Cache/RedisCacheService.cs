@@ -52,7 +52,7 @@ public class RedisCacheService : IRedisCacheService
 
     public T GetOrSet<T>(string key, Func<T> valueFactory, TimeSpan expiration)
     {
-        if(string.IsNullOrEmpty(key))
+        if (string.IsNullOrEmpty(key))
             throw new ArgumentNullException(nameof(key));
 
         if (!string.IsNullOrEmpty(Database.StringGet(key)))
@@ -69,12 +69,12 @@ public class RedisCacheService : IRedisCacheService
         if (string.IsNullOrEmpty(key))
             throw new ArgumentNullException(nameof(key));
 
-        if(string.IsNullOrEmpty(hashKey))
+        if (string.IsNullOrEmpty(hashKey))
             throw new ArgumentNullException(nameof(hashKey));
 
         var keyWithPrefix = $"{_redisCacheOption.Prefix}:{key}";
         var value = Database.HashGet(keyWithPrefix, hashKey.ToLower());
-        if(!string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value))
             return GetByteToObject<T>(value);
 
         if (valueFactory() != null)

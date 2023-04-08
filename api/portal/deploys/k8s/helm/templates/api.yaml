@@ -1,0 +1,77 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+	name: portal-config
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: portal
+data:
+	ASPNETCORE_ENVIRONMENT: Development
+	ASPNETCORE_URLS: http://+:80
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+	name: portal
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: portal
+spec:
+	replicas: 1
+	selector:
+		matchLabels:
+			app: portal
+			service: portal
+	template:
+		metadata:
+			labels:
+				app: portal
+				service: portal
+		spec:
+			containers:
+				- name: portal
+					image: ghcr.io/foxminchan/saovietportal/saoviet-portal:${IMAGE_TAG:-0.1.3}
+					imagePullPolicy: IfNotPresent
+					ports:
+						- name: http
+							containerPort: 80
+							protocol: TCP
+					envFrom:
+						- configMapRef:
+							name: portal-config
+					readinessProbe:
+						httpGet:
+							path: /health
+							port: 80
+						initialDelaySeconds: 10
+						timeoutSeconds: 5
+					requests:
+						cpu: 100m
+						memory: 128Mi
+					limits:
+						cpu: 500m
+						memory: 256Mi
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+	name: portal
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: portal
+spec:
+	selector:
+		app: portal
+		service: portal
+	ports:
+		- name: http
+			port: 80
+			targetPort: http
+			protocol: TCP

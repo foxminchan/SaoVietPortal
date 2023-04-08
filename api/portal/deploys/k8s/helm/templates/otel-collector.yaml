@@ -1,0 +1,93 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+	name: opentelemetry-collector
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portlal
+		service: opentelemetry-collector
+spec:
+	selector:
+		matchLabels:
+			app: portal
+			service: opentelemetry-collector
+	replicas: 1
+	template:
+		metadata:
+			labels:
+				app: portal
+				service: opentelemetry-collector
+		spec:
+			containers:
+				- name: opentelemetry-collector
+				  image: otel/opentelemetry-collector-contrib:0.13.0
+				  imagePullPolicy: IfNotPresent
+				  ports:
+					- containerPort: 55680
+					  name: opentelemetry-collector
+						protocol: TCP
+				  env:
+					- name: OTEL_EXPORTER_OTLP_ENDPOINT
+					  value: "http://otel-collector:55680"
+					- name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+					  value: "http://otel-collector:55680"
+					- name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
+					  value: "http://otel-collector:55680"
+					- name: OTEL_EXPORTER_OTLP_TIMEOUT
+					  value: "5s"
+					- name: OTEL_EXPORTER_OTLP_TRACES_TIMEOUT
+					  value: "5s"
+					- name: OTEL_EXPORTER_OTLP_METRICS_TIMEOUT
+					  value: "5s"
+					- name: OTEL_EXPORTER_OTLP_CERTIFICATE
+					  value: "/etc/otel-collector/secrets/otel-collector.crt"
+					- name: OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE
+					  value: "/etc/otel-collector/secrets/otel-collector.crt"
+					- name: OTEL_EXPORTER_OTLP_METRICS_CERTIFICATE
+					  value: "/etc/otel-collector/secrets/otel-collector.crt"
+					- name: OTEL_EXPORTER_OTLP_HEADERS
+					  value: "authorization=Bearer ${OTEL_EXPORTER_OTLP_HEADERS_AUTHORIZATION}"
+					- name: OTEL_EXPORTER_OTLP_TRACES_HEADERS
+					  value: "authorization=Bearer ${OTEL_EXPORTER_OTLP_TRACES_HEADERS_AUTHORIZATION}"
+					- name: OTEL_EXPORTER_OTLP_METRICS_HEADERS
+					  value: "authorization=Bearer ${OTEL_EXPORTER_OTLP_METRICS_HEADERS_AUTHORIZATION}"
+					- name: OTEL_EXPORTER_OTLP_COMPRESSION
+					  value: "gzip"
+					- name: OTEL_EXPORTER_OTLP_TRACES_COMPRESSION
+					  value: "gzip"
+					- name: OTEL_EXPORTER_OTLP_METRICS_COMPRESSION
+						value: "gzip"
+					- name: OTEL_EXPORTER_OTLP_PROTOCOL
+					  value: "http/protobuf"
+					- name: OTEL_EXPORTER_OTLP_TRACES_PROTOCOL
+						value: "http/protobuf"
+					- name: OTEL_EXPORTER_OTLP_METRICS_PROTOCOL
+						value: "http/protobuf"
+					- name: OTEL_EXPORTER_OTLP_TIMEOUT
+					  value: "5s"
+					requests:
+						cpu: 100m
+						memory: 100Mi
+					limit:
+						cpu: 100m
+						memory: 100Mi
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+	name: opentelemetry-collector
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: opentelemetry-collector
+spec:
+	selector:
+		app: portal
+		service: opentelemetry-collector
+	ports:
+		- name: opentelemetry-collector
+		  port: 55680
+		  targetPort: 55680
+		  protocol: TCP

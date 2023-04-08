@@ -1,0 +1,57 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+	name: prometheus
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portlal
+		service: prometheus
+spec:
+	selector:
+		matchLabels:
+			app: portal
+			service: prometheus
+	template:
+		metadata:
+			labels:
+				app: portal
+				service: prometheus
+		spec:
+			containers:
+			- name: prometheus
+			  image: prom/prometheus:v2.2.1
+			  imagePullPolicy: IfNotPresent
+			  ports:
+			  - name: http
+					containerPort: 9090
+					protocol: TCP
+			  volumeMounts:
+			  - name: prometheus-config
+			    mountPath: /etc/prometheus
+			  - name: prometheus-data
+			    mountPath: /prometheus
+			volumes:
+			- name: prometheus-config
+			  configMap:
+				name: prometheus-config
+			- name: prometheus-data
+			  emptyDir: {}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+	name: prometheus
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: prometheus
+spec:
+	selector:
+		app: portal
+		service: prometheus
+	ports:
+	- name: http
+	  port: 9090
+	  targetPort: 9090

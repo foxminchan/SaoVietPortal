@@ -1,0 +1,58 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+	name: mssql
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: mssql
+spec:
+	replicas: 1
+	selector:
+		matchLabels:
+			app: portal
+			service: mssql
+	template:
+		metadata:
+			labels:
+				app: portal
+				service: mssql
+		spec:
+			container:
+				- name: mssql
+					image: mcr.microsoft.com/mssql/server:2019-latest
+					imagePullPolicy: IfNotPresent
+					env:
+						- name: ACCEPT_EULA
+							value: "Y"
+						- name: SA_PASSWORD
+							value: "P@ssw0rd"
+					ports:
+						- containerPort: 1433
+							name: mssql
+					volumeMounts:
+						- name: mssql-data
+							mountPath: /var/opt/mssql
+			volumes:
+				- name: mssql-data
+					emptyDir: {}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+	name: mssql
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: mssql
+spec:
+	selector:
+		app: portal
+		service: mssql
+	ports:
+		- name: mssql
+			port: 1433
+			targetPort: 1433
+			porotocol: TCP

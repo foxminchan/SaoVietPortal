@@ -1,0 +1,50 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+	name: grafana
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portlal
+		service: grafana
+spec:
+	selector:
+		matchLabels:
+			app: portal
+			service: grafana
+	replicas: 1
+	template:
+		metadata:
+			labels:
+				app: portal
+				service: grafana
+		spec:
+			containers:
+			- name: grafana
+				image: grafana/grafana:latest
+				ports:
+				- containerPort: 3000
+				volumeMounts:
+				- name: grafana-storage
+					mountPath: /var/lib/grafana
+			volumes:
+			- name: grafana-storage
+				emptyDir: {}
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+	name: grafana
+	namespace: {{ .Values.namespace }}
+	labels:
+		app: portal
+		service: grafana
+spec:
+	selector:
+		app: portal
+		service: grafana
+	ports:
+	- name: grafana
+		port: 3000
+		targetPort: 3000

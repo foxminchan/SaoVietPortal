@@ -8,23 +8,23 @@ Sao Viet Portal
 <p align="center">
 	<img src="https://img.shields.io/badge/.NET%20Core-7.0-%238338ec?style=for-the-badge&logo=appveyor">
 	<img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=appveyor">
-	<img src="https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen.svg?style=for-the-badge&logo=appveyor">
 	<img src="https://img.shields.io/badge/swagger-valid-green?style=for-the-badge&logo=appveyor">
 	<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge&logo=appveyor"></a>
+	<a href="https://creativecommons.org/licenses/by/4.0/"><img src="https://img.shields.io/badge/license-CC--BY--4.0-blue.svg?style=for-the-badge&logo=appveyor"></a>
 </p>
 
 # Table of Contents
 
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Timeline](#timeline)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation locally](#installation-locally)
+	- [Prerequisites](#prerequisites)
+	- [Installation locally](#installation-locally)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -123,8 +123,8 @@ We welcome contributions from the community. If you would like to contribute to 
 <table align="center">
   <tbody>
 	<tr>
-		<td align="center"><a href="https://github.com/foxminchan"><img src="https://avatars.githubusercontent.com/u/56079798?v=4?s=100" width="100px;" alt="Nguyễn Xuân Nhân"/><br /><sub><b>Nguyễn Xuân Nhân</b></sub></a><br /><a href="https://github.com/foxminchan/SaoVietAPI/commits?author=foxminchan" title="Code">💻</a></td>
-		<td align="center"><a href="https://github.com/lycaphe8x"><img src="https://avatars.githubusercontent.com/u/3860060?v=4?s=100" width="100px;" alt="Nguyễn Xuân Nhân"/><br /><sub><b>Nguyễn Đình Ánh</b></sub></a><br /><a href="#" title="Guide">🧑‍🏫</a></td>
+		<td align="center"><a href="https://github.com/foxminchan"><img src="https://avatars.githubusercontent.com/u/56079798?v=4?s=100" width="100px;" alt="Nguyen Xuan Nhan"/><br /><sub><b>Nguyen Xuan Nhan</b></sub></a><br /><a href="https://github.com/foxminchan/SaoVietAPI/commits?author=foxminchan" title="Code">💻</a></td>
+		<td align="center"><a href="https://github.com/lycaphe8x"><img src="https://avatars.githubusercontent.com/u/3860060?v=4?s=100" width="100px;" alt="Nguyen Xuan Nhan"/><br /><sub><b>Nguyen Dinh Anh</b></sub></a><br /><a href="#" title="Guide">🧑‍🏫</a></td>
 	</tr>
   </tbody>
 </table>
@@ -148,9 +148,9 @@ The Sao Viet Portal project is governed by two distinct licenses. The first lice
 
 The second license, the Attribution 4.0 International License, applies to the documentation of the project. This license permits the use, reproduction, and distribution of the documentation provided that proper attribution is given to the original authors. The full terms of the Attribution 4.0 International License can be found in the <a href="./LICENSE-docs">LICENSE-docs</a> file.
 
-Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. All product are developed and copyrignt by <a href="https://github.com/foxminchan">Nguyễn Xuân Nhân</a> and <a href="https://github.com/lycaphe8x">Nguyễn Đình Ánh</a>.
+Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. All product are developed and copyrignt by <a href="https://github.com/foxminchan">Nguyen Xuan Nhan</a> and <a href="https://github.com/lycaphe8x">Nguyen Dinh Anh</a>.
 
-<a href="mailto:nd.and@hutech.edu.vn">Nguyễn Đình Ánh</a>, a lecturer at `Hutech University` is co-owner of this project. The Faculty of Information Technology at `Hutech University` will be will act as the project evaluation and grading committee.
+<a href="mailto:nd.and@hutech.edu.vn">Nguyen Dinh Anh</a>, a lecturer at `Hutech University` is co-owner of this project. The Faculty of Information Technology at `Hutech University` will be will act as the project evaluation and grading committee.
 
 For more information about the project's copyright, please refer to the <a href="./COPYRIGHT.txt">COPYRIGHT</a> file. All rights reserved.
 

@@ -1,11 +1,13 @@
 ﻿using System.Net.Mime;
 using AutoMapper;
 using FluentValidation;
+using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Portal.Api.Models;
 using Portal.Application.Cache;
+using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 
@@ -21,6 +23,7 @@ public class StudentController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidator<Student> _validator;
     private readonly IRedisCacheService _redisCacheService;
+    private readonly ILuceneService _luceneService;
 
     public StudentController(
         StudentService studentService,
@@ -28,7 +31,8 @@ public class StudentController : ControllerBase
         ILogger<StudentController> logger,
         IMapper mapper,
         IValidator<Student> validator,
-        IRedisCacheService redisCacheService
+        IRedisCacheService redisCacheService,
+        ILuceneService luceneService
     )
     {
         _studentService = studentService;
@@ -37,6 +41,7 @@ public class StudentController : ControllerBase
         _mapper = mapper;
         _validator = validator;
         _redisCacheService = redisCacheService;
+        _luceneService = luceneService;
     }
 
     /// <summary>
@@ -123,6 +128,52 @@ public class StudentController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error while getting student by id");
+            return StatusCode(500);
+        }
+    }
+
+    [HttpGet("name/{name}")]
+    [ProducesResponseType(200, Type = typeof(List<Student>))]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(429)]
+    [ProducesResponseType(500)]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+    public ActionResult GetStudentByName(
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] [FromRoute]
+        string name)
+    {
+        try
+        {
+            var documents = new List<Document>();
+
+            var students = _studentService.GetAllStudents().ToList();
+
+            if (students.Count == 0) return NotFound();
+
+            documents.AddRange(students.Select(student => new Document
+            {
+                new StringField("id", student.studentId, Field.Store.YES),
+                new StringField("name", student.fullname, Field.Store.YES), 
+                new StringField("gender", student.gender ? "Nam" : "Nữ", Field.Store.YES),
+                new StringField("address", student.address ?? string.Empty, Field.Store.YES),
+                new StringField("dob", student.dob ?? string.Empty, Field.Store.YES), 
+                new StringField("pod", student.pod ?? string.Empty, Field.Store.YES),
+                new StringField("occupation" , student.occupation ?? string.Empty, Field.Store.YES),
+                new StringField("socialNetwork", student.socialNetwork?.GetString() ?? string.Empty, Field.Store.YES)
+            }));
+
+            _luceneService.Index(documents);
+
+            return _luceneService.Search(name, 20).ToList() switch
+            {
+                { Count: > 0 } result => Ok(result),
+                _ => NotFound()
+            };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting student by name");
             return StatusCode(500);
         }
     }

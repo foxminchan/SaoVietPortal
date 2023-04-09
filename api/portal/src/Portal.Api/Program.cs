@@ -15,6 +15,7 @@ using Portal.Infrastructure.Middleware;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Serilog;
 using Microsoft.AspNetCore.Diagnostics;
+using Portal.Application.Search;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Repositories.Common;
@@ -103,6 +104,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
+builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneService("lucene-index"));
 
 builder.AddOpenTelemetry();
 builder.AddSerilog();

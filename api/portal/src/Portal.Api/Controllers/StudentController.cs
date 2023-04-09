@@ -159,7 +159,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     public ActionResult GetStudentByName(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromQuery] string name)
     {
         try
@@ -173,10 +173,10 @@ public class StudentController : ControllerBase
             studentDocuments.AddRange(students.Select(student => new Document
             {
                 new StringField("id", student.studentId, Field.Store.YES),
-                new StringField("name", student.fullname, Field.Store.YES),
+                new StringField("name", student.fullname, Field.Store.YES), 
                 new StringField("gender", student.gender ? "Nam" : "Nữ", Field.Store.YES),
                 new StringField("address", student.address ?? string.Empty, Field.Store.YES),
-                new StringField("dob", student.dob ?? string.Empty, Field.Store.YES),
+                new StringField("dob", student.dob ?? string.Empty, Field.Store.YES), 
                 new StringField("pod", student.pod ?? string.Empty, Field.Store.YES),
                 new StringField("occupation" , student.occupation ?? string.Empty, Field.Store.YES),
                 new StringField("socialNetwork", student.socialNetwork?.GetString() ?? string.Empty, Field.Store.YES)

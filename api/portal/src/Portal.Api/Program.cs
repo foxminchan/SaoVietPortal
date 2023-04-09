@@ -7,6 +7,7 @@ using Portal.Application.Services;
 using Portal.Infrastructure;
 using System.IO.Compression;
 using FluentValidation;
+using HealthChecks.UI.Client;
 using Portal.Api.Extensions;
 using Portal.Api.Validations;
 using Portal.Api.Models;
@@ -19,6 +20,8 @@ using Portal.Application.Search;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Repositories.Common;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +67,7 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
@@ -91,16 +95,26 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.UseLoggerFactory(LoggerFactory.Create(log =>
     {
         log.AddConsole();
+        log.AddSerilog(dispose: true);
     }));
     options.EnableDetailedErrors();
     options.EnableSensitiveDataLogging();
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(_ =>
+    {
+        _.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
 });
 
 builder.Services.AddTransient<StudentService>();
 builder.Services.AddTransient<TransactionService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
@@ -125,6 +139,7 @@ if (app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors();
 app.UseResponseCaching();
 app.UseResponseCompression();
 app.UseStaticFiles();
@@ -132,6 +147,18 @@ app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
+app.MapHealthChecks("/health", new HealthCheckOptions()
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+    AllowCachingResponses = false,
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status200OK,
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    }
+});
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
 app.Run();

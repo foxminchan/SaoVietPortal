@@ -159,7 +159,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     public ActionResult GetStudentByName(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromQuery] string name)
     {
         try

@@ -56,6 +56,7 @@ public class StudentController : ControllerBase
     /// <respone code="200">Trả về danh sách học viên</respone>
     /// <respone code="401">Không có quyền</respone>
     /// <respone code="404">Không tìm thấy học viên</respone>
+    /// <respone code="408">Quá thời gian yêu cầu</respone>
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpGet]
@@ -100,6 +101,7 @@ public class StudentController : ControllerBase
     /// <respone code="200">Trả về thông tin học viên</respone>
     /// <respone code="401">Không có quyền</respone>
     /// <respone code="404">Không tìm thấy học viên</respone>
+    /// <respone code="408">Quá thời gian yêu cầu</respone>
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpGet("{id}")]
@@ -132,7 +134,24 @@ public class StudentController : ControllerBase
         }
     }
 
-    [HttpGet("name/{name}")]
+    /// <summary>
+    /// Tìm thông tin học viên theo tên
+    /// </summary>
+    /// <param name="name">Tên học viên</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/v1/Student?name={name}
+    /// </remarks>
+    /// <respone code="200">Trả về thông tin học viên</respone>
+    /// <respone code="401">Không có quyền</respone>
+    /// <respone code="404">Không tìm thấy học viên</respone>
+    /// <respone code="408">Quá thời gian yêu cầu</respone>
+    /// <respone code="429">Quá nhiều yêu cầu</respone>
+    /// <respone code="500">Lỗi server</respone>
+    [HttpGet]
+    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(404)]
@@ -140,18 +159,18 @@ public class StudentController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     public ActionResult GetStudentByName(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] [FromRoute]
-        string name)
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [FromQuery] string name)
     {
         try
         {
-            var documents = new List<Document>();
+            var studentDocuments = new List<Document>();
 
             var students = _studentService.GetAllStudents().ToList();
 
-            if (students.Count == 0) return NotFound();
+            if (!students.Any()) return NotFound();
 
-            documents.AddRange(students.Select(student => new Document
+            studentDocuments.AddRange(students.Select(student => new Document
             {
                 new StringField("id", student.studentId, Field.Store.YES),
                 new StringField("name", student.fullname, Field.Store.YES), 
@@ -163,7 +182,7 @@ public class StudentController : ControllerBase
                 new StringField("socialNetwork", student.socialNetwork?.GetString() ?? string.Empty, Field.Store.YES)
             }));
 
-            _luceneService.Index(documents);
+            _luceneService.Index(studentDocuments);
 
             return _luceneService.Search(name, 20).ToList() switch
             {
@@ -314,6 +333,7 @@ public class StudentController : ControllerBase
     /// <respone code="200">Thêm thành công</respone>
     /// <respone code="400">Dữ liệu không hợp lệ</respone>
     /// <respone code="401">Không có quyền</respone>
+    /// <respone code="408">Quá thời gian yêu cầu</respone>
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpPut]

@@ -34,3 +34,17 @@ module ingress 'app/ingress.bicep' = {
     kubeConfig: aksCluster.listClusterAdminCredential().kubeconfigs[0].value
   }
 }
+
+module redis 'app/redis.bicep' = {
+  name: 'redis'
+  params: {
+    kubeConfig: aksCluster.listClusterAdminCredential().kubeconfigs[0].value
+  }
+}
+
+module elk 'app/elk.bicep' = {
+  name: 'elk'
+  params: {
+    kubeConfig: aksCluster.listClusterAdminCredential().kubeconfigs[0].value
+  }
+}

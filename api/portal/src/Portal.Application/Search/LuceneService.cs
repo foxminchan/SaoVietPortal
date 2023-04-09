@@ -44,4 +44,13 @@ public class LuceneService : ILuceneService
         var hits = searcher.Search(booleanQuery, maxResults).ScoreDocs;
         return hits.Select(hit => searcher.Doc(hit.Doc));
     }
+
+    public void ClearAll()
+    {
+        using var directory = FSDirectory.Open(_indexPath);
+        var analyzer = new StandardAnalyzer(Lucene.Net.Util.LuceneVersion.LUCENE_48);
+        var indexConfig = new IndexWriterConfig(Lucene.Net.Util.LuceneVersion.LUCENE_48, analyzer);
+        using var writer = new IndexWriter(directory, indexConfig);
+        writer.DeleteAll();
+    }
 }

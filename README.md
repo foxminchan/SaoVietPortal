@@ -118,7 +118,7 @@ The API service is the core component of the architecture and handles all busine
 
 <b>⚠️Note:</b> For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal.
 
-The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. The OpenTelemetry collector is a vendor-neutral open source project that provides a single set of APIs, libraries, agents, and collector services to capture distributed traces and metrics from your application. The OpenTelemetry collector is a vendor-neutral open source project that provides a single set of APIs, libraries, agents, and collector services to capture distributed traces and metrics from your application. The OpenTelemetry collector is a vendor-neutral open source project that provides a single set of APIs, libraries, agents, and collector services to capture distributed traces and metrics from your application. The OpenTelemetry collector is a vendor-neutral open source project that provides a single set of APIs, libraries, agents, and collector services to capture distributed traces and metrics from your application.
+The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis.
 
 External services used in the architecture include logging, monitoring, and tracing services. The logging service includes the following services:
 
@@ -131,7 +131,9 @@ External services used in the architecture include logging, monitoring, and trac
 
 Overall, the architecture is designed to provide a scalable, flexible, and efficient application that can handle a large volume of users while also adapting to changing needs and requirements.
 
-The detailed architecture of the application is shown in documentation at [here](#). You also can see the architecture at wiki at [here](#)
+The detailed architecture of the application is shown in documentation at [here](#).
+
+You also can see the architecture at wiki at [here](#).
 
 </p>
 

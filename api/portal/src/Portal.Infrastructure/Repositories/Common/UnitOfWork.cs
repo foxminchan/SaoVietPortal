@@ -9,10 +9,22 @@ public class UnitOfWork : IUnitOfWork
 
     public IStudentRepository studentRepository { get; private set; }
 
+    public IBranchRepository branchRepository { get; private set; }
+
+    public IClassRepository classRepository { get; private set; }
+
+    public ICourseRepository courseRepository { get; private set; }
+
+    public IPaymentMethodRepository paymentMethodRepository { get; private set; }
+
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
         studentRepository = new StudentRepository(_context);
+        branchRepository = new BranchRepository(_context);
+        classRepository = new ClassRepository(_context);
+        courseRepository = new CourseRepository(_context);
+        paymentMethodRepository = new PaymentMethodRepository(_context);
     }
 
     public void Dispose()

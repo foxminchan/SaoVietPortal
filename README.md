@@ -18,14 +18,14 @@ Sao Viet Portal
 
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Timeline](#timeline)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation locally](#installation-locally)
+	- [Prerequisites](#prerequisites)
+	- [Installation locally](#installation-locally)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -104,26 +104,16 @@ The architecture of the application is designed to be highly scalable and flexib
 <img src="./docs/assets/img/overview-architecture.png" style="align: center;">
 
 <p style="text-align: justify">
-The client compoment includes the web app, desktop app, and mobile app. The client component is responsible for handling user interactions and providing a graphical user interface for the application:
-
-- `Web app`: The web app is using Blazor Server to provide a rich user interface for the application. It allows for a rich and responsive user interface while still maintaining the security and scalability of server-side code.
-- `Desktop app and mobile app`: The desktop app and mobile app are built using MAUI (Multi-platform App UI), a framework for building cross-platform apps for Windows, macOS, iOS, and Android.
+The client compoment includes the web app, desktop app, and mobile app. The client component is responsible for handling user interactions and providing a graphical user interface for the application. The client component communicates with the BFF component to retrieve data from the API service.
 
 The BFF (Backend for Frontend) component includes four different types of BFFs: BFF for mobile, BFF for desktop, BFF for website, and a portal service. The BFF component acts as a middle layer between the client component and the API service, providing an optimized API for each type of client.
 
 The API service is the core component of the architecture and handles all business logic and data processing. It communicates with the BFF component to provide data to the client.
 
-- `Chatbot Service`: For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal
+- `Chatbot Service`: For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal.
 - `Portal Service`: The portal service is a service that is responsible for managing the portal. It is responsible for managing the portal, including managing the portal's users, managing the portal's content, and managing the portal's settings.
 
-The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. External services used in the architecture include logging, monitoring, and tracing services.
-
-- `ELK Stack`: The ELK Stack is a collection
-- `Seq`: Seq is a powerful log server that allows you to collect, search, and analyze log events from your applications and services.
-- `Prometheus`: Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud.
-- `Grafana`: Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
-- `Zipkin`: Zipkin is a distributed tracing system.
-- `Jaeger`: Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies
+The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. The architecture also includes a Prometheus server, which collects metrics from all components of the system and sends it to external services for analysis such as ELK stack, Prometheus, Grafana, etc.
 
 Overall, the architecture is designed to provide a scalable, flexible, and efficient application that can handle a large volume of users while also adapting to changing needs and requirements.
 

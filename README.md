@@ -106,28 +106,24 @@ The architecture of the application is designed to be highly scalable and flexib
 <p style="text-align: justify">
 The client compoment includes the web app, desktop app, and mobile app. The client component is responsible for handling user interactions and providing a graphical user interface for the application:
 
-- `Web app`: The web app is using Blazor Server to provide a rich user interface for the application. It allows for a rich and responsive user interface while still maintaining the security and scalability of server-side code. With Blazor Server, the web app can provide a seamless and responsive user experience without sacrificing performance or security.
-- `Desktop app and mobile app`: The desktop app and mobile app are built using MAUI (Multi-platform App UI), a framework for building cross-platform apps for Windows, macOS, iOS, and Android with .NET. MAUI allows for the creation of native user interfaces that can be shared across multiple platforms, providing a consistent user experience. This framework allows developers to write a single codebase that can be used to build applications for all of these platforms, reducing development time and costs.
+- `Web app`: The web app is using Blazor Server to provide a rich user interface for the application. It allows for a rich and responsive user interface while still maintaining the security and scalability of server-side code.
+- `Desktop app and mobile app`: The desktop app and mobile app are built using MAUI (Multi-platform App UI), a framework for building cross-platform apps for Windows, macOS, iOS, and Android.
 
 The BFF (Backend for Frontend) component includes four different types of BFFs: BFF for mobile, BFF for desktop, BFF for website, and a portal service. The BFF component acts as a middle layer between the client component and the API service, providing an optimized API for each type of client.
 
 The API service is the core component of the architecture and handles all business logic and data processing. It communicates with the BFF component to provide data to the client.
 
-- `Chatbot Service`: The chatbot is a chatbot that is built using the latest GPT-4 technology. It is designed to provide a more natural and interactive user experience for the application. The chatbot is built using the latest GPT-4 technology, which allows it to have a more natural and interactive user experience. The chatbot is built using the latest GPT-4 technology, which allows it to have a more natural and interactive user experience. The chatbot is built using the latest GPT-4 technology, which allows it to have a more natural and interactive user experience.
+- `Chatbot Service`: For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal
 - `Portal Service`: The portal service is a service that is responsible for managing the portal. It is responsible for managing the portal, including managing the portal's users, managing the portal's content, and managing the portal's settings.
 
-<b>⚠️Note:</b> For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal.
-
-The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis.
-
-External services used in the architecture include logging, monitoring, and tracing services. The logging service includes the following services:
+The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. External services used in the architecture include logging, monitoring, and tracing services. The logging service includes the following services:
 
 - `ELK Stack`: The ELK Stack is a collection
 - `Seq`: Seq is a powerful log server that allows you to collect, search, and analyze log events from your applications and services.
-- `Prometheus`: Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its inception in 2012, many companies and organizations have adopted Prometheus, and the project has a very active developer and user community. It is now a standalone open source project and maintained independently of any company.
+- `Prometheus`: Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud.
 - `Grafana`: Grafana is an open source, feature rich metrics dashboard and graph editor for Graphite, Elasticsearch, OpenTSDB, Prometheus and InfluxDB.
-- `Zipkin`: Zipkin is a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in microservice architectures. Features include both the collection and lookup of this data.
-- `Jaeger`: Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems.
+- `Zipkin`: Zipkin is a distributed tracing system.
+- `Jaeger`: Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies
 
 Overall, the architecture is designed to provide a scalable, flexible, and efficient application that can handle a large volume of users while also adapting to changing needs and requirements.
 

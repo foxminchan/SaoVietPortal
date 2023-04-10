@@ -15,7 +15,7 @@ public class PaymentMethodService
 
     public void DeletePaymentMethod(int id) => _unitOfWork.paymentMethodRepository.DeletePaymentMethod(id);
 
-    public PaymentMethod GetPaymentMethodById(int id) => _unitOfWork.paymentMethodRepository.GetPaymentMethodById(id);
+    public PaymentMethod? GetPaymentMethodById(int? id) => _unitOfWork.paymentMethodRepository.GetPaymentMethodById(id);
 
     public IEnumerable<PaymentMethod> GetAllPaymentMethods() => _unitOfWork.paymentMethodRepository.GetAllPaymentMethods();
 }

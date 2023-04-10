@@ -18,14 +18,16 @@ Sao Viet Portal
 
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Timeline](#timeline)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation locally](#installation-locally)
+	- [Sao Viet Portal](#sao-viet-portal)
+	- [Web Application:](#web-application)
+	- [Desktop Application:](#desktop-application)
+	- [Chatbot:](#chatbot)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -103,37 +105,100 @@ The architecture of the application is designed to be highly scalable and flexib
 
 <img src="./docs/assets/img/overview-architecture.png" style="align: center;">
 
-<p style="text-align: justify">
-The client compoment includes the web app, desktop app, and mobile app. The client component is responsible for handling user interactions and providing a graphical user interface for the application. The client component communicates with the BFF component to retrieve data from the API service.
+It showcases the following components:
 
-The BFF (Backend for Frontend) component includes four different types of BFFs: BFF for mobile, BFF for desktop, BFF for website, and a portal service. The BFF component acts as a middle layer between the client component and the API service, providing an optimized API for each type of client.
-
-The API service is the core component of the architecture and handles all business logic and data processing. It communicates with the BFF component to provide data to the client.
-
-- `Chatbot Service`: For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal.
-- `Portal Service`: The portal service is a service that is responsible for managing the portal. It is responsible for managing the portal, including managing the portal's users, managing the portal's content, and managing the portal's settings.
-
-The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. The architecture also includes a Prometheus server, which collects metrics from all components of the system and sends it to external services for analysis such as ELK stack, Prometheus, Grafana, etc.
-
-Overall, the architecture is designed to provide a scalable, flexible, and efficient application that can handle a large volume of users while also adapting to changing needs and requirements.
-
-The detailed architecture of the application is shown in documentation at [here](#).
-
-You also can see the architecture at wiki at [here](#).
-
-</p>
+- **Client**: The client includes the web application, desktop application, and mobile application.
+- **BFF**: The BFF is a backend for frontend, which is responsible for handling the client's requests and forwarding them to the API.
+- **API Services**: The API services are responsible for handling the requests from the BFF and the database.
+- **OpenTelemetry Collector**: The OpenTelemetry Collector is responsible for collecting and processing telemetry data from the API services and the database.
+- **External Services**: The external services are responsible for handling the requests from the API services and the database.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Getting Started
 
-## Prerequisites
+## Sao Viet Portal
 
-`Will be updated soon`
+💻 Install the following tools:
 
-## Installation locally
+- [Install .NET Core 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
+- [Install Docker](https://www.docker.com/products/docker-desktop)
+- [Install MS SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+- [Redis](https://redis.io/download) (If you want run without docker)
 
-`Will be updated soon`
+🐳 In addition, you can set up the enviroment in container using docker:
+
+> First, you need to pull the image named .net core 7.0 sdk from docker hub
+>
+> ```bash
+> docker pull mcr.microsoft.com/dotnet/sdk:7.0
+> ```
+>
+> Set up the SQL Server 2022
+>
+> ```bash
+> docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Password123" -p 1433:1433 --name sql1 -d mcr.microsoft.com/mssql/server:2022-latest
+> ```
+>
+> Set up the Redis
+>
+> ```bash
+> docker run -p 6379:6379 --name redis -d redis
+> ```
+>
+> Run the command to start the application
+>
+> ```bash
+> docker run -it --rm -v ${PWD}:/app -w /app mcr.microsoft.com/dotnet/sdk:7.0 dotnet run --project api/portal/src/Portal.Api/Portal.Api.csproj
+> ```
+>
+> **Note**: You can use the command `docker ps` to check the status of the container
+
+For the database:
+
+1. Install the **dotnet ef** tool: `dotnet tool install --global dotnet-ef`
+2. Navigate to the `api/portal/src/Portal.Infrastructure` folder.
+   - Clean up old migrations: `dotnet ef migrations remove --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj --force`
+   - Create a new migration: `dotnet ef migrations add Initial --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj`
+   - Update the database: `dotnet ef database update --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj`
+3. Learn more about [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/).
+
+**⚠️Note**: You can use backup files to restore the database. The backup files are located in the `api/portal/database` folder.
+
+For JWT generation:
+
+To initialize the keys for JWT generation, run `dotnet user-jwts` in to the `api/portal/src/Portal.Api` folder.
+
+```bash
+dotnet user-jwts create --claim "DevClaim=developer"
+```
+
+Set up external services:
+
+1. Navigate to the `api/portal/deploys/docker` folder.
+2. Run `docker-compose up -d` to start the external services.
+
+Install Tye for global tool using the following command:
+
+```bash
+dotnet tool install -g Microsoft.Tye
+```
+
+Run `tye run` in the repository root and navigate to the tye dashboard (usually http://localhost:8000) to see both applications running.
+
+## Web Application:
+
+`Update later`
+
+## Desktop Application:
+
+`Update later`
+
+## Chatbot:
+
+`Update later`
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Documentation
 

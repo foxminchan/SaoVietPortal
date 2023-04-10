@@ -116,7 +116,7 @@ The API service is the core component of the architecture and handles all busine
 - `Chatbot Service`: For the undergraduate thesis project, the chatbot service will not be implemented on GPT-4 but will require building a custom natural language processing model. All research on the chatbot service will be published in the school's research journal
 - `Portal Service`: The portal service is a service that is responsible for managing the portal. It is responsible for managing the portal, including managing the portal's users, managing the portal's content, and managing the portal's settings.
 
-The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. External services used in the architecture include logging, monitoring, and tracing services. The logging service includes the following services:
+The architecture also includes an OpenTelemetry collector, which collects telemetry data from all components of the system and sends it to external services for analysis. External services used in the architecture include logging, monitoring, and tracing services.
 
 - `ELK Stack`: The ELK Stack is a collection
 - `Seq`: Seq is a powerful log server that allows you to collect, search, and analyze log events from your applications and services.

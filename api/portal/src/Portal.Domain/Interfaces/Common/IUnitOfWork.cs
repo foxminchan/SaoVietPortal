@@ -19,4 +19,6 @@ public interface IUnitOfWork : IDisposable
     IReceiptsExpensesRepository receiptsExpensesRepository { get; }
 
     IStaffRepository staffRepository { get; }
+
+    IStudentProgressRepository studentProgressRepository { get; }
 }

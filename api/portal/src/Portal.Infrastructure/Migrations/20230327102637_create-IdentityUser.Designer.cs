@@ -10,7 +10,7 @@ using Portal.Infrastructure;
 #nullable disable
 
 namespace Portal.Infrastructure.Migrations
-{
+
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20230327102637_create-IdentityUser")]
     partial class createIdentityUser
@@ -276,4 +276,3 @@ namespace Portal.Infrastructure.Migrations
 #pragma warning restore 612, 618
         }
     }
-}

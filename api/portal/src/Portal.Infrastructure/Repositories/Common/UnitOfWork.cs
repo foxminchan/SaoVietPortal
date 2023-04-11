@@ -17,6 +17,14 @@ public class UnitOfWork : IUnitOfWork
 
     public IPaymentMethodRepository paymentMethodRepository { get; private set; }
 
+    public ICourseRegistrationRepository courseRegistrationRepository { get; private set; }
+
+    public IPositionRepository positionRepository { get; private set; }
+
+    public IReceiptsExpensesRepository receiptsExpensesRepository { get; private set; }
+
+    public IStaffRepository staffRepository { get; private set; }
+
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
@@ -25,6 +33,10 @@ public class UnitOfWork : IUnitOfWork
         classRepository = new ClassRepository(_context);
         courseRepository = new CourseRepository(_context);
         paymentMethodRepository = new PaymentMethodRepository(_context);
+        courseRegistrationRepository = new CourseRegistrationRepository(_context);
+        positionRepository = new PositionRepository(_context);
+        receiptsExpensesRepository = new ReceiptsExpensesRepository(_context);
+        staffRepository = new StaffRepository(_context);
     }
 
     public void Dispose()

@@ -18,16 +18,16 @@ Sao Viet Portal
 
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Timeline](#timeline)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Sao Viet Portal](#sao-viet-portal)
-  - [Web Application:](#web-application)
-  - [Desktop Application:](#desktop-application)
-  - [Chatbot:](#chatbot)
+	- [Sao Viet Portal](#sao-viet-portal)
+	- [Web Application](#web-application)
+	- [Desktop Application](#desktop-application)
+	- [Chatbot](#chatbot)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -186,15 +186,15 @@ dotnet tool install -g Microsoft.Tye
 
 Run `tye run` in the repository root and navigate to the tye dashboard (usually http://localhost:8000) to see both applications running.
 
-## Web Application:
+## Web Application
 
 `Update later`
 
-## Desktop Application:
+## Desktop Application
 
 `Update later`
 
-## Chatbot:
+## Chatbot
 
 `Update later`
 

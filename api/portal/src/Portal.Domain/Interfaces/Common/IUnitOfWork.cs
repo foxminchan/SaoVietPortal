@@ -11,4 +11,12 @@ public interface IUnitOfWork : IDisposable
     ICourseRepository courseRepository { get; }
 
     IPaymentMethodRepository paymentMethodRepository { get; }
+
+    ICourseRegistrationRepository courseRegistrationRepository { get; }
+
+    IPositionRepository positionRepository { get; }
+
+    IReceiptsExpensesRepository receiptsExpensesRepository { get; }
+
+    IStaffRepository staffRepository { get; }
 }

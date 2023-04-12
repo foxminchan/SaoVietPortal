@@ -15,6 +15,7 @@ namespace Portal.Api.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
+[ApiVersion("1.0")]
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;

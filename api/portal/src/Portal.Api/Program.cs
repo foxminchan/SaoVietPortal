@@ -21,6 +21,8 @@ using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Repositories.Common;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,9 +47,8 @@ builder.Services.AddControllers(options =>
 {
     options.SuppressMapClientErrors = true;
     options.SuppressModelStateInvalidFilter = true;
-});
+}).AddXmlDataContractSerializerFormatters();
 
-builder.Services.AddResponseCaching();
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -61,15 +62,31 @@ builder.Services.AddResponseCompression(options =>
         "application/x-ms-shortcut",
     });
 });
+
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.SmallestSize;
+});
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ApiVersionReader = new HeaderApiVersionReader("api-version");
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProblemDetails();
+builder.Services.AddResponseCaching();
 builder.Services.AddRateLimiting();
 builder.Services.AddRedisCache(builder.Configuration);
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
@@ -127,7 +144,6 @@ builder.AddOpenApi();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseMiddleware<TimeoutMiddleware>();
 
 app.UseSerilogRequestLogging();

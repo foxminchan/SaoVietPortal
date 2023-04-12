@@ -24,6 +24,7 @@ public static class RateLimiterExtension
                     TokenLimit = 100,
                     TokensPerPeriod = 100,
                     QueueLimit = 100,
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst
                 });
             });
         });

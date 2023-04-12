@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -31,19 +32,14 @@ public static class OpenApiExtension
                     },
                     TermsOfService = new Uri("https://sites.google.com/view/trungtamtinhocsaoviet")
                 });
-            c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                BearerFormat = "JWT",
-                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
                 In = ParameterLocation.Header,
+                Description = "Please enter token",
                 Name = JwtBearerDefaults.AuthenticationScheme,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
                 Type = SecuritySchemeType.Http,
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
+                BearerFormat = "JWT",
+                Scheme = JwtBearerDefaults.AuthenticationScheme
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
@@ -53,13 +49,10 @@ public static class OpenApiExtension
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        },
-                        Scheme = "oauth2",
-                        Name = "Bearer",
-                        In = ParameterLocation.Header,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
                     },
-                    new List<string>()
+                    Array.Empty<string>()
                 }
             });
             c.ResolveConflictingActions(apiDescription => apiDescription.First());
@@ -108,10 +101,14 @@ public static class OpenApiExtension
 
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sao Việt API v1");
+            c.DocumentTitle = "Sao Việt API";
             c.InjectStylesheet("/css/swagger-ui.css");
             c.InjectJavascript("/js/swagger-ui.js");
-            c.DocumentTitle = "Sao Việt API";
+            foreach (var description in app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>()
+                         .ApiVersionDescriptions)
+            {
+                c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+            }
         });
 
         return app;

@@ -60,7 +60,7 @@ public class StudentController : ControllerBase
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpGet]
-    [Authorize]
+    [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
@@ -105,7 +105,7 @@ public class StudentController : ControllerBase
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpGet("{id}")]
-    [Authorize]
+    [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(401)]
@@ -223,7 +223,7 @@ public class StudentController : ControllerBase
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpPost]
-    [Authorize]
+    [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -278,7 +278,7 @@ public class StudentController : ControllerBase
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -337,7 +337,7 @@ public class StudentController : ControllerBase
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
     [HttpPut]
-    [Authorize]
+    [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]

@@ -22,6 +22,7 @@ using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Repositories.Common;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Portal.Application.Health;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,7 +68,6 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddProblemDetails();
 builder.Services.AddResponseCaching();
@@ -102,6 +102,20 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 
+builder.Services.AddHealthChecks()
+    .AddCheck<HealthCheck>(nameof(HealthCheck), tags: new[] { "api" })
+    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+                  ?? throw new InvalidOperationException(), tags: new[] { "database" })
+    .AddDbContextCheck<ApplicationDbContext>(tags: new[] { "db context" });
+
+builder.Services
+    .AddHealthChecksUI(options =>
+    {
+        options.AddHealthCheckEndpoint("Health Check API", "/hc");
+        options.SetEvaluationTimeInSeconds(10);
+    })
+    .AddInMemoryStorage();
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(_ =>
@@ -118,6 +132,7 @@ builder.Services.AddTransient<TransactionService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
 
+builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
 builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneService("lucene-index"));
 
@@ -147,7 +162,7 @@ app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
-app.MapHealthChecks("/health", new HealthCheckOptions()
+app.MapHealthChecks("/hc", new HealthCheckOptions()
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
@@ -159,6 +174,7 @@ app.MapHealthChecks("/health", new HealthCheckOptions()
         [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
     }
 });
+app.MapHealthChecksUI(options => options.UIPath = "/hc-ui");
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
 app.Run();

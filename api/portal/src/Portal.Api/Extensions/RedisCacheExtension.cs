@@ -1,4 +1,5 @@
 ﻿using Portal.Application.Cache;
+using Portal.Domain.ValueObjects;
 using StackExchange.Redis;
 
 namespace Portal.Api.Extensions;
@@ -6,18 +7,18 @@ namespace Portal.Api.Extensions;
 public static class RedisCacheExtension
 {
     public static void AddRedisCache(this IServiceCollection services, IConfiguration config,
-        Action<RedisCacheOption>? setupAction = null)
+        Action<RedisCache>? setupAction = null)
     {
         if (services is null)
             throw new ArgumentNullException(nameof(services));
 
         if (services.Contains(ServiceDescriptor.Singleton<IRedisCacheService, RedisCacheService>())) return;
 
-        var redisCacheOption = new RedisCacheOption();
-        var redisCacheSection = config.GetSection(nameof(RedisCacheOption));
+        var redisCacheOption = new RedisCache();
+        var redisCacheSection = config.GetSection(nameof(RedisCache));
 
         redisCacheSection.Bind(redisCacheOption);
-        services.Configure<RedisCacheOption>(redisCacheSection);
+        services.Configure<RedisCache>(redisCacheSection);
         setupAction?.Invoke(redisCacheOption);
 
         services.AddStackExchangeRedisCache(options =>
@@ -29,7 +30,7 @@ public static class RedisCacheExtension
         services.AddSingleton<IRedisCacheService, RedisCacheService>();
     }
 
-    private static ConfigurationOptions GetRedisConfigurationOptions(RedisCacheOption redisCacheOption)
+    private static ConfigurationOptions GetRedisConfigurationOptions(RedisCache redisCacheOption)
     {
         var configurationOptions = new ConfigurationOptions
         {

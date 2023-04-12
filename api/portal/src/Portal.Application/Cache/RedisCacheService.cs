@@ -2,6 +2,7 @@
 using StackExchange.Redis;
 using System.Text;
 using Newtonsoft.Json;
+using Portal.Domain.ValueObjects;
 
 namespace Portal.Application.Cache;
 
@@ -15,13 +16,13 @@ public class RedisCacheService : IRedisCacheService
             end
             ";
 
-    private readonly RedisCacheOption _redisCacheOption;
+    private readonly RedisCache _redisCacheOption;
 
     private readonly Lazy<ConnectionMultiplexer> _connectionMultiplexer;
 
     private readonly SemaphoreSlim _connectionLock = new(1, 1);
 
-    public RedisCacheService(IOptions<RedisCacheOption> options)
+    public RedisCacheService(IOptions<RedisCache> options)
     {
         _redisCacheOption = options.Value;
         _connectionMultiplexer = new Lazy<ConnectionMultiplexer>(() =>

@@ -1,6 +1,6 @@
-﻿namespace Portal.Application.Cache;
+﻿namespace Portal.Domain.ValueObjects;
 
-public class RedisCacheOption
+public class RedisCache
 {
     public bool AbortOnConnectFail { get; set; }
     public bool Ssl { get; set; }

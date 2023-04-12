@@ -94,6 +94,12 @@ public static class OpenApiExtension
                         Name = "Student",
                         Description = "Management of students",
                         ExternalDocs = findOutMore
+                    },
+                    new()
+                    {
+                        Name = "Position",
+                        Description = "Management of positions",
+                        ExternalDocs = findOutMore
                     }
                 };
             });

@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AspNetCore.HealthChecks.SqlServer" Version="7.0.0-rc2.11" />
+		<PackageReference Include="AspNetCore.HealthChecks.Redis" Version="7.0.0-rc2.6" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI" Version="7.0.0-rc2.7" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="7.0.0-rc2.7" />
 		<PackageReference Include="AspNetCore.HealthChecks.UI.InMemory.Storage" Version="7.0.0-rc2.7" />

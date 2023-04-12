@@ -55,12 +55,7 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student
     /// </remarks>
     /// <response code="200">Response the list of students</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
     /// <response code="404">No student found</response>
-    /// <response code="408">Request timeout</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -103,12 +98,7 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student/{id}
     /// </remarks>
     /// <response code="200">Response the student</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
     /// <response code="404">No student found</response>
-    /// <response code="408">Request timeout</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -152,12 +142,7 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student?name={name}
     /// </remarks>
     /// <response code="200">Response the list of students</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
     /// <response code="404">No student found</response>
-    /// <response code="408">Request timeout</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpGet("search")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
@@ -228,12 +213,7 @@ public class StudentController : ControllerBase
     /// </remarks>
     /// <response code="200">Add new student successfully</response>
     /// <response code="400">Invalid input</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
-    /// <response code="408">Request timeout</response>
     /// <response code="409">Student id has already existed</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -260,7 +240,7 @@ public class StudentController : ControllerBase
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
 
-            _transactionService.ExecuteTransaction((() => _studentService.AddStudent(newStudent)));
+            _transactionService.ExecuteTransaction(() => _studentService.AddStudent(newStudent));
 
             var students = _redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList());
             if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) == null)
@@ -287,12 +267,7 @@ public class StudentController : ControllerBase
     /// </remarks>
     /// <response code="200">Delete student successfully</response>
     /// <response code="400">Invalid input</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
     /// <response code="404">No student found</response>
-    /// <response code="408">Request timeout</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -314,7 +289,7 @@ public class StudentController : ControllerBase
             if (_studentService.GetStudentById(id) == null)
                 return NotFound();
 
-            _transactionService.ExecuteTransaction((() => _studentService.DeleteStudent(id)));
+            _transactionService.ExecuteTransaction(() => _studentService.DeleteStudent(id));
 
             if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
@@ -350,11 +325,6 @@ public class StudentController : ControllerBase
     /// </remarks>
     /// <response code="200">Update student successfully</response>
     /// <response code="400">Invalid input</response>
-    /// <response code="401">No permission</response>
-    /// <response code="403">No permission to access</response>
-    /// <response code="408">Request timeout</response>
-    /// <response code="429">Too many requests</response>
-    /// <response code="500">Internal server error</response>
     [HttpPut]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
@@ -365,7 +335,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
     public ActionResult UpdateStudent(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromBody] Student student)
@@ -389,7 +359,7 @@ public class StudentController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error while adding student");
+            _logger.LogError(e, "Error while updating student");
             return StatusCode(500);
         }
     }

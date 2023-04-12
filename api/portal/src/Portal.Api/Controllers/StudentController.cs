@@ -15,7 +15,6 @@ namespace Portal.Api.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
-[ApiVersion("1.0")]
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;
@@ -151,7 +150,7 @@ public class StudentController : ControllerBase
     /// <respone code="408">Quá thời gian yêu cầu</respone>
     /// <respone code="429">Quá nhiều yêu cầu</respone>
     /// <respone code="500">Lỗi server</respone>
-    [HttpGet]
+    [HttpGet("search")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]

@@ -21,8 +21,6 @@ using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Repositories.Common;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,20 +64,6 @@ builder.Services.AddResponseCompression(options =>
 builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 {
     options.Level = CompressionLevel.SmallestSize;
-});
-
-builder.Services.AddApiVersioning(options =>
-{
-    options.ReportApiVersions = true;
-    options.AssumeDefaultVersionWhenUnspecified = true;
-    options.DefaultApiVersion = new ApiVersion(1, 0);
-    options.ApiVersionReader = new HeaderApiVersionReader("api-version");
-});
-
-builder.Services.AddVersionedApiExplorer(options =>
-{
-    options.GroupNameFormat = "'v'VVV";
-    options.SubstituteApiVersionInUrl = true;
 });
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

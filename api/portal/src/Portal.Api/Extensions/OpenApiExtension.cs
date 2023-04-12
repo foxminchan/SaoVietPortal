@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -104,11 +103,7 @@ public static class OpenApiExtension
             c.DocumentTitle = "Sao Việt API";
             c.InjectStylesheet("/css/swagger-ui.css");
             c.InjectJavascript("/js/swagger-ui.js");
-            foreach (var description in app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>()
-                         .ApiVersionDescriptions)
-            {
-                c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-            }
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sao Việt API");
         });
 
         return app;

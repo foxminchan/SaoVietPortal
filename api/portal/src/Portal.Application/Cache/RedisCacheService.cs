@@ -55,13 +55,15 @@ public class RedisCacheService : IRedisCacheService
         if (string.IsNullOrEmpty(key))
             throw new ArgumentNullException(nameof(key));
 
-        if (!string.IsNullOrEmpty(Database.StringGet(key)))
-            return GetByteToObject<T>(key);
+        var cachedValue = GetByteToObject<T>(Database.StringGet(key));
+        if (cachedValue != null)
+            return cachedValue;
 
-        if (valueFactory() != null)
-            Database.StringSet(key, JsonConvert.SerializeObject(valueFactory()), expiration);
+        var newValue = valueFactory();
+        if (newValue != null)
+            Database.StringSet(key, JsonConvert.SerializeObject(newValue), expiration);
 
-        return valueFactory();
+        return newValue;
     }
 
     public T HashGetOrSet<T>(string key, string hashKey, Func<T> valueFactory)
@@ -111,5 +113,5 @@ public class RedisCacheService : IRedisCacheService
             flags: CommandFlags.FireAndForget);
 
     private static T GetByteToObject<T>(RedisValue value)
-        => JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) ?? default!;
+        =>  JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) ?? default!;
 }

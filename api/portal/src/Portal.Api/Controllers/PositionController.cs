@@ -20,10 +20,10 @@ public class PositionController : ControllerBase
     private readonly IRedisCacheService _redisCacheService;
 
     public PositionController(
-        PositionService positionService, 
+        PositionService positionService,
         TransactionService transactionService,
-        ILogger<PositionController> logger, 
-        IMapper mapper, 
+        ILogger<PositionController> logger,
+        IMapper mapper,
         IValidator<Position> validator,
         IRedisCacheService redisCacheService)
     {

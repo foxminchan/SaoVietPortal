@@ -81,7 +81,7 @@ public class RedisCacheService : IRedisCacheService
             return GetByteToObject<T>(value);
 
         if (valueFactory() != null)
-            Database.HashSet(keyWithPrefix, hashKey.ToLower(), 
+            Database.HashSet(keyWithPrefix, hashKey.ToLower(),
                 JsonConvert.SerializeObject(valueFactory()));
         return valueFactory();
     }

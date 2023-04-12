@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace Portal.Api.Extensions;
 
@@ -15,12 +16,12 @@ public static class OpenApiExtension
                 "v1",
                 new OpenApiInfo
                 {
-                    Title = "Cổng thông tin Sao Việt",
-                    Version = "1.0.0",
-                    Description = "API cho ứng dụng quản lý học viên Sao Việt. Mọi thắc mắc xin liên hệ theo địa chỉ email `nguyenxuannhan407@gmail.com` hoặc `nd.anh@hutech.edu.vn`",
+                    Title = "Sao Viet Portal",
+                    Version = "v1",
+                    Description = "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`",
                     Contact = new OpenApiContact
                     {
-                        Name = "Nguyễn Xuân Nhân",
+                        Name = "Nguyen Xuan Nhan",
                         Email = "nguyenxuannhan407@gmail.com",
                         Url = new Uri("https://www.facebook.com/FoxMinChan/")
                     },
@@ -62,7 +63,7 @@ public static class OpenApiExtension
     {
         var findOutMore = new OpenApiExternalDocs
         {
-            Description = "Tìm hiểu thêm về Swagger",
+            Description = "Find out more about Swagger",
             Url = new Uri("https://swagger.io/"),
         };
 
@@ -76,7 +77,7 @@ public static class OpenApiExtension
                     throw new ArgumentNullException(nameof(httpReq));
                 swagger.ExternalDocs = new OpenApiExternalDocs
                 {
-                    Description = "Về trung tâm tin học Sao Việt",
+                    Description = "About Sao Viet",
                     Url = new Uri("https://blogdaytinhoc.com/"),
                 };
                 swagger.Servers = new List<OpenApiServer>
@@ -91,7 +92,7 @@ public static class OpenApiExtension
                     new()
                     {
                         Name = "Student",
-                        Description = "Quản lý thông tin học viên",
+                        Description = "Management of students",
                         ExternalDocs = findOutMore
                     }
                 };
@@ -100,10 +101,16 @@ public static class OpenApiExtension
 
         app.UseSwaggerUI(c =>
         {
-            c.DocumentTitle = "Sao Việt API";
+            c.DocumentTitle = "Sao Viet API";
             c.InjectStylesheet("/css/swagger-ui.css");
             c.InjectJavascript("/js/swagger-ui.js");
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sao Việt API");
+            foreach (var description in app.ApplicationServices
+                         .GetRequiredService<IApiVersionDescriptionProvider>()
+                         .ApiVersionDescriptions)
+            {
+                c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName.ToUpperInvariant());
+            }
         });
 
         return app;

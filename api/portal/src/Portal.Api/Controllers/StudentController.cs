@@ -15,6 +15,7 @@ namespace Portal.Api.Controllers;
 
 [Route("api/v1/[controller]")]
 [ApiController]
+[ApiVersion("1.0")]
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;
@@ -45,7 +46,7 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Lấy danh sách học viên
+    /// Get all students
     /// </summary>
     /// <returns></returns>
     /// <remarks>
@@ -53,18 +54,21 @@ public class StudentController : ControllerBase
     ///
     ///     GET /api/v1/Student
     /// </remarks>
-    /// <respone code="200">Trả về danh sách học viên</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="404">Không tìm thấy học viên</respone>
-    /// <respone code="408">Quá thời gian yêu cầu</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Response the list of students</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="404">No student found</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -89,27 +93,30 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Tìm thông tin học viên theo mã học viên
+    /// Find student by id
     /// </summary>
     /// <returns></returns>
-    /// <param name="id">Mã học viên</param>
+    /// <param name="id">Student id</param>
     /// <remarks>
     /// Sample request:
     ///
     ///     GET /api/v1/Student/{id}
     /// </remarks>
-    /// <respone code="200">Trả về thông tin học viên</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="404">Không tìm thấy học viên</respone>
-    /// <respone code="408">Quá thời gian yêu cầu</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Response the student</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="404">No student found</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -135,26 +142,29 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Tìm thông tin học viên theo tên
+    /// Find student by name
     /// </summary>
-    /// <param name="name">Tên học viên</param>
+    /// <param name="name">Student name</param>
     /// <returns></returns>
     /// <remarks>
     /// Sample request:
     ///
     ///     GET /api/v1/Student?name={name}
     /// </remarks>
-    /// <respone code="200">Trả về thông tin học viên</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="404">Không tìm thấy học viên</respone>
-    /// <respone code="408">Quá thời gian yêu cầu</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Response the list of students</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="404">No student found</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpGet("search")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -198,9 +208,9 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Thêm học viên
+    /// Add new student
     /// </summary>
-    /// <param name="student">Đối tượng học viện</param>
+    /// <param name="student">Student object</param>
     /// <returns></returns>
     /// <remarks>
     /// Sample request:
@@ -216,18 +226,22 @@ public class StudentController : ControllerBase
     ///         "socialNetwork": "string"
     ///     }
     /// </remarks>
-    /// <respone code="200">Thêm thành công</respone>
-    /// <respone code="400">Dữ liệu không hợp lệ</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="409">Mã học viên đã tồn tại</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Add new student successfully</response>
+    /// <response code="400">Invalid input</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="409">Student id has already existed</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpPost]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(409)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -262,28 +276,32 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Xoá học viên
+    /// Delete student by id
     /// </summary>
-    /// <param name="id">Mã học viên</param>
+    /// <param name="id">Student id</param>
     /// <returns></returns>
     /// <remarks>
     /// Sample request:
     ///
     ///     DELETE /api/v1/Student/{id}
     /// </remarks>
-    /// <respone code="200">Xoá thành công</respone>
-    /// <respone code="400">Dữ liệu không hợp lệ</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="404">Không tìm thấy học viên</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Delete student successfully</response>
+    /// <response code="400">Invalid input</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="404">No student found</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
@@ -312,9 +330,9 @@ public class StudentController : ControllerBase
     }
 
     /// <summary>
-    /// Cập nhật thông tin học viên
+    /// Update student
     /// </summary>
-    /// <param name="student">Đối tượng học viên</param>
+    /// <param name="student">Student object</param>
     /// <returns></returns>
     /// <remarks>
     /// Sample request:
@@ -330,18 +348,21 @@ public class StudentController : ControllerBase
     ///         "socialNetwork": "string"
     ///     }
     /// </remarks>
-    /// <respone code="200">Thêm thành công</respone>
-    /// <respone code="400">Dữ liệu không hợp lệ</respone>
-    /// <respone code="401">Không có quyền</respone>
-    /// <respone code="408">Quá thời gian yêu cầu</respone>
-    /// <respone code="429">Quá nhiều yêu cầu</respone>
-    /// <respone code="500">Lỗi server</respone>
+    /// <response code="200">Update student successfully</response>
+    /// <response code="400">Invalid input</response>
+    /// <response code="401">No permission</response>
+    /// <response code="403">No permission to access</response>
+    /// <response code="408">Request timeout</response>
+    /// <response code="429">Too many requests</response>
+    /// <response code="500">Internal server error</response>
     [HttpPut]
     [Authorize(Policy = "Dev")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]

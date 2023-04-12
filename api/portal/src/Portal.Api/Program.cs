@@ -77,8 +77,8 @@ builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes 
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Dev", authorizationPolicyBuilder => authorizationPolicyBuilder
-        .RequireClaim("DevClaim", "Developer")
+    options.AddPolicy("Dev", policy => policy
+        .RequireClaim("DevClaim", "developer")
         .RequireAuthenticatedUser());
     options.FallbackPolicy = null;
 });
@@ -136,9 +136,10 @@ builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
 builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneService("lucene-index"));
 
+builder.AddApiVersioning();
+builder.AddOpenApi();
 builder.AddOpenTelemetry();
 builder.AddSerilog();
-builder.AddOpenApi();
 
 var app = builder.Build();
 

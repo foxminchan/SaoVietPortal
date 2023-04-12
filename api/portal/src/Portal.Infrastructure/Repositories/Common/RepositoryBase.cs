@@ -63,7 +63,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
             if (filterBody.Contains("()") || filterBody.Contains("new "))
                 throw new ArgumentException("Invalid filter expression.");
         }
-            
+
 
         if (includeProperties != null)
             query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
@@ -77,7 +77,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         if (take != 0)
             _ = query.Take(take);
 
-        if (!string.IsNullOrEmpty(fields)) 
+        if (!string.IsNullOrEmpty(fields))
         {
             var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 

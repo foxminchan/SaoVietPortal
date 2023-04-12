@@ -113,5 +113,5 @@ public class RedisCacheService : IRedisCacheService
             flags: CommandFlags.FireAndForget);
 
     private static T GetByteToObject<T>(RedisValue value)
-        =>  JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) ?? default!;
+        => JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(value)) ?? default!;
 }

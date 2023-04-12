@@ -106,7 +106,7 @@ builder.Services.AddHealthChecks()
     .AddCheck<HealthCheck>(nameof(HealthCheck), tags: new[] { "api" })
     .AddDbContextCheck<ApplicationDbContext>(tags: new[] { "db context" })
     .AddRedis("localhost:6379", tags: new[] { "redis" })
-    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") 
+    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
                   ?? throw new InvalidOperationException(), tags: new[] { "database" });
 
 builder.Services

@@ -69,10 +69,10 @@ public class PositionController : ControllerBase
         {
             return (_redisCacheService.GetOrSet("PositionData",
                     () => _positionService.GetAllPositions().ToList())) switch
-                {
-                    { Count: > 0 } positions => Ok(positions),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } positions => Ok(positions),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -115,10 +115,10 @@ public class PositionController : ControllerBase
             return _redisCacheService
                     .GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList())
                     .FirstOrDefault(s => s.positionId == id) switch
-                {
-                    { } position => Ok(position),
-                    _ => NotFound()
-                };
+            {
+                { } position => Ok(position),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -165,7 +165,7 @@ public class PositionController : ControllerBase
             if (_validator.Validate(position).IsValid)
                 return BadRequest();
 
-            if(_positionService.GetPositionById(position.positionId) != null)
+            if (_positionService.GetPositionById(position.positionId) != null)
                 return Conflict();
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
@@ -210,7 +210,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
     public ActionResult DeletePosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromRoute] int id)
     {
         try

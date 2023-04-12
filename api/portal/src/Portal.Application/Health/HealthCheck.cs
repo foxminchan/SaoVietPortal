@@ -9,8 +9,8 @@ public class HealthCheck : IHealthCheck
     public HealthCheck(HealthService healthService) => _healthService = healthService;
 
     public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default) 
-        => _healthService.IsHealthy 
-            ? Task.FromResult(HealthCheckResult.Healthy("System is in a healthy state.")) 
+        CancellationToken cancellationToken = default)
+        => _healthService.IsHealthy
+            ? Task.FromResult(HealthCheckResult.Healthy("System is in a healthy state."))
             : Task.FromResult(HealthCheckResult.Unhealthy("System is in an unhealthy state."));
 }

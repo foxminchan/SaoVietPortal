@@ -72,10 +72,10 @@ public class BranchController : ControllerBase
         {
             return (_redisCacheService.GetOrSet("BranchData",
                     () => _branchService.GetAllBranches().ToList())) switch
-                {
-                    { Count: > 0 } branches => Ok(branches),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } branches => Ok(branches),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -117,10 +117,10 @@ public class BranchController : ControllerBase
             return _redisCacheService
                     .GetOrSet("BranchData", () => _branchService.GetAllBranches().ToList())
                     .FirstOrDefault(s => s.branchId == id) switch
-                {
-                    { } branch => Ok(branch),
-                    _ => NotFound()
-                };
+            {
+                { } branch => Ok(branch),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -160,7 +160,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
     public ActionResult InsertPosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] 
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
         [FromBody] Branch branch)
     {
         try

@@ -1,28 +1,28 @@
+using FluentValidation;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json.Serialization;
-using Portal.Application.Services;
-using Portal.Infrastructure;
-using System.IO.Compression;
-using FluentValidation;
-using HealthChecks.UI.Client;
+using Newtonsoft.Json;
 using Portal.Api.Extensions;
-using Portal.Api.Validations;
 using Portal.Api.Models;
-using Portal.Application.Transaction;
-using Portal.Infrastructure.Middleware;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Serilog;
-using Microsoft.AspNetCore.Diagnostics;
+using Portal.Api.Validations;
+using Portal.Application.Health;
 using Portal.Application.Search;
+using Portal.Application.Services;
+using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Errors;
+using Portal.Infrastructure.Middleware;
 using Portal.Infrastructure.Repositories.Common;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Portal.Application.Health;
+using Portal.Infrastructure;
+using Serilog;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.IO.Compression;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,17 +69,24 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddPollyPolicy();
 builder.Services.AddProblemDetails();
-builder.Services.AddResponseCaching();
 builder.Services.AddRateLimiting();
 builder.Services.AddRedisCache(builder.Configuration);
+builder.Services.AddResponseCaching();
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 builder.Services.AddAuthentication().AddJwtBearer();
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Dev", policy => policy
+    options.AddPolicy("Developer", policy => policy
         .RequireClaim("DevClaim", "developer")
         .RequireAuthenticatedUser());
+
+    options.AddPolicy("Admin", policy => policy
+        .RequireRole("Admin")
+        .RequireClaim("Admin")
+        .RequireAuthenticatedUser());
+
     options.FallbackPolicy = null;
 });
 
@@ -155,6 +162,10 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseHsts();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+}
 
 app.UseCors();
 app.UseResponseCaching();
@@ -177,6 +188,9 @@ app.MapHealthChecks("/hc", new HealthCheckOptions()
     }
 });
 app.MapHealthChecksUI(options => options.UIPath = "/hc-ui");
+app.MapGet("/error", () => Results.Problem("An error occurred.", statusCode: 500))
+    .ExcludeFromDescription();
+app.Map("/", () => Results.Redirect("/swagger"));
 app.MapControllers();
 app.MapPrometheusScrapingEndpoint();
 app.Run();

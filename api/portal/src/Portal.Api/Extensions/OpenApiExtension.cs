@@ -18,7 +18,8 @@ public static class OpenApiExtension
                 {
                     Title = "Sao Viet Portal",
                     Version = "v1",
-                    Description = "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`",
+                    Description =
+                        "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`",
                     Contact = new OpenApiContact
                     {
                         Name = "Nguyen Xuan Nhan",
@@ -32,13 +33,12 @@ public static class OpenApiExtension
                     },
                     TermsOfService = new Uri("https://sites.google.com/view/trungtamtinhocsaoviet")
                 });
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            c.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
             {
+                Name = "Authorization",
+                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
                 In = ParameterLocation.Header,
-                Description = "Please enter token",
-                Name = JwtBearerDefaults.AuthenticationScheme,
-                Type = SecuritySchemeType.Http,
-                BearerFormat = "JWT",
+                Type = SecuritySchemeType.ApiKey,
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -46,13 +46,15 @@ public static class OpenApiExtension
                 {
                     new OpenApiSecurityScheme
                     {
+                        Name = JwtBearerDefaults.AuthenticationScheme,
+                        In = ParameterLocation.Header,
                         Reference = new OpenApiReference
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme
+                            Id = JwtBearerDefaults.AuthenticationScheme,
+                            Type = ReferenceType.SecurityScheme
                         }
                     },
-                    Array.Empty<string>()
+                    new List<string>()
                 }
             });
             c.ResolveConflictingActions(apiDescription => apiDescription.First());
@@ -61,12 +63,6 @@ public static class OpenApiExtension
 
     public static IApplicationBuilder UseOpenApi(this IApplicationBuilder app)
     {
-        var findOutMore = new OpenApiExternalDocs
-        {
-            Description = "Find out more about Swagger",
-            Url = new Uri("https://swagger.io/"),
-        };
-
         app.UseSwagger(c =>
         {
             c.RouteTemplate = "swagger/{documentName}/swagger.json";
@@ -92,14 +88,12 @@ public static class OpenApiExtension
                     new()
                     {
                         Name = "Student",
-                        Description = "Management of students",
-                        ExternalDocs = findOutMore
+                        Description = "Management of students"
                     },
                     new()
                     {
                         Name = "Position",
-                        Description = "Management of positions",
-                        ExternalDocs = findOutMore
+                        Description = "Management of positions"
                     }
                 };
             });

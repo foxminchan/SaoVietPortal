@@ -1,15 +1,15 @@
-﻿using System.Net.Mime;
-using AutoMapper;
+﻿using AutoMapper;
 using FluentValidation;
 using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
+using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
 
@@ -57,7 +57,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Response the list of students</response>
     /// <response code="404">No student found</response>
     [HttpGet]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
@@ -100,7 +100,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Response the student</response>
     /// <response code="404">No student found</response>
     [HttpGet("{id}")]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(401)]
@@ -215,7 +215,7 @@ public class StudentController : ControllerBase
     /// <response code="400">Invalid input</response>
     /// <response code="409">Student id has already existed</response>
     [HttpPost]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -269,7 +269,7 @@ public class StudentController : ControllerBase
     /// <response code="400">Invalid input</response>
     /// <response code="404">No student found</response>
     [HttpDelete("{id}")]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -326,7 +326,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Update student successfully</response>
     /// <response code="400">Invalid input</response>
     [HttpPut]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]

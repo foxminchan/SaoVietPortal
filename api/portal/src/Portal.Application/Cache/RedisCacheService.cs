@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
-using StackExchange.Redis;
-using System.Text;
 using Newtonsoft.Json;
 using Portal.Domain.ValueObjects;
+using StackExchange.Redis;
+using System.Text;
 
 namespace Portal.Application.Cache;
 

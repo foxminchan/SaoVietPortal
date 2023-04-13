@@ -34,4 +34,8 @@
 		<ProjectReference Include="..\Portal.Domain\Portal.Domain.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Auth\" />
+	</ItemGroup>
+
 </Project>

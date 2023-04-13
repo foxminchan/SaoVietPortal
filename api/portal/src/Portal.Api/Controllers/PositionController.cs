@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
@@ -51,7 +51,7 @@ public class PositionController : ControllerBase
     /// <response code="200">Response the list of positions</response>
     /// <response code="404">No position found</response>
     [HttpGet]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Position>))]
     [ProducesResponseType(401)]
@@ -94,7 +94,7 @@ public class PositionController : ControllerBase
     /// <response code="200">Response the position</response>
     /// <response code="404">No position found</response>
     [HttpGet("{id:int}")]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Position))]
     [ProducesResponseType(401)]
@@ -145,7 +145,7 @@ public class PositionController : ControllerBase
     /// <response code="404">No position found</response>
     /// <response code="409">Position id has already existed</response>
     [HttpPost]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -198,7 +198,7 @@ public class PositionController : ControllerBase
     /// <response code="200">Delete position successfully</response>
     /// <response code="404">No position found</response>
     [HttpDelete("{id:int}")]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
@@ -250,7 +250,7 @@ public class PositionController : ControllerBase
     /// <response code="200">update position successfully</response>
     /// <response code="400">Invalid input</response>
     [HttpPut]
-    [Authorize(Policy = "Dev")]
+    [Authorize(Policy = "Developer")]
     [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]

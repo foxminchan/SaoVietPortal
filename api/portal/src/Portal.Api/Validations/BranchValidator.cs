@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using Portal.Domain.Entities;
+using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
@@ -8,8 +8,8 @@ public class BranchValidator : AbstractValidator<Branch>
     public BranchValidator()
     {
         RuleFor(x => x.branchId)
-            .NotEmpty()
-            .WithMessage("BranchId is required");
+            .NotEmpty().WithMessage("BranchId is required")
+            .Length(8).WithMessage("BranchId must be 8 characters");
         RuleFor(x => x.branchName)
             .NotEmpty()
             .WithMessage("BranchName is required");

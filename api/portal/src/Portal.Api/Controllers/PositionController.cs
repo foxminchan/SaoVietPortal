@@ -14,6 +14,9 @@ namespace Portal.Api.Controllers;
 [Route("api/v1/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
+[ApiConventionType(typeof(DefaultApiConventions))]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces(MediaTypeNames.Application.Json)]
 public class PositionController : ControllerBase
 {
     private readonly PositionService _positionService;
@@ -52,11 +55,11 @@ public class PositionController : ControllerBase
     /// <response code="404">No position found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Position>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(406)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -95,16 +98,15 @@ public class PositionController : ControllerBase
     /// <response code="404">No position found</response>
     [HttpGet("{id:int}")]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Position))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(406)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
     [ResponseCache(Duration = 15)]
     public ActionResult GetPositionById(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
@@ -137,7 +139,7 @@ public class PositionController : ControllerBase
     ///
     ///     POST /api/v1/Position
     ///     {
-    ///         "id": "0",
+    ///         "positionId": "0",
     ///         "positionName": "Giáo viên"
     ///     }
     /// </remarks>
@@ -146,7 +148,6 @@ public class PositionController : ControllerBase
     /// <response code="409">Position id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
@@ -199,7 +200,6 @@ public class PositionController : ControllerBase
     /// <response code="404">No position found</response>
     [HttpDelete("{id:int}")]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
@@ -251,7 +251,6 @@ public class PositionController : ControllerBase
     /// <response code="400">Invalid input</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]

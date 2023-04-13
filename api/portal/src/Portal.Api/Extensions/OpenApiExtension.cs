@@ -2,6 +2,7 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Portal.Api.Extensions;
 
@@ -57,6 +58,7 @@ public static class OpenApiExtension
                     new List<string>()
                 }
             });
+            c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             c.ResolveConflictingActions(apiDescription => apiDescription.First());
         });
     }

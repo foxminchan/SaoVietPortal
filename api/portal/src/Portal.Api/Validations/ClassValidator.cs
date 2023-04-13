@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using FluentValidation;
-using Portal.Domain.Entities;
+using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 

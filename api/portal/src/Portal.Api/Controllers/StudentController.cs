@@ -16,6 +16,9 @@ namespace Portal.Api.Controllers;
 [Route("api/v1/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
+[ApiConventionType(typeof(DefaultApiConventions))]
+[Consumes(MediaTypeNames.Application.Json)]
+[Produces(MediaTypeNames.Application.Json)]
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;
@@ -58,11 +61,11 @@ public class StudentController : ControllerBase
     /// <response code="404">No student found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(406)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -101,11 +104,11 @@ public class StudentController : ControllerBase
     /// <response code="404">No student found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(406)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -144,11 +147,11 @@ public class StudentController : ControllerBase
     /// <response code="200">Response the list of students</response>
     /// <response code="404">No student found</response>
     [HttpGet("search")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
     [ProducesResponseType(404)]
+    [ProducesResponseType(406)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -216,7 +219,6 @@ public class StudentController : ControllerBase
     /// <response code="409">Student id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
@@ -270,7 +272,6 @@ public class StudentController : ControllerBase
     /// <response code="404">No student found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
@@ -327,7 +328,6 @@ public class StudentController : ControllerBase
     /// <response code="400">Invalid input</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [Consumes(MediaTypeNames.Application.Json)]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]

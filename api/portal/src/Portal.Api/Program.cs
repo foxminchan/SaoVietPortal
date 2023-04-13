@@ -1,5 +1,6 @@
 using FluentValidation;
 using HealthChecks.UI.Client;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -16,6 +17,7 @@ using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
+using Portal.Infrastructure.Auth;
 using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Middleware;
 using Portal.Infrastructure.Repositories.Common;
@@ -67,28 +69,16 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
     options.Level = CompressionLevel.SmallestSize;
 });
 
+builder.Services.AddAuth();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddPollyPolicy();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
 builder.Services.AddRedisCache(builder.Configuration);
 builder.Services.AddResponseCaching();
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
-builder.Services.AddAuthentication().AddJwtBearer();
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Developer", policy => policy
-        .RequireClaim("DevClaim", "developer")
-        .RequireAuthenticatedUser());
-
-    options.AddPolicy("Admin", policy => policy
-        .RequireRole("Admin")
-        .RequireClaim("Admin")
-        .RequireAuthenticatedUser());
-
-    options.FallbackPolicy = null;
-});
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -134,11 +124,29 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddTransient<BranchService>();
+builder.Services.AddTransient<ClassService>();
+builder.Services.AddTransient<CourseRegistrationService>();
+builder.Services.AddTransient<CourseService>();
+builder.Services.AddTransient<PaymentMethodService>();
+builder.Services.AddTransient<PositionService>();
+builder.Services.AddTransient<ReceiptsExpensesService>();
+builder.Services.AddTransient<StaffService>();
+builder.Services.AddTransient<StudentProgressService>();
 builder.Services.AddTransient<StudentService>();
 builder.Services.AddTransient<TransactionService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IValidator<Branch>, BranchValidator>();
+builder.Services.AddScoped<IValidator<Class>, ClassValidator>();
+builder.Services.AddScoped<IValidator<Course>, CourseValidator>();
+builder.Services.AddScoped<IValidator<CourseRegistration>, CourseRegistrationValidator>();
+builder.Services.AddScoped<IValidator<PaymentMethod>, PaymentMethodValidator>();
+builder.Services.AddScoped<IValidator<Position>, PositionValidator>();
+builder.Services.AddScoped<IValidator<ReceiptsExpenses>, ReceiptsExpensesValidator>();
+builder.Services.AddScoped<IValidator<Staff>, StaffValidator>();
 builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
+builder.Services.AddScoped<IValidator<StudentProgress>, StudentProgressValidator>();
 
 builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
@@ -191,6 +199,6 @@ app.MapHealthChecksUI(options => options.UIPath = "/hc-ui");
 app.MapGet("/error", () => Results.Problem("An error occurred.", statusCode: 500))
     .ExcludeFromDescription();
 app.Map("/", () => Results.Redirect("/swagger"));
-app.MapControllers();
+app.MapControllers().RequirePerUserRateLimit();
 app.MapPrometheusScrapingEndpoint();
 app.Run();

@@ -9,25 +9,60 @@ public static class PollyExtension
 {
     public static void AddPollyPolicy(this IServiceCollection services)
     {
-        var baseAddress = new Uri("https://localhost:8080");
         var httpClientBuilder = new Action<HttpClient>(client =>
         {
-            client.BaseAddress = baseAddress;
+            client.BaseAddress = new Uri("https://localhost:8080");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
             client.DefaultRequestVersion = new Version(2, 0);
+            client.Timeout = TimeSpan.FromSeconds(30);
         });
-
-        services.AddHttpClient<StudentService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
 
         services.AddHttpClient<BranchService>(httpClientBuilder)
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreakerPolicy())
             .AddPolicyHandler(GetBulkheadPolicy());
 
+        services.AddHttpClient<ClassService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<CourseRegistrationService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<CourseService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<PaymentMethodService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
         services.AddHttpClient<PositionService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<ReceiptsExpensesService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<StaffService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<StudentProgressService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<StudentService>(httpClientBuilder)
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreakerPolicy())
             .AddPolicyHandler(GetBulkheadPolicy());

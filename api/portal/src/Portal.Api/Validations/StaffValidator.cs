@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using FluentValidation;
-using Portal.Domain.Entities;
+using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
@@ -23,7 +23,5 @@ public class StaffValidator : AbstractValidator<Staff>
             }).WithMessage("Date of birth must be in the past");
         RuleFor(x => x.address)
             .MaximumLength(80).WithMessage("Address must not exceed 80 characters");
-        RuleFor(x => x.position)
-            .NotNull().WithMessage("Position is required");
     }
 }

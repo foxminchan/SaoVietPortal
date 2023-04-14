@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
 using System.Net;
+using Newtonsoft.Json;
 
 namespace Portal.Infrastructure.Middleware;
 
@@ -34,12 +34,13 @@ public class ExceptionMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        if (exception is ValidationException validationException)
+        var response = new
         {
-            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            await context.Response.WriteAsync(validationException.Message);
-        }
-        else
-            await context.Response.WriteAsync(exception.Message);
+            context.Response.StatusCode,
+            Message = "Internal Server Error from Server.",
+            Exception = exception.Message
+        };
+
+        await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 }

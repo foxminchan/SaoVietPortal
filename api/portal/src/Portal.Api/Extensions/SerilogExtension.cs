@@ -1,6 +1,7 @@
 ﻿using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Portal.Api.Extensions;
 
@@ -14,6 +15,7 @@ public static class SerilogExtension
         builder.Host.UseSerilog((context, loggerConfiguration) =>
         {
             loggerConfiguration.ReadFrom.Configuration(context.Configuration, sectionName: sectionName);
+
             loggerConfiguration
                 .Enrich.WithProperty("Application", builder.Environment.ApplicationName)
                 .Enrich.FromLogContext()
@@ -21,10 +23,15 @@ public static class SerilogExtension
 
             if (serilogOptions.UseConsole)
                 loggerConfiguration.WriteTo.Async(writeTo =>
-                    writeTo.Console(outputTemplate: serilogOptions.LogTemplate));
+                    writeTo.Console(outputTemplate: serilogOptions.LogTemplate, theme: AnsiConsoleTheme.Literate));
 
             if (!string.IsNullOrEmpty(serilogOptions.ElasticSearchUrl))
-                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(serilogOptions.ElasticSearchUrl)) { AutoRegisterTemplate = true, IndexFormat = builder.Environment.ApplicationName });
+                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(
+                    new Uri(serilogOptions.ElasticSearchUrl))
+                {
+                    AutoRegisterTemplate = true, 
+                    IndexFormat = builder.Environment.ApplicationName
+                });
 
             if (!string.IsNullOrEmpty(serilogOptions.SeqUrl))
                 loggerConfiguration.WriteTo.Seq(serilogOptions.SeqUrl);

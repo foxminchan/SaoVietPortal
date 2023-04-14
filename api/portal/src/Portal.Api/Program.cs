@@ -1,12 +1,9 @@
 using FluentValidation;
-using HealthChecks.UI.Client;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Portal.Api.Extensions;
@@ -18,13 +15,13 @@ using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Auth;
-using Portal.Infrastructure.Errors;
 using Portal.Infrastructure.Middleware;
 using Portal.Infrastructure.Repositories.Common;
 using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
+using Portal.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +82,7 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         sqlServerOptionsAction: sqlOptions =>
         {
+            sqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
             sqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 10,
                 maxRetryDelay: TimeSpan.FromSeconds(30),
@@ -98,21 +96,6 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
     options.EnableDetailedErrors();
     options.EnableSensitiveDataLogging();
 });
-
-builder.Services.AddHealthChecks()
-    .AddCheck<HealthCheck>(nameof(HealthCheck), tags: new[] { "api" })
-    .AddDbContextCheck<ApplicationDbContext>(tags: new[] { "db context" })
-    .AddRedis("localhost:6379", tags: new[] { "redis" })
-    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
-                  ?? throw new InvalidOperationException(), tags: new[] { "database" });
-
-builder.Services
-    .AddHealthChecksUI(options =>
-    {
-        options.AddHealthCheckEndpoint("Health Check API", "/hc");
-        options.SetEvaluationTimeInSeconds(10);
-    })
-    .AddInMemoryStorage();
 
 builder.Services.AddCors(options =>
 {
@@ -156,6 +139,7 @@ builder.AddApiVersioning();
 builder.AddOpenApi();
 builder.AddOpenTelemetry();
 builder.AddSerilog();
+builder.AddHealthCheck();
 
 var app = builder.Build();
 
@@ -183,19 +167,7 @@ app.UseRateLimiter();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 app.UseHttpsRedirection();
-app.MapHealthChecks("/hc", new HealthCheckOptions()
-{
-    Predicate = _ => true,
-    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
-    AllowCachingResponses = false,
-    ResultStatusCodes =
-    {
-        [HealthStatus.Healthy] = StatusCodes.Status200OK,
-        [HealthStatus.Degraded] = StatusCodes.Status200OK,
-        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
-    }
-});
-app.MapHealthChecksUI(options => options.UIPath = "/hc-ui");
+app.MapHealthCheck();
 app.MapGet("/error", () => Results.Problem("An error occurred.", statusCode: 500))
     .ExcludeFromDescription();
 app.Map("/", () => Results.Redirect("/swagger"));

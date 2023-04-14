@@ -20,7 +20,8 @@ public static class AuthExtension
                 ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = false,
-                SignatureValidator = (token, _) => new JwtSecurityToken(token)
+                SignatureValidator = (token, _) => new JwtSecurityToken(token),
+                ClockSkew = TimeSpan.Zero
             };
         });
 
@@ -32,8 +33,35 @@ public static class AuthExtension
 
             options.AddPolicy("Admin", policy => policy
                 .RequireRole("Staff")
-                .RequireClaim("Admin")
+                .RequireClaim("Branch Manager")
+                .RequireClaim("Teacher")
+                .RequireClaim("Accountant")
+                .RequireClaim("System Admin")
                 .RequireAuthenticatedUser());
+
+            options.AddPolicy("Teacher", policy => policy
+                .RequireRole("Staff")
+                .RequireClaim("Teacher")
+                .RequireAuthenticatedUser());
+
+            options.AddPolicy("Branch Manager", policy => policy
+                .RequireRole("Staff")
+                .RequireClaim("Branch Manager")
+                .RequireClaim("Teacher")
+                .RequireClaim("Accountant")
+                .RequireAuthenticatedUser());
+
+            options.AddPolicy("Accountant", policy => policy
+                .RequireRole("Staff")
+                .RequireClaim("Teacher")
+                .RequireClaim("Accountant")
+                .RequireAuthenticatedUser());
+
+            options.AddPolicy("Student", policy => policy
+                .RequireRole("Student")
+                .RequireAuthenticatedUser());
+
+            options.InvokeHandlersAfterFailure = false;
 
             options.FallbackPolicy = null;
         });

@@ -9,6 +9,7 @@ using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
+using Portal.Domain.ValueObjects;
 using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
@@ -234,8 +235,10 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if (!_validator.Validate(student).IsValid)
-                return BadRequest();
+            var validationResult = _validator.Validate(student);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
 
             if (student.studentId != null && _studentService.GetStudentById(student.studentId) != null)
                 return Conflict();
@@ -342,8 +345,10 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if (!_validator.Validate(student).IsValid)
-                return BadRequest();
+            var validationResult = _validator.Validate(student);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
 
             if (student.studentId != null && _studentService.GetStudentById(student.studentId) == null)
                 return BadRequest();

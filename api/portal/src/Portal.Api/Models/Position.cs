@@ -5,7 +5,7 @@
 /// </summary>
 public class Position
 {
-    public int positionId { get; set; }
+    public int? positionId { get; set; }
 
     /// <example>Giáo viên</example>
     public string? positionName { get; set; }

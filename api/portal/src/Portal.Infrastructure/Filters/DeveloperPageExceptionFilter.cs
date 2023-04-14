@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using System.Net.Mime;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Net.Http.Headers;
 
-namespace Portal.Infrastructure.Errors;
+namespace Portal.Infrastructure.Filters;
 
 public class DeveloperPageExceptionFilter : IDeveloperPageExceptionFilter
 {
     private static readonly object ErrorContextItemsKey = new();
-    private static readonly MediaTypeHeaderValue JsonMediaType = new("application/json");
+    private static readonly MediaTypeHeaderValue JsonMediaType = new(MediaTypeNames.Application.Json);
 
     private static readonly RequestDelegate RespondWithProblemDetails = RequestDelegateFactory.Create(
         (HttpContext context) =>

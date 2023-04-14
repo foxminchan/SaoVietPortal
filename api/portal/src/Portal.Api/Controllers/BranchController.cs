@@ -7,6 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
+using Portal.Domain.ValueObjects;
 using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
@@ -165,8 +166,10 @@ public class BranchController : ControllerBase
     {
         try
         {
-            if (_validator.Validate(branch).IsValid)
-                return BadRequest();
+            var validationResult = _validator.Validate(branch);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
 
             if (branch.branchId != null && _branchService.GetBranchById(branch.branchId) != null)
                 return Conflict();
@@ -184,6 +187,53 @@ public class BranchController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error while adding branch");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Delete branch by id
+    /// </summary>
+    /// <param name="id">Branch id</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     DELETE /api/v1/Branch/{id}
+    /// </remarks>
+    /// <response code="200">Delete branch successfully</response>
+    /// <response code="404">No branch found</response>
+    [HttpDelete("{id}")]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
+    [ProducesResponseType(429)]
+    [ProducesResponseType(500)]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
+    public ActionResult DeleteBranch(
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
+        [FromRoute] string id)
+    {
+        try
+        {
+            if (_branchService.GetBranchById(id) != null)
+                return NotFound();
+
+            _transactionService.ExecuteTransaction(() => _branchService.DeleteBranch(id));
+
+            if (_redisCacheService.GetOrSet("BranchData", () => _branchService.GetAllBranches().ToList()) is
+                { Count: > 0 } branches)
+                branches.RemoveAll(s => s.branchId == id);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while deleting branch");
             return StatusCode(500);
         }
     }

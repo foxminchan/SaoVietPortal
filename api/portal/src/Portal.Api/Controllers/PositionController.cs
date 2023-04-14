@@ -8,6 +8,7 @@ using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 using System.Net.Mime;
+using Portal.Domain.ValueObjects;
 
 namespace Portal.Api.Controllers;
 
@@ -163,17 +164,20 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (_validator.Validate(position).IsValid)
-                return BadRequest();
+            var validationResult = _validator.Validate(position);
 
-            if (_positionService.GetPositionById(position.positionId) != null)
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
+
+            if (position.positionId != null && _positionService.GetPositionById(position.positionId) != null)
                 return Conflict();
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
             _transactionService.ExecuteTransaction(() => _positionService.AddPosition(newPosition));
 
-            var positions = _redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList());
+            var positions =
+                _redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList());
             if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) == null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
@@ -265,8 +269,10 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (!_validator.Validate(position).IsValid)
-                return BadRequest();
+            var validationResult = _validator.Validate(position);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
 
             if (_positionService.GetPositionById(position.positionId) == null)
                 return BadRequest();

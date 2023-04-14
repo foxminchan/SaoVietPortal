@@ -15,18 +15,19 @@ using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Auth;
+using Portal.Infrastructure.Filters;
 using Portal.Infrastructure.Middleware;
 using Portal.Infrastructure.Repositories.Common;
 using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
-using Portal.Infrastructure.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
+    options.AddServerHeader = false;
     options.ConfigureEndpointDefaults(o =>
     {
         o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;

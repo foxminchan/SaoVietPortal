@@ -96,7 +96,17 @@ public static class OpenApiExtension
                     {
                         Name = "Position",
                         Description = "Management of positions"
-                    }
+                    },
+                    new()
+                    {
+                        Name = "Branch",
+                        Description = "Management of branch"
+                    },
+                    new()
+                    {
+                        Name = "System",
+                        Description = "Management of system"
+                    },
                 };
             });
         });

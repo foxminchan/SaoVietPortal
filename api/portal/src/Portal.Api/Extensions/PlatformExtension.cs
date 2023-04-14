@@ -26,8 +26,8 @@ public static class PlatformExtension
 
             EnvironmentVariables = config.AsEnumerable().ToDictionary(x => x.Key, x => x.Value),
 
-            OsArchitecture = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows) 
-                ? RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX) 
+            OsArchitecture = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                ? RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
                     ? $"{nameof(OSPlatform.Linux)} or {nameof(OSPlatform.OSX)}"
                     : "Other OS"
                 : nameof(OSPlatform.Windows),
@@ -42,7 +42,7 @@ public static class PlatformExtension
                 Architecture.X64 => nameof(Architecture.X64),
                 _ => "Other Architecture"
             },
-            
+
             HostName = Dns.GetHostName(),
 
             IpAddress = Dns.GetHostAddresses(Dns.GetHostName())

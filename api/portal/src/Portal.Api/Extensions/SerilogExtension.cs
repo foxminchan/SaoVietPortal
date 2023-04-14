@@ -29,7 +29,7 @@ public static class SerilogExtension
                 loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(
                     new Uri(serilogOptions.ElasticSearchUrl))
                 {
-                    AutoRegisterTemplate = true, 
+                    AutoRegisterTemplate = true,
                     IndexFormat = builder.Environment.ApplicationName
                 });
 

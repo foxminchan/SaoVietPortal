@@ -22,8 +22,8 @@ public class SystemController : ControllerBase
     private readonly ILuceneService _luceneService;
 
     public SystemController(
-        IConfiguration config, 
-        IWebHostEnvironment env, 
+        IConfiguration config,
+        IWebHostEnvironment env,
         ILogger<SystemController> logger,
         IRedisCacheService redisCacheService,
         ILuceneService luceneService)

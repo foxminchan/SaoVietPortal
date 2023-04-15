@@ -22,6 +22,8 @@ using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.ObjectPool;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,11 +56,8 @@ builder.Services.AddResponseCompression(options =>
     options.Providers.Add<GzipCompressionProvider>();
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
     {
-        "application/octet-stream",
-        "application/x-msdownload",
-        "application/x-msdos-program",
-        "application/x-msmetafile",
-        "application/x-ms-shortcut",
+        "application/json",
+        "text/json",
     });
 });
 
@@ -135,6 +134,14 @@ builder.Services.AddScoped<IValidator<StudentProgress>, StudentProgressValidator
 builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
 builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneService("lucene-index"));
+
+builder.Services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+builder.Services.TryAddSingleton(options =>
+{
+    var provider = options.GetRequiredService<ObjectPoolProvider>();
+    var policy = new StringBuilderPooledObjectPolicy();
+    return provider.Create(policy);
+});
 
 builder.AddApiVersioning();
 builder.AddOpenApi();

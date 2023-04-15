@@ -335,6 +335,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -351,7 +352,7 @@ public class StudentController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
 
             if (student.studentId != null && _studentService.GetStudentById(student.studentId) == null)
-                return BadRequest();
+                return NotFound();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
             _transactionService.ExecuteTransaction(() => _studentService.UpdateStudent(updateStudent));

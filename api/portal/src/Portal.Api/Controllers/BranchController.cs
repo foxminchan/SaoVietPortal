@@ -237,4 +237,63 @@ public class BranchController : ControllerBase
             return StatusCode(500);
         }
     }
+
+    /// <summary>
+    /// Update branch
+    /// </summary>
+    /// <param name="branch">Branch object</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /api/v1/Branch
+    ///     {
+    ///         "branchId": "TMBH0001",
+    ///         "branchName": "Tân Mai Biên Hoà",
+    ///         "address": "Số 46B/3, KP 2, Phường Tân Mai, Tp Biên Hòa, Đồng Nai",
+    ///         "phone": "0931144858"
+    ///     }
+    /// </remarks>
+    /// <response code="200">update branch successfully</response>
+    /// <response code="400">Invalid input</response>
+    [HttpPut]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(408)]
+    [ProducesResponseType(429)]
+    [ProducesResponseType(500)]
+    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+    public ActionResult UpdatePosition(
+        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] [FromBody]
+        Branch branch)
+    {
+        try
+        {
+            var validationResult = _validator.Validate(branch);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
+
+            if (branch.branchId != null && _branchService.GetBranchById(branch.branchId) == null)
+                return NotFound();
+
+            var updateBranch = _mapper.Map<Domain.Entities.Branch>(branch);
+            _transactionService.ExecuteTransaction(() => _branchService.UpdateBranch(updateBranch));
+
+            if (_redisCacheService.GetOrSet("BranchData", () => _branchService.GetAllBranches().ToList()) is
+                { Count: > 0 } branches)
+                branches[branches.FindIndex(s => s.branchId == updateBranch.branchId)] = updateBranch;
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while updating position");
+            return StatusCode(500);
+        }
+    }
 }

@@ -259,6 +259,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(400)]
     [ProducesResponseType(401)]
     [ProducesResponseType(403)]
+    [ProducesResponseType(404)]
     [ProducesResponseType(408)]
     [ProducesResponseType(429)]
     [ProducesResponseType(500)]
@@ -275,14 +276,14 @@ public class PositionController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
 
             if (_positionService.GetPositionById(position.positionId) == null)
-                return BadRequest();
+                return NotFound();
 
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
             _transactionService.ExecuteTransaction(() => _positionService.UpdatePosition(updatePosition));
 
             if (_redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList()) is
-                { Count: > 0 } students)
-                students[students.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
+                { Count: > 0 } positions)
+                positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
 
             return Ok();
         }

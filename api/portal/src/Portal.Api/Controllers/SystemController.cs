@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Extensions;
 using Portal.Application.Cache;
 using Portal.Application.Search;
@@ -46,7 +46,11 @@ public class SystemController : ControllerBase
     /// </remarks>
     /// <response code="200">Returns platform information</response>
     [HttpGet]
-    [ProducesResponseType(200, Type = typeof(JObject))]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     public IActionResult GetPlatform()
     {
@@ -72,7 +76,11 @@ public class SystemController : ControllerBase
     ///     GET /api/v1/System/cleanCache
     /// </remarks>
     [HttpGet("cleanCache")]
+    [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     public ActionResult CleanCache()
     {
@@ -97,10 +105,14 @@ public class SystemController : ControllerBase
     ///
     ///     GET /api/v1/System/clearIndex
     /// </remarks>
-    [HttpGet("clearIndex")]
+    [HttpGet("cleanIndex")]
+    [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    public ActionResult ClearIndex()
+    public ActionResult CleanIndex()
     {
         try
         {

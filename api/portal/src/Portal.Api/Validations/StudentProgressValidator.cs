@@ -13,10 +13,8 @@ public class StudentProgressValidator : AbstractValidator<StudentProgress>
             .MaximumLength(80).WithMessage("Lesson name must not exceed 80 characters");
         RuleFor(x => x.lessonDate)
             .NotEmpty().WithMessage("Lesson date is required")
-            .Must(lessonDate => DateTime.TryParseExact(lessonDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedLessonDate))
+            .Must(lessonDate => DateTime.TryParseExact(lessonDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             .WithMessage("Lesson date is not valid");
-        RuleFor(x => x.progressStatus)
-            .MaximumLength(15).WithMessage("Progress status must not exceed 15 characters");
         RuleFor(x => x.lessonRating)
             .NotEmpty().WithMessage("Lesson rating is required")
             .InclusiveBetween(0, 10).WithMessage("Lesson rating must be between 1 and 10");

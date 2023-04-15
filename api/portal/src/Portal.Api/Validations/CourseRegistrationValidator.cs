@@ -8,10 +8,8 @@ public class CourseRegistrationValidator : AbstractValidator<CourseRegistration>
 {
     public CourseRegistrationValidator()
     {
-        RuleFor(x => x.status)
-            .MaximumLength(15).WithMessage("Status must not exceed 15 character");
         RuleFor(x => x.registerDate)
-            .Must(registerDate => DateTime.TryParseExact(registerDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedRegisterDate))
+            .Must(registerDate => DateTime.TryParseExact(registerDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             .WithMessage("Register date is not valid");
         RuleFor(x => x.appointmentDate)
             .Must((courseRegistration, appointmentDate) => DateTime.TryParseExact(appointmentDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedAppointmentDate)

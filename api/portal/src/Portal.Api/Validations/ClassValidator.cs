@@ -13,7 +13,7 @@ public class ClassValidator : AbstractValidator<Class>
             .MaximumLength(10).WithMessage("Class id must not exceed 10 characters");
         RuleFor(x => x.startDate)
             .NotEmpty().WithMessage("Start date is required")
-            .Must(startDate => DateTime.TryParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedStartDate))
+            .Must(startDate => DateTime.TryParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             .WithMessage("Start date is not valid");
         RuleFor(x => x.endDate)
             .Must((classObj, endDate) => DateTime.TryParseExact(endDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedEndDate)

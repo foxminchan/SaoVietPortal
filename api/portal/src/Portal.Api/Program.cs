@@ -41,6 +41,7 @@ builder.Services.AddControllers(options =>
 {
     options.RespectBrowserAcceptHeader = true;
     options.ReturnHttpNotAcceptable = true;
+    options.Filters.Add<LoggingFilter>();
 }).AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -58,7 +59,7 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
     {
         "application/json",
-        "text/json",
+        "text/json"
     });
 });
 

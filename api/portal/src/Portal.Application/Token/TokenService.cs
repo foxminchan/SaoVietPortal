@@ -28,7 +28,7 @@ public class TokenService : ITokenService
         var signingKeyBytes = Convert.FromBase64String(signingKeyBase64);
 
         _jwtSigningCredentials = new SigningCredentials(new SymmetricSecurityKey(signingKeyBytes),
-            SecurityAlgorithms.HmacSha256Signature);
+            SecurityAlgorithms.HmacSha512Signature);
 
         _audiences = bearerSection.GetSection("ValidAudiences").GetChildren()
             .Where(s => !string.IsNullOrEmpty(s.Value))
@@ -98,7 +98,7 @@ public class TokenService : ITokenService
         };
         var tokenHandler = new JwtSecurityTokenHandler();
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256Signature, StringComparison.InvariantCultureIgnoreCase))
+        if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512Signature, StringComparison.InvariantCultureIgnoreCase))
             throw new SecurityTokenException("Invalid token");
         return principal;
     }

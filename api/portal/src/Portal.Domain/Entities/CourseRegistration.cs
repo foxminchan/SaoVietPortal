@@ -1,9 +1,11 @@
-﻿namespace Portal.Domain.Entities;
+﻿using Portal.Domain.Enum;
+
+namespace Portal.Domain.Entities;
 
 public class CourseRegistration
 {
     public Guid courseRegistrationId { get; set; }
-    public string? status { get; set; }
+    public CourseRegistrationStatus status { get; set; }
     public string? registerDate { get; set; }
     public string? appointmentDate { get; set; }
     public float registerFee { get; set; }

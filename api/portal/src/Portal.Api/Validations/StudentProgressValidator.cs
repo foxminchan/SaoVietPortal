@@ -24,5 +24,7 @@ public class StudentProgressValidator : AbstractValidator<StudentProgress>
         RuleFor(x => x.classId)
             .NotEmpty().WithMessage("Class id is required")
             .MaximumLength(10).WithMessage("Class id must not exceed 10 characters");
+        RuleFor(x => x.progressStatus)
+            .IsInEnum().WithMessage("Progress status must be one of the following: 'ABSENT', 'PRESENT', 'EXEMPT'");
     }
 }

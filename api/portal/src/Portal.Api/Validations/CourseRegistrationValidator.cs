@@ -20,5 +20,7 @@ public class CourseRegistrationValidator : AbstractValidator<CourseRegistration>
         RuleFor(x => x.discountAmount)
             .GreaterThanOrEqualTo(0).WithMessage("Discount amount must be greater than or equal to 0")
             .LessThanOrEqualTo(100).WithMessage("Discount amount must be less than or equal to 100");
+        RuleFor(x => x.status)
+            .IsInEnum().WithMessage("Status must be one of the following: 'CLOSING', 'APPOINTMENT', 'DENIED'");
     }
 }

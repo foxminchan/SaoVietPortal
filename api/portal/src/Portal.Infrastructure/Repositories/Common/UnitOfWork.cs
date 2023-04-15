@@ -27,6 +27,8 @@ public class UnitOfWork : IUnitOfWork
 
     public IStudentProgressRepository studentProgressRepository { get; private set; }
 
+    public IUserRepository userRepository { get; private set; }
+
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
@@ -40,6 +42,7 @@ public class UnitOfWork : IUnitOfWork
         receiptsExpensesRepository = new ReceiptsExpensesRepository(_context);
         staffRepository = new StaffRepository(_context);
         studentProgressRepository = new StudentProgressRepository(_context);
+        userRepository = new UserRepository(_context);
     }
 
     public void Dispose()

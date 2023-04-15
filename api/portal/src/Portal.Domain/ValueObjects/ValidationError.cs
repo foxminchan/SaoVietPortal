@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Portal.Domain.ValueObjects;
 
-public class ValidationError
+public sealed class ValidationError
 {
     public int errorCode { get; set; } = (int)HttpStatusCode.BadRequest;
     public string? message { get; set; } = "Validation failed";

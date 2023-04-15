@@ -97,7 +97,7 @@ public class SystemController : ControllerBase
     }
 
     /// <summary>
-    /// Clear index
+    /// Clean index
     /// </summary>
     /// <returns></returns>
     /// <remarks>
@@ -121,7 +121,7 @@ public class SystemController : ControllerBase
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error while clearing index");
+            _logger.LogError(e, "Error while cleaning index");
             return StatusCode(500);
         }
     }

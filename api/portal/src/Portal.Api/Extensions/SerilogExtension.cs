@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using Portal.Domain.ValueObjects;
+using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;
 using Serilog.Sinks.SystemConsole.Themes;
@@ -26,24 +27,10 @@ public static class SerilogExtension
                     writeTo.Console(outputTemplate: serilogOptions.LogTemplate, theme: AnsiConsoleTheme.Literate));
 
             if (!string.IsNullOrEmpty(serilogOptions.ElasticSearchUrl))
-                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(
-                    new Uri(serilogOptions.ElasticSearchUrl))
-                {
-                    AutoRegisterTemplate = true,
-                    IndexFormat = builder.Environment.ApplicationName
-                });
+                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(serilogOptions.ElasticSearchUrl)){AutoRegisterTemplate = true, IndexFormat = builder.Environment.ApplicationName});
 
             if (!string.IsNullOrEmpty(serilogOptions.SeqUrl))
                 loggerConfiguration.WriteTo.Seq(serilogOptions.SeqUrl);
         });
-    }
-
-    private sealed class SerilogOptions
-    {
-        public bool UseConsole { get; set; } = true;
-        public string? SeqUrl { get; set; } = "http://localhost:5341";
-        public string? ElasticSearchUrl { get; set; } = "http://localhost:9200";
-        public string LogTemplate { get; set; } =
-            "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} {Level} - {Message:lj}{NewLine}{Exception}";
     }
 }

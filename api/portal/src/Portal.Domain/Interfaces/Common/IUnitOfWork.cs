@@ -21,4 +21,6 @@ public interface IUnitOfWork : IDisposable
     IStaffRepository staffRepository { get; }
 
     IStudentProgressRepository studentProgressRepository { get; }
+
+    IUserRepository userRepository { get; }
 }

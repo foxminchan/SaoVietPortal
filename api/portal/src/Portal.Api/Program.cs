@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.ObjectPool;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Portal.Api.Extensions;
@@ -12,6 +14,7 @@ using Portal.Api.Validations;
 using Portal.Application.Health;
 using Portal.Application.Search;
 using Portal.Application.Services;
+using Portal.Application.Token;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Auth;
@@ -22,8 +25,6 @@ using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.ObjectPool;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -118,6 +119,7 @@ builder.Services.AddTransient<StaffService>();
 builder.Services.AddTransient<StudentProgressService>();
 builder.Services.AddTransient<StudentService>();
 builder.Services.AddTransient<TransactionService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<Branch>, BranchValidator>();

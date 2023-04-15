@@ -98,10 +98,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Portal.Test" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Portal.Application\Portal.Application.csproj" />
 	</ItemGroup>
 

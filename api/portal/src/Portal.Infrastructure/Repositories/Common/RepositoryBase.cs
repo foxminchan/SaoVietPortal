@@ -7,7 +7,7 @@ namespace Portal.Infrastructure.Repositories.Common;
 
 public abstract class RepositoryBase<T> : IRepository<T> where T : class
 {
-    private readonly ApplicationDbContext _context;
+    protected readonly ApplicationDbContext _context;
     private readonly DbSet<T> _dbSet;
 
     protected RepositoryBase(ApplicationDbContext context)

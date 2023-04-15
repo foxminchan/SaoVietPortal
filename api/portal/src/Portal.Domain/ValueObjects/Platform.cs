@@ -1,6 +1,6 @@
 ﻿namespace Portal.Domain.ValueObjects;
 
-public class Platform
+public sealed class Platform
 {
     public string? AppName { get; set; }
     public string? EnvironmentName { get; set; }

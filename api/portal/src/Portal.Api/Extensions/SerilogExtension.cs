@@ -27,7 +27,7 @@ public static class SerilogExtension
                     writeTo.Console(outputTemplate: serilogOptions.LogTemplate, theme: AnsiConsoleTheme.Literate));
 
             if (!string.IsNullOrEmpty(serilogOptions.ElasticSearchUrl))
-                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(serilogOptions.ElasticSearchUrl)){AutoRegisterTemplate = true, IndexFormat = builder.Environment.ApplicationName});
+                loggerConfiguration.WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri(serilogOptions.ElasticSearchUrl)) { AutoRegisterTemplate = true, IndexFormat = builder.Environment.ApplicationName });
 
             if (!string.IsNullOrEmpty(serilogOptions.SeqUrl))
                 loggerConfiguration.WriteTo.Seq(serilogOptions.SeqUrl);

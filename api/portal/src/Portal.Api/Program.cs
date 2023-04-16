@@ -25,6 +25,7 @@ using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
+using Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -151,6 +152,7 @@ builder.AddOpenApi();
 builder.AddOpenTelemetry();
 builder.AddSerilog();
 builder.AddHealthCheck();
+builder.AddHangfire();
 
 var app = builder.Build();
 
@@ -171,13 +173,14 @@ else
 }
 
 app.UseCors();
+app.UseExceptionHandler();
+app.UseHangfireDashboard();
+app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseResponseCaching();
 app.UseResponseCompression();
 app.UseStaticFiles();
-app.UseRateLimiter();
-app.UseExceptionHandler();
 app.UseStatusCodePages();
-app.UseHttpsRedirection();
 app.MapHealthCheck();
 app.MapGet("/error", () => Results.Problem("An error occurred.", statusCode: 500))
     .ExcludeFromDescription();

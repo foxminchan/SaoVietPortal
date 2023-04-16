@@ -40,7 +40,7 @@ public static class RedisCacheExtension
             AbortOnConnectFail = redisCacheOption.AbortOnConnectFail,
             ReconnectRetryPolicy = new ExponentialRetry(redisCacheOption.DeltaBackOff),
             KeepAlive = 5,
-            Ssl = redisCacheOption.Ssl
+            Ssl = redisCacheOption.Ssl,
         };
 
         if (!string.IsNullOrEmpty(redisCacheOption.Password))

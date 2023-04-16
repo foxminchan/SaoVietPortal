@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 
-namespace Portal.Infrastructure.Filters;
+namespace Portal.Api.Filters;
 
 public class LoggingFilter : IActionFilter
 {

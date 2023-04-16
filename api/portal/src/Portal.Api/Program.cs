@@ -18,7 +18,6 @@ using Portal.Application.Token;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Auth;
-using Portal.Infrastructure.Filters;
 using Portal.Infrastructure.Middleware;
 using Portal.Infrastructure.Repositories.Common;
 using Portal.Infrastructure;
@@ -26,6 +25,7 @@ using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
 using Hangfire;
+using Portal.Api.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -165,7 +165,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseOpenApi();
     app.UseDeveloperExceptionPage();
-    app.UseHsts();
 }
 else
 {
@@ -175,6 +174,7 @@ else
 app.UseCors();
 app.UseExceptionHandler();
 app.UseHangfireDashboard();
+app.UseHsts();
 app.UseHttpsRedirection();
 app.UseRateLimiter();
 app.UseResponseCaching();

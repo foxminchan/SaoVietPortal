@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Portal.Api.Models;
+﻿namespace Portal.Api.Models;
 
 /// <summary>
 /// Student information
@@ -35,6 +33,6 @@ public class Student
     /// </summary>
     public string? occupation { get; set; }
 
-    /// <example> {"facebook": "https://www.facebook.com/FoxMinChan/", "zalo": "https://zalo.me/foxminchan"}</example>
-    public JsonElement? socialNetwork { get; set; }
+    /// <example>{"facebook": "https://www.facebook.com/FoxMinChan/", "zalo": "https://zalo.me/foxminchan"}</example>
+    public string? socialNetwork { get; set; }
 }

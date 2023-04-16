@@ -1,11 +1,9 @@
 ﻿using System.Net.Mime;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Net.Http.Headers;
 
-namespace Portal.Infrastructure.Filters;
+namespace Portal.Api.Filters;
 
 public class DeveloperPageExceptionFilter : IDeveloperPageExceptionFilter
 {

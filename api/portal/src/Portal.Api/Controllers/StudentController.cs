@@ -11,6 +11,7 @@ using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.ValueObjects;
 using System.Net.Mime;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Portal.Api.Controllers;
 
@@ -159,7 +160,7 @@ public class StudentController : ControllerBase
     [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     public ActionResult GetStudentByName(
         [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromQuery] string name)
+        [FromQuery, BindRequired] string name)
     {
         try
         {

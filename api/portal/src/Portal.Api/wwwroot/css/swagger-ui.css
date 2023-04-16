@@ -78,3 +78,12 @@ h3 {
   font-family: Titillium Web, sans-serif;
   color: #fff;
 }
+
+.swagger-ui .onlineValidator {
+    background: #6c757d;
+    padding: 2px 6px;
+    border-radius: 2px;
+    color: #fff;
+    font-size: 90%;
+    margin-left: 10px;
+}

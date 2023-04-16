@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.OpenApi.Models;
-using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
+using Microsoft.OpenApi.Models;
 using Portal.Api.Filters;
 using Swashbuckle.AspNetCore.Filters;
+using System.Reflection;
 
 namespace Portal.Api.Extensions;
 
@@ -23,7 +23,7 @@ public static class OpenApiExtension
                     Title = "Sao Viet Portal",
                     Version = "v1",
                     Description =
-                        "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`",
+                        "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`. \n\nSome useful links:\n- [Sao Viet Portal repository](https://github.com/foxminchan/SaoVietPortal)\n- [Author Facebook profile](https://www.facebook.com/foxminchan)\n- [Author Github profile](https://github.com/foxminchan)",
                     Contact = new OpenApiContact
                     {
                         Name = "Nguyen Xuan Nhan",
@@ -48,6 +48,7 @@ public static class OpenApiExtension
                         }
                     }
                 });
+
             c.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -56,6 +57,25 @@ public static class OpenApiExtension
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
+
+
+            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    Implicit = new OpenApiOAuthFlow
+                    {
+                        AuthorizationUrl = new Uri("/auth-server/connect/authorize", UriKind.RelativeOrAbsolute),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { "readAccess", "Access read operations" },
+                            { "writeAccess", "Access write operations" }
+                        }
+                    }
+                }
+            });
+
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -70,8 +90,16 @@ public static class OpenApiExtension
                         }
                     },
                     new List<string>()
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                    },
+                    new[] { "readAccess", "writeAccess" }
                 }
             });
+
             c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             c.OperationFilter<SecurityRequirementsOperationFilter>();
             c.SchemaFilter<SocialSchemeFilter>();
@@ -91,12 +119,6 @@ public static class OpenApiExtension
                 if (httpReq is null)
                     throw new ArgumentNullException(nameof(httpReq));
 
-                var docs = new OpenApiExternalDocs
-                {
-                    Description = "More details",
-                    Url = new Uri("/api-docs", UriKind.RelativeOrAbsolute)
-                };
-
                 swagger.ExternalDocs = new OpenApiExternalDocs
                 {
                     Description = "About Sao Viet",
@@ -115,31 +137,51 @@ public static class OpenApiExtension
                     {
                         Name = "Student",
                         Description = "Management of students",
-                        ExternalDocs = docs
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/Student", UriKind.RelativeOrAbsolute)
+                        }
                     },
                     new()
                     {
                         Name = "Position",
                         Description = "Management of positions",
-                        ExternalDocs = docs
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/Position", UriKind.RelativeOrAbsolute)
+                        }
                     },
                     new()
                     {
                         Name = "Branch",
                         Description = "Management of branch",
-                        ExternalDocs = docs
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/Branch", UriKind.RelativeOrAbsolute)
+                        }
                     },
                     new()
                     {
                         Name = "Course",
                         Description = "Management of course",
-                        ExternalDocs = docs
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/Course", UriKind.RelativeOrAbsolute)
+                        }
                     },
                     new()
                     {
                         Name = "System",
                         Description = "Management of system",
-                        ExternalDocs = docs
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/System", UriKind.RelativeOrAbsolute)
+                        }
                     }
                 };
             });
@@ -148,8 +190,16 @@ public static class OpenApiExtension
         app.UseSwaggerUI(c =>
         {
             c.DocumentTitle = "Sao Viet API";
-            c.InjectStylesheet("/css/swagger-ui.css");
-            c.InjectJavascript("/js/swagger-ui.js");
+            c.HeadContent = @"
+                <link rel='stylesheet' type='text/css' href='/css/swagger-ui.css' />
+                <script src='/js/swagger-ui.js' type='text/javascript'></script>
+                <script>
+                    var defaultFavicon = document.querySelector('link[rel=""icon""]');
+                    if (defaultFavicon) {
+                        defaultFavicon.parentNode.removeChild(defaultFavicon);
+                    }
+                </script>
+                <link rel='icon' type='image/png' href='/img/favicon.png' sizes='16x16' />";
             foreach (var description in app.ApplicationServices
                          .GetRequiredService<IApiVersionDescriptionProvider>()
                          .ApiVersionDescriptions)
@@ -157,11 +207,15 @@ public static class OpenApiExtension
                 c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
                     description.GroupName.ToUpperInvariant());
             }
+            c.DisplayRequestDuration();
+            c.EnableValidator();
         });
 
         app.UseReDoc(options =>
         {
             options.DocumentTitle = "Sao Viet API";
+            options.HeadContent = @"<link rel='icon' type='image/png' href='/img/favicon.png' sizes='16x16' />
+                <link rel='stylesheet' type='text/css' href='/css/redoc-ui.css' />";
             foreach (var description in app.ApplicationServices
                          .GetRequiredService<IApiVersionDescriptionProvider>()
                          .ApiVersionDescriptions)

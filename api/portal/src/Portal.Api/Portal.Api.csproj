@@ -44,7 +44,6 @@
 		<PackageReference Include="Hangfire" Version="1.8.0-rc3" />
 		<PackageReference Include="Hangfire.Storage.SQLite" Version="0.3.3" />
 		<PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
-		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0-beta.3" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
@@ -98,10 +97,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0-beta.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.5.0" />
+		<PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>

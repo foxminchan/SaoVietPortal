@@ -77,10 +77,10 @@ public class CourseController : ControllerBase
         {
             return (_redisCacheService.GetOrSet("CourseData",
                     () => _courseService.GetAllCourses().ToList())) switch
-                {
-                    { Count: > 0 } courses => Ok(courses),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } courses => Ok(courses),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

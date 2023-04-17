@@ -63,7 +63,7 @@ public class BranchController : ControllerBase
             return (_redisCacheService.GetOrSet("BranchData",
                     () => _branchService.GetAllBranches().ToList())) switch
             {
-                { Count: > 0 } branches => Ok(branches),
+                { Count: > 0 } branches => Ok(_mapper.Map<List<Branch>>(branches)),
                 _ => NotFound()
             };
         }

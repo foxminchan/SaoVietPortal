@@ -1,6 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -8,7 +7,7 @@ namespace Portal.Infrastructure.Auth;
 
 public static class AuthExtension
 {
-    public static IServiceCollection AddAuth(this IServiceCollection services)
+    public static void AddAuth(this IServiceCollection services)
     {
         var authenticationBuilder = services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 
@@ -44,7 +43,7 @@ public static class AuthExtension
         services.AddAuthorization(options =>
         {
             options.AddPolicy("Developer", policy => policy
-                .RequireClaim("DevClaim", "developer")
+                .RequireClaim("Technical", "Developer")
                 .RequireAuthenticatedUser());
 
             options.AddPolicy("Admin", policy => policy
@@ -81,7 +80,5 @@ public static class AuthExtension
 
             options.FallbackPolicy = null;
         });
-
-        return services;
     }
 }

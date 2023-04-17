@@ -63,7 +63,7 @@ public class PositionController : ControllerBase
             return (_redisCacheService.GetOrSet("PositionData",
                     () => _positionService.GetAllPositions().ToList())) switch
             {
-                { Count: > 0 } positions => Ok(positions),
+                { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
                 _ => NotFound()
             };
         }

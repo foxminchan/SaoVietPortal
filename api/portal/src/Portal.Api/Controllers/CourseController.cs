@@ -1,14 +1,12 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.ValueObjects;
-using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
 
@@ -66,7 +64,7 @@ public class CourseController : ControllerBase
             return (_redisCacheService.GetOrSet("CourseData",
                     () => _courseService.GetAllCourses().ToList())) switch
             {
-                { Count: > 0 } courses => Ok(courses),
+                { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
                 _ => NotFound()
             };
         }
@@ -167,6 +165,99 @@ public class CourseController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error while inserting course");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Delete course by id
+    /// </summary>
+    /// <param name="id">Course id</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     DELETE /api/v1/Course/{id}
+    /// </remarks>
+    /// <response code="200">Delete course successfully</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no course is found</response>
+    [HttpDelete("{id}")]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public ActionResult DeleteCourse([FromRoute] string id)
+    {
+        try
+        {
+            if (_courseService.GetCourseById(id) != null)
+                return NotFound();
+
+            _transactionService.ExecuteTransaction(() => _courseService.DeleteCourse(id));
+
+            if (_redisCacheService.GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList()) is
+                { Count: > 0 } courses)
+                courses.RemoveAll(s => s.courseId == id);
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while deleting course");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Update course
+    /// </summary>
+    /// <param name="course">Course object</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /api/v1/Course
+    ///     {
+    ///         "courseId": "string",
+    ///         "courseName": "string",
+    ///         "description": "string"
+    ///     }
+    /// </remarks>
+    /// <response code="200">update course successfully</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If course id is not found</response>
+    [HttpPut]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public ActionResult UpdateCourse([FromBody] Course course)
+    {
+        try
+        {
+            var validationResult = _validator.Validate(course);
+
+            if (!validationResult.IsValid)
+                return BadRequest(new ValidationError(validationResult));
+
+            if (course.courseId != null && _courseService.GetCourseById(course.courseId) == null)
+                return NotFound();
+
+            var updateCourse = _mapper.Map<Domain.Entities.Course>(course);
+            _transactionService.ExecuteTransaction(() => _courseService.UpdateCourse(updateCourse));
+
+            if (_redisCacheService.GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList()) is
+                { Count: > 0 } courses)
+                courses[courses.FindIndex(s => s.courseId == updateCourse.courseId)] = updateCourse;
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while updating course");
             return StatusCode(500);
         }
     }

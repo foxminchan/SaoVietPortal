@@ -1,4 +1,5 @@
 using FluentValidation;
+using Hangfire;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.ObjectPool;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Portal.Api.Extensions;
+using Portal.Api.Filters;
 using Portal.Api.Models;
 using Portal.Api.Validations;
 using Portal.Application.Health;
@@ -24,15 +26,13 @@ using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
-using Hangfire;
-using Portal.Api.Filters;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
     options.AddServerHeader = false;
+    options.AllowResponseHeaderCompression = true;
     options.ConfigureEndpointDefaults(o =>
     {
         o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
@@ -44,8 +44,6 @@ builder.Services.AddControllers(options =>
     options.RespectBrowserAcceptHeader = true;
     options.ReturnHttpNotAcceptable = true;
     options.Filters.Add<LoggingFilter>();
-    options.Filters.Add(new ProducesAttribute("application/json"));
-    options.Filters.Add(new ConsumesAttribute("application/json"));
 }).AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -63,7 +61,8 @@ builder.Services.AddResponseCompression(options =>
     options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
     {
         "application/json",
-        "text/json"
+        "application/xml",
+        "text/plain"
     });
 });
 

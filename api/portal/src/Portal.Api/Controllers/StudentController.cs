@@ -70,7 +70,7 @@ public class StudentController : ControllerBase
             return (_redisCacheService.GetOrSet("StudentData",
                     () => _studentService.GetAllStudents().ToList())) switch
             {
-                { Count: > 0 } students => Ok(students),
+                { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
                 _ => NotFound()
             };
         }

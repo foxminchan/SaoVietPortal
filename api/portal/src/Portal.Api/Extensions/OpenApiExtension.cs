@@ -58,24 +58,6 @@ public static class OpenApiExtension
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
 
-
-            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    Implicit = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri("/auth-server/connect/authorize", UriKind.RelativeOrAbsolute),
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { "readAccess", "Access read operations" },
-                            { "writeAccess", "Access write operations" }
-                        }
-                    }
-                }
-            });
-
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -90,13 +72,6 @@ public static class OpenApiExtension
                         }
                     },
                     new List<string>()
-                },
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
-                    },
-                    new[] { "readAccess", "writeAccess" }
                 }
             });
 

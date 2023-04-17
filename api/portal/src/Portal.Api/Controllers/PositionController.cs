@@ -92,7 +92,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetPositionById([FromRoute]int id)
+    public ActionResult GetPositionById([FromRoute] int id)
     {
         try
         {

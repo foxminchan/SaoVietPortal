@@ -102,10 +102,10 @@ public class CourseController : ControllerBase
             return _redisCacheService
                     .GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList())
                     .FirstOrDefault(s => s.courseId == id) switch
-                {
-                    { } course => Ok(course),
-                    _ => NotFound()
-                };
+            {
+                { } course => Ok(course),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

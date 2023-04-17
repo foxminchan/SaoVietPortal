@@ -1,13 +1,11 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using System.Net.Mime;
 using Portal.Domain.ValueObjects;
 
 namespace Portal.Api.Controllers;
@@ -16,8 +14,6 @@ namespace Portal.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiConventionType(typeof(DefaultApiConventions))]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class PositionController : ControllerBase
 {
     private readonly PositionService _positionService;
@@ -53,19 +49,12 @@ public class PositionController : ControllerBase
     ///     GET /api/v1/Position
     /// </remarks>
     /// <response code="200">Response the list of positions</response>
-    /// <response code="404">No position found</response>
+    /// <response code="404">If no positions are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(List<Position>))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
     [ResponseCache(Duration = 15)]
     public ActionResult GetPositions()
     {
@@ -96,22 +85,14 @@ public class PositionController : ControllerBase
     ///     GET /api/v1/Position/{id}
     /// </remarks>
     /// <response code="200">Response the position</response>
-    /// <response code="404">No position found</response>
+    /// <response code="404">If no position is found</response>
     [HttpGet("{id:int}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(Position))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetPositionById(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute]int id)
+    public ActionResult GetPositionById([FromRoute]int id)
     {
         try
         {
@@ -140,27 +121,19 @@ public class PositionController : ControllerBase
     ///
     ///     POST /api/v1/Position
     ///     {
-    ///         "positionId": "0",
-    ///         "positionName": "Giáo viên"
+    ///         "positionId": "int",
+    ///         "positionName": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new position successfully</response>
-    /// <response code="404">No position found</response>
     /// <response code="409">Position id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(408)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-    public ActionResult InsertPosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromBody] Position position)
+    public ActionResult InsertPosition([FromBody] Position position)
     {
         try
         {
@@ -201,21 +174,15 @@ public class PositionController : ControllerBase
     ///     DELETE /api/v1/Position/{id}
     /// </remarks>
     /// <response code="200">Delete position successfully</response>
-    /// <response code="404">No position found</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no position is found</response>
     [HttpDelete("{id:int}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    public ActionResult DeletePosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute] int id)
+    public ActionResult DeletePosition([FromRoute] int id)
     {
         try
         {
@@ -247,26 +214,20 @@ public class PositionController : ControllerBase
     ///
     ///     PUT /api/v1/Position
     ///     {
-    ///         "id": "0",
-    ///         "positionName": "Giáo viên"
+    ///         "id": "int",
+    ///         "positionName": "string"
     ///     }
     /// </remarks>
     /// <response code="200">update position successfully</response>
-    /// <response code="400">Invalid input</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If position id is not found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-    public ActionResult UpdatePosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] [FromBody]
-        Position position)
+    public ActionResult UpdatePosition([FromBody] Position position)
     {
         try
         {

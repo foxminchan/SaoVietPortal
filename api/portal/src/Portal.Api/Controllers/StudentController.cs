@@ -2,7 +2,6 @@
 using FluentValidation;
 using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
@@ -10,7 +9,6 @@ using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.ValueObjects;
-using System.Net.Mime;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Portal.Api.Controllers;
@@ -19,8 +17,6 @@ namespace Portal.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiConventionType(typeof(DefaultApiConventions))]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class StudentController : ControllerBase
 {
     private readonly StudentService _studentService;
@@ -60,19 +56,12 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student
     /// </remarks>
     /// <response code="200">Response the list of students</response>
-    /// <response code="404">No student found</response>
+    /// <response code="404">If no students are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(List<Student>))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
     [ResponseCache(Duration = 15)]
     public ActionResult GetStudents()
     {
@@ -103,21 +92,14 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student/{id}
     /// </remarks>
     /// <response code="200">Response the student</response>
-    /// <response code="404">No student found</response>
+    /// <response code="404">If no student is found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(Student))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    public ActionResult GetStudentById(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute] string id)
+    [ResponseCache(Duration = 15)]
+    public ActionResult GetStudentById([FromRoute] string id)
     {
         try
         {
@@ -147,20 +129,13 @@ public class StudentController : ControllerBase
     ///     GET /api/v1/Student?name={name}
     /// </remarks>
     /// <response code="200">Response the list of students</response>
-    /// <response code="404">No student found</response>
+    /// <response code="404">If no students are found</response>
     [HttpGet("search")]
-    [ProducesResponseType(200, Type = typeof(List<Student>))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    public ActionResult GetStudentByName(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromQuery, BindRequired] string name)
+    [ResponseCache(Duration = 15)]
+    public ActionResult GetStudentByName([FromQuery, BindRequired] string name)
     {
         try
         {
@@ -208,12 +183,12 @@ public class StudentController : ControllerBase
     ///     POST /api/v1/Student
     ///     {
     ///         "fullname": "string",
-    ///         "gender": true,
+    ///         "gender": bool,
     ///         "address": "string",
     ///         "dob": "string",
     ///         "pod": "string",
     ///         "occupation": "string",
-    ///         "socialNetwork": "string"
+    ///         "socialNetwork": "json"
     ///     }
     /// </remarks>
     /// <response code="200">Add new student successfully</response>
@@ -222,17 +197,10 @@ public class StudentController : ControllerBase
     [HttpPost]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(408)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-    public ActionResult InsertStudent(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromBody] Student student)
+    public ActionResult InsertStudent([FromBody] Student student)
     {
         try
         {
@@ -272,22 +240,15 @@ public class StudentController : ControllerBase
     ///     DELETE /api/v1/Student/{id}
     /// </remarks>
     /// <response code="200">Delete student successfully</response>
-    /// <response code="400">Invalid input</response>
-    /// <response code="404">No student found</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no student is found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    public ActionResult DeleteStudent(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute] string id)
+    public ActionResult DeleteStudent([FromRoute] string id)
     {
         try
         {
@@ -320,12 +281,12 @@ public class StudentController : ControllerBase
     ///     PUT /api/v1/Student
     ///     {
     ///         "fullname": "string",
-    ///         "gender": true,
+    ///         "gender": bool,
     ///         "address": "string",
     ///         "dob": "string",
     ///         "pod": "string",
     ///         "occupation": "string",
-    ///         "socialNetwork": "string"
+    ///         "socialNetwork": "json"
     ///     }
     /// </remarks>
     /// <response code="200">Update student successfully</response>
@@ -333,17 +294,10 @@ public class StudentController : ControllerBase
     [HttpPut]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-    public ActionResult UpdateStudent(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromBody] Student student)
+    public ActionResult UpdateStudent([FromBody] Student student)
     {
         try
         {

@@ -26,6 +26,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
 using Hangfire;
 using Portal.Api.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,8 @@ builder.Services.AddControllers(options =>
     options.RespectBrowserAcceptHeader = true;
     options.ReturnHttpNotAcceptable = true;
     options.Filters.Add<LoggingFilter>();
+    options.Filters.Add(new ProducesAttribute("application/json"));
+    options.Filters.Add(new ConsumesAttribute("application/json"));
 }).AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;

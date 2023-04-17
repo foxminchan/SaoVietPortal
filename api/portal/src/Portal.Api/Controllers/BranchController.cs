@@ -2,13 +2,11 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
 using Portal.Domain.ValueObjects;
-using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
 
@@ -16,8 +14,6 @@ namespace Portal.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiConventionType(typeof(DefaultApiConventions))]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class BranchController : ControllerBase
 {
     private readonly BranchService _branchService;
@@ -53,19 +49,12 @@ public class BranchController : ControllerBase
     ///     GET /api/v1/Branch
     /// </remarks>
     /// <response code="200">Response the list of branches</response>
-    /// <response code="404">No branch found</response>
+    /// <response code="404">If no branches found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(List<Branch>))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-    [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
     [ResponseCache(Duration = 15)]
     public ActionResult GetBranches()
     {
@@ -96,22 +85,14 @@ public class BranchController : ControllerBase
     ///     GET /api/v1/Branch/{id}
     /// </remarks>
     /// <response code="200">Response the branch</response>
-    /// <response code="404">No branch found</response>
+    /// <response code="404">If no branch found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(Branch))]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
-    [ProducesResponseType(406)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetBranchById(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute] string id)
+    public ActionResult GetBranchById([FromRoute] string id)
     {
         try
         {
@@ -140,29 +121,22 @@ public class BranchController : ControllerBase
     ///
     ///     POST /api/v1/Branch
     ///     {
-    ///         "branchId": "TMBH0001",
-    ///         "branchName": "Tân Mai Biên Hoà",
-    ///         "address": "Số 46B/3, KP 2, Phường Tân Mai, Tp Biên Hòa, Đồng Nai",
-    ///         "phone": "0931144858"
+    ///         "branchId": "string",
+    ///         "branchName": "string",
+    ///         "address": "string",
+    ///         "phone": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new branch successfully</response>
-    /// <response code="404">No branch found</response>
+    /// <response code="400">The input is invalid</response>
     /// <response code="409">Branch id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(408)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-    public ActionResult InsertPosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromBody] Branch branch)
+    public ActionResult InsertPosition([FromBody] Branch branch)
     {
         try
         {
@@ -202,21 +176,15 @@ public class BranchController : ControllerBase
     ///     DELETE /api/v1/Branch/{id}
     /// </remarks>
     /// <response code="200">Delete branch successfully</response>
-    /// <response code="404">No branch found</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no branch found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Delete))]
-    public ActionResult DeleteBranch(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)]
-        [FromRoute] string id)
+    public ActionResult DeleteBranch([FromRoute] string id)
     {
         try
         {
@@ -255,21 +223,15 @@ public class BranchController : ControllerBase
     ///     }
     /// </remarks>
     /// <response code="200">update branch successfully</response>
-    /// <response code="400">Invalid input</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no branch found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
-    [ProducesResponseType(408)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
-    [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-    public ActionResult UpdatePosition(
-        [ApiConventionNameMatch(ApiConventionNameMatchBehavior.Prefix)] [FromBody]
-        Branch branch)
+    public ActionResult UpdatePosition([FromBody] Branch branch)
     {
         try
         {

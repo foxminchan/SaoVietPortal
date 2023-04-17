@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Extensions;
 using Portal.Application.Cache;
 using Portal.Application.Search;
-using System.Net.Mime;
 
 namespace Portal.Api.Controllers;
 
@@ -11,8 +10,6 @@ namespace Portal.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [ApiConventionType(typeof(DefaultApiConventions))]
-[Consumes(MediaTypeNames.Application.Json)]
-[Produces(MediaTypeNames.Application.Json)]
 public class SystemController : ControllerBase
 {
     private readonly IConfiguration _config;
@@ -48,9 +45,6 @@ public class SystemController : ControllerBase
     [HttpGet]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     public IActionResult GetPlatform()
     {
@@ -75,12 +69,10 @@ public class SystemController : ControllerBase
     ///
     ///     GET /api/v1/System/cleanCache
     /// </remarks>
+    /// <response code="200">Clean cache is successful</response>
     [HttpGet("cleanCache")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     public ActionResult CleanCache()
     {
@@ -105,12 +97,10 @@ public class SystemController : ControllerBase
     ///
     ///     GET /api/v1/System/clearIndex
     /// </remarks>
+    /// <response code="200">Clean index is successful</response>
     [HttpGet("cleanIndex")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(401)]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(429)]
     [ProducesResponseType(500)]
     public ActionResult CleanIndex()
     {

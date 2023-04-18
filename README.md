@@ -170,7 +170,7 @@ For JWT generation:
 To initialize the keys for JWT generation, run `dotnet user-jwts` in to the `api/portal/src/Portal.Api` folder.
 
 ```bash
-dotnet user-jwts create --claim "DevClaim=developer"
+dotnet user-jwts create --claim "Technical=Developer"
 ```
 
 Set up external services:

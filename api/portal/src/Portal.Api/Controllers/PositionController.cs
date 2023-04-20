@@ -16,6 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class PositionController : ControllerBase
 {
+    private const string CACHE_KEY = "PositionData";
     private readonly PositionService _positionService;
     private readonly TransactionService _transactionService;
     private readonly ILogger<PositionController> _logger;
@@ -60,7 +61,7 @@ public class PositionController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet("PositionData",
+            return (_redisCacheService.GetOrSet(CACHE_KEY,
                     () => _positionService.GetAllPositions().ToList())) switch
             {
                 { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
@@ -97,7 +98,7 @@ public class PositionController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList())
+                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
                     .FirstOrDefault(s => s.positionId == id) switch
             {
                 { } position => Ok(position),
@@ -137,12 +138,13 @@ public class PositionController : ControllerBase
     {
         try
         {
+
             var validationResult = _validator.Validate(position);
 
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (position.positionId != null && _positionService.GetPositionById(position.positionId) != null)
+            if (position.positionId.HasValue)
                 return Conflict();
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
@@ -150,7 +152,7 @@ public class PositionController : ControllerBase
             _transactionService.ExecuteTransaction(() => _positionService.AddPosition(newPosition));
 
             var positions =
-                _redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList());
+                _redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList());
             if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) == null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
@@ -191,7 +193,7 @@ public class PositionController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _positionService.DeletePosition(id));
 
-            if (_redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) is
                 { Count: > 0 } positions)
                 positions.RemoveAll(s => s.positionId == id);
 
@@ -242,7 +244,7 @@ public class PositionController : ControllerBase
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
             _transactionService.ExecuteTransaction(() => _positionService.UpdatePosition(updatePosition));
 
-            if (_redisCacheService.GetOrSet("PositionData", () => _positionService.GetAllPositions().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) is
                 { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
 

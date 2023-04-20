@@ -120,6 +120,16 @@ public static class OpenApiExtension
                     },
                     new()
                     {
+                        Name = "Staff",
+                        Description = "Management of staffs",
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/Staff", UriKind.RelativeOrAbsolute)
+                        }
+                    },
+                    new()
+                    {
                         Name = "Position",
                         Description = "Management of positions",
                         ExternalDocs = new OpenApiExternalDocs

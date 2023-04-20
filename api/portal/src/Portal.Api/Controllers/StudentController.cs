@@ -19,6 +19,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class StudentController : ControllerBase
 {
+    private const string CACHE_KEY = "StudentData";
     private readonly StudentService _studentService;
     private readonly TransactionService _transactionService;
     private readonly ILogger<StudentController> _logger;
@@ -67,7 +68,7 @@ public class StudentController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet("StudentData",
+            return (_redisCacheService.GetOrSet(CACHE_KEY,
                     () => _studentService.GetAllStudents().ToList())) switch
             {
                 { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
@@ -104,7 +105,7 @@ public class StudentController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList())
+                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
                     .FirstOrDefault(s => s.studentId == id) switch
             {
                 { } student => Ok(student),
@@ -182,10 +183,11 @@ public class StudentController : ControllerBase
     ///
     ///     POST /api/v1/Student
     ///     {
+    ///         "studentId": "string",
     ///         "fullname": "string",
     ///         "gender": bool,
     ///         "address": "string",
-    ///         "dob": "string",
+    ///         "dob": "dd/MM/yyyy",
     ///         "pod": "string",
     ///         "occupation": "string",
     ///         "socialNetwork": "json"
@@ -216,7 +218,7 @@ public class StudentController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _studentService.AddStudent(newStudent));
 
-            var students = _redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList());
+            var students = _redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList());
             if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) == null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
@@ -257,7 +259,7 @@ public class StudentController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _studentService.DeleteStudent(id));
 
-            if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
                 students.RemoveAll(s => s.studentId == id);
 
@@ -280,10 +282,11 @@ public class StudentController : ControllerBase
     ///
     ///     PUT /api/v1/Student
     ///     {
+    ///         "studentId": "string",
     ///         "fullname": "string",
     ///         "gender": bool,
     ///         "address": "string",
-    ///         "dob": "string",
+    ///         "dob": "dd/MM/yyyy",
     ///         "pod": "string",
     ///         "occupation": "string",
     ///         "socialNetwork": "json"
@@ -312,7 +315,7 @@ public class StudentController : ControllerBase
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
             _transactionService.ExecuteTransaction(() => _studentService.UpdateStudent(updateStudent));
 
-            if (_redisCacheService.GetOrSet("StudentData", () => _studentService.GetAllStudents().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
                 students[students.FindIndex(s => s.studentId == updateStudent.studentId)] = updateStudent;
 

@@ -16,6 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class CourseController : ControllerBase
 {
+    private const string CACHE_KEY = "CourseData";
     private readonly CourseService _courseService;
     private readonly TransactionService _transactionService;
     private readonly ILogger<CourseService> _logger;
@@ -61,7 +62,7 @@ public class CourseController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet("CourseData",
+            return (_redisCacheService.GetOrSet(CACHE_KEY,
                     () => _courseService.GetAllCourses().ToList())) switch
             {
                 { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
@@ -98,7 +99,7 @@ public class CourseController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList())
+                    .GetOrSet(CACHE_KEY, () => _courseService.GetAllCourses().ToList())
                     .FirstOrDefault(s => s.courseId == id) switch
             {
                 { } course => Ok(course),
@@ -154,7 +155,7 @@ public class CourseController : ControllerBase
             _transactionService.ExecuteTransaction(() => _courseService.AddCourse(newCourse));
 
             var positions =
-                _redisCacheService.GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList());
+                _redisCacheService.GetOrSet(CACHE_KEY, () => _courseService.GetAllCourses().ToList());
 
             if (positions.FirstOrDefault(s => s.courseId == newCourse.courseId) == null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
@@ -197,7 +198,7 @@ public class CourseController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _courseService.DeleteCourse(id));
 
-            if (_redisCacheService.GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _courseService.GetAllCourses().ToList()) is
                 { Count: > 0 } courses)
                 courses.RemoveAll(s => s.courseId == id);
 
@@ -249,7 +250,7 @@ public class CourseController : ControllerBase
             var updateCourse = _mapper.Map<Domain.Entities.Course>(course);
             _transactionService.ExecuteTransaction(() => _courseService.UpdateCourse(updateCourse));
 
-            if (_redisCacheService.GetOrSet("CourseData", () => _courseService.GetAllCourses().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _courseService.GetAllCourses().ToList()) is
                 { Count: > 0 } courses)
                 courses[courses.FindIndex(s => s.courseId == updateCourse.courseId)] = updateCourse;
 

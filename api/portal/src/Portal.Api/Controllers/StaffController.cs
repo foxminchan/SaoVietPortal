@@ -68,10 +68,10 @@ public class StaffController : ControllerBase
         {
             return _redisCacheService.GetOrSet(CACHE_KEY,
                     () => _staffService.GetStaff().ToList()) switch
-                {
-                    { Count: > 0 } staffs => Ok(_mapper.Map<List<Staff>>(staffs)),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } staffs => Ok(_mapper.Map<List<Staff>>(staffs)),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -105,10 +105,10 @@ public class StaffController : ControllerBase
             return _redisCacheService
                     .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList())
                     .FirstOrDefault(s => s.staffId == id) switch
-                {
-                    { } staff => Ok(staff),
-                    _ => NotFound()
-                };
+            {
+                { } staff => Ok(staff),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

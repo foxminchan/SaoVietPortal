@@ -14,7 +14,8 @@ public class PaymentMethodRepository : RepositoryBase<PaymentMethod>, IPaymentMe
 
     public void DeletePaymentMethod(int? id) => Delete(x => x.paymentMethodId == id);
 
-    public PaymentMethod? GetPaymentMethodById(int? id) => GetById(id);
+    public bool TryGetPaymentMethod(int id, out PaymentMethod? paymentMethod) 
+        => TryGetById(id, out paymentMethod);
 
     public IEnumerable<PaymentMethod> GetAllPaymentMethods() => GetAll();
 }

@@ -3,13 +3,13 @@ using FluentValidation;
 using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using Portal.Domain.ValueObjects;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
 
@@ -136,29 +136,37 @@ public class StudentController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStudentByName([FromQuery, BindRequired] string name)
+    public ActionResult GetStudentByName([FromQuery(Name = "name"), BindRequired] string name)
     {
         try
         {
-            var studentDocuments = new List<Document>();
-
-            var students = _studentService.GetAllStudents().ToList();
+            var students = _redisCacheService
+                .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
+                .Select(_mapper.Map<Student>).ToList();
 
             if (!students.Any()) return NotFound();
 
-            studentDocuments.AddRange(students.Select(student => new Document
-            {
-                new StringField("id", student.studentId, Field.Store.YES),
-                new StringField("name", student.fullname, Field.Store.YES),
-                new StringField("gender", student.gender ? "Nam" : "Nữ", Field.Store.YES),
-                new StringField("address", student.address ?? string.Empty, Field.Store.YES),
-                new StringField("dob", student.dob ?? string.Empty, Field.Store.YES),
-                new StringField("pod", student.pod ?? string.Empty, Field.Store.YES),
-                new StringField("occupation" , student.occupation ?? string.Empty, Field.Store.YES),
-                new StringField("socialNetwork", student.socialNetwork?.GetString() ?? string.Empty, Field.Store.YES)
-            }));
+            var propertyIndex = new Dictionary<string, List<Document>>();
 
-            _luceneService.Index(studentDocuments);
+            foreach (var student in students)
+            {
+                foreach (var property in student.GetType().GetProperties())
+                {
+                    if (!propertyIndex.ContainsKey(property.Name))
+                        propertyIndex.Add(property.Name, new List<Document>());
+
+                    var value = property.GetValue(student, null);
+
+                    if (value is null) continue;
+
+                    var document = new Document
+                        { new StringField(property.Name, value.ToString(), Field.Store.YES) };
+
+                    propertyIndex[property.Name].Add(document);
+                }
+            }
+
+            _luceneService.Index(propertyIndex);
 
             return _luceneService.Search(name, 20).ToList() switch
             {
@@ -211,7 +219,7 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId != null && _studentService.GetStudentById(student.studentId) != null)
+            if (student.studentId is not null && _studentService.TryGetStudentById(student.studentId, out _))
                 return Conflict();
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
@@ -219,7 +227,7 @@ public class StudentController : ControllerBase
             _transactionService.ExecuteTransaction(() => _studentService.AddStudent(newStudent));
 
             var students = _redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList());
-            if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) == null)
+            if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) is null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
             return Ok();
@@ -254,13 +262,14 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if (_studentService.GetStudentById(id) == null)
+            if (!_studentService.TryGetStudentById(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(() => _studentService.DeleteStudent(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) is
-                { Count: > 0 } students)
+            if (_redisCacheService
+                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) 
+                is { Count: > 0 } students)
                 students.RemoveAll(s => s.studentId == id);
 
             return Ok();
@@ -309,7 +318,7 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId != null && _studentService.GetStudentById(student.studentId) == null)
+            if (student.studentId is not null && !_studentService.TryGetStudentById(student.studentId, out _))
                 return NotFound();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);

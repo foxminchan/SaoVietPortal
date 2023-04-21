@@ -15,7 +15,8 @@ public class ReceiptsExpensesService
 
     public void DeleteReceiptsExpenses(Guid receiptExpenseId) => _unitOfWork.receiptsExpensesRepository.DeleteReceiptsExpenses(receiptExpenseId);
 
-    public ReceiptsExpenses? GetReceiptsExpensesById(Guid? receiptExpenseId) => _unitOfWork.receiptsExpensesRepository.GetReceiptsExpensesById(receiptExpenseId);
+    public bool TryGetReceiptsExpenses(Guid receiptExpenseId, out ReceiptsExpenses? receiptsExpenses) 
+        => _unitOfWork.receiptsExpensesRepository.TryGetReceiptsExpenses(receiptExpenseId, out receiptsExpenses);
 
     public IEnumerable<ReceiptsExpenses> GetReceiptsExpenses() => _unitOfWork.receiptsExpensesRepository.GetReceiptsExpenses();
 }

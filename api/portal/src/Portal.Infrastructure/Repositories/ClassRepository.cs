@@ -16,5 +16,5 @@ public class ClassRepository : RepositoryBase<Class>, IClassRepository
 
     public IEnumerable<Class> GetAllClasses() => GetAll();
 
-    public Class? GetClassById(string id) => GetById(id);
+    public bool TryGetClassById(string classId, out Class? @class) => TryGetById(classId, out @class);
 }

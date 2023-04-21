@@ -9,5 +9,5 @@ public interface IClassRepository : IRepository<Class>
     public void UpdateClass(Class @class);
     public void DeleteClass(string id);
     public IEnumerable<Class> GetAllClasses();
-    public Class? GetClassById(string id);
+    public bool TryGetClassById(string classId, out Class? @class);
 }

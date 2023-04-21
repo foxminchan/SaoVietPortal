@@ -9,5 +9,5 @@ public interface IStudentRepository : IRepository<Student>
     public void UpdateStudent(Student student);
     public void DeleteStudent(string id);
     public IEnumerable<Student> GetAllStudents();
-    public Student? GetStudentById(string id);
+    public bool TryGetStudentById(string id, out Student? student);
 }

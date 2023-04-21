@@ -6,7 +6,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using Portal.Domain.ValueObjects;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
 
@@ -145,7 +145,7 @@ public class PositionController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
 
             if (position.positionId.HasValue)
-                return Conflict();
+                return BadRequest("Position id is auto generated");
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
@@ -153,7 +153,7 @@ public class PositionController : ControllerBase
 
             var positions =
                 _redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList());
-            if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) == null)
+            if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
             return Ok();
@@ -188,13 +188,14 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (_positionService.GetPositionById(id) != null)
+            if (!_positionService.TryGetPosition(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(() => _positionService.DeletePosition(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) is
-                { Count: > 0 } positions)
+            if (_redisCacheService
+                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) 
+                is { Count: > 0 } positions)
                 positions.RemoveAll(s => s.positionId == id);
 
             return Ok();
@@ -238,14 +239,15 @@ public class PositionController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (_positionService.GetPositionById(position.positionId) == null)
+            if (position.positionId.HasValue && !_positionService.TryGetPosition(position.positionId.Value, out _))
                 return NotFound();
 
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
             _transactionService.ExecuteTransaction(() => _positionService.UpdatePosition(updatePosition));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) is
-                { Count: > 0 } positions)
+            if (_redisCacheService
+                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) 
+                is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
 
             return Ok();

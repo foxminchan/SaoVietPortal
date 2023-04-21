@@ -15,7 +15,8 @@ public class PositionService
 
     public void DeletePosition(int id) => _unitOfWork.positionRepository.DeletePosition(id);
 
-    public Position? GetPositionById(int? id) => _unitOfWork.positionRepository.GetPositionById(id);
+    public bool TryGetPosition(int id, out Position? position) 
+        => _unitOfWork.positionRepository.TryGetPositionById(id, out position);
 
     public IEnumerable<Position> GetAllPositions() => _unitOfWork.positionRepository.GetAllPositions();
 }

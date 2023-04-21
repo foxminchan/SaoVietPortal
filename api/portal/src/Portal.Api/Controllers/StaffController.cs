@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using Portal.Domain.ValueObjects;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
 
@@ -118,6 +120,68 @@ public class StaffController : ControllerBase
     }
 
     /// <summary>
+    /// Find staff by name
+    /// </summary>
+    /// <param name="name">Staff name</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/v1/Staff?name={name}
+    /// </remarks>
+    /// <response code="200">Response the list of staffs</response>
+    /// <response code="404">If no staffs are found</response>
+    [HttpGet("search")]
+    [ProducesResponseType(200, Type = typeof(Staff))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    [ResponseCache(Duration = 15)]
+    public ActionResult GetStaffByName([FromQuery(Name = "name"), BindRequired] string name)
+    {
+        try
+        {
+            var staffs = _redisCacheService
+                .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList())
+                .Select(_mapper.Map<Staff>).ToList();
+
+            if (!staffs.Any()) return NotFound();
+
+            var propertyIndex = new Dictionary<string, List<Document>>();
+
+            foreach (var staff in staffs)
+            {
+                foreach (var property in staff.GetType().GetProperties())
+                {
+                    if (!propertyIndex.ContainsKey(property.Name))
+                        propertyIndex.Add(property.Name, new List<Document>());
+
+                    var value = property.GetValue(staff, null);
+
+                    if (value is null) continue;
+
+                    var document = new Document
+                        { new StringField(property.Name, value.ToString(), Field.Store.YES) };
+
+                    propertyIndex[property.Name].Add(document);
+                }
+            }
+
+            _luceneService.Index(propertyIndex);
+
+            return _luceneService.Search(name, 20).ToList() switch
+            {
+                { Count: > 0 } result => Ok(result),
+                _ => NotFound()
+            };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting staff by name");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
     /// Add new staff
     /// </summary>
     /// <param name="staff">Staff object</param>
@@ -155,15 +219,16 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.staffId != null && _staffService.GetStaffById(staff.staffId) != null)
+            if (staff.staffId is not null && _staffService.TryGetStaffById(staff.staffId, out _))
                 return Conflict();
 
             var newStaff = _mapper.Map<Domain.Entities.Staff>(staff);
 
             _transactionService.ExecuteTransaction(() => _staffService.AddStaff(newStaff));
 
-            var staffs = _redisCacheService.GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList());
-            if (staffs.FirstOrDefault(s => s.staffId == newStaff.staffId) == null)
+            var staffs = 
+                _redisCacheService.GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList());
+            if (staffs.FirstOrDefault(s => s.staffId == newStaff.staffId) is null)
                 staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
 
             return Ok();
@@ -194,17 +259,18 @@ public class StaffController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteStudent([FromRoute] string id)
+    public ActionResult DeleteStaff([FromRoute] string id)
     {
         try
         {
-            if (_staffService.GetStaffById(id) == null)
+            if (!_staffService.TryGetStaffById(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(() => _staffService.DeleteStaff(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) is
-                { Count: > 0 } staffs)
+            if (_redisCacheService
+                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) 
+                is { Count: > 0 } staffs)
                 staffs.RemoveAll(s => s.staffId == id);
 
             return Ok();
@@ -253,14 +319,15 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.staffId != null && _staffService.GetStaffById(staff.staffId) == null)
+            if (staff.staffId is not null && !_staffService.TryGetStaffById(staff.staffId, out _))
                 return NotFound();
 
             var updateStaff = _mapper.Map<Domain.Entities.Staff>(staff);
             _transactionService.ExecuteTransaction(() => _staffService.UpdateStaff(updateStaff));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) is
-                { Count: > 0 } staffs)
+            if (_redisCacheService
+                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) 
+                is { Count: > 0 } staffs)
                 staffs[staffs.FindIndex(s => s.staffId == updateStaff.staffId)] = updateStaff;
 
             return Ok();

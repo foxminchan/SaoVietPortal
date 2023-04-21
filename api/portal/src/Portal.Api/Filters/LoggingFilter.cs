@@ -13,7 +13,7 @@ public class LoggingFilter : IActionFilter
 
     public void OnActionExecuted(ActionExecutedContext context)
     {
-        if (context.Exception != null)
+        if (context.Exception is not null)
             _logger.LogError(context.Exception, "Action failed: {context.ActionDescriptor.DisplayName}",
                 context.ActionDescriptor.DisplayName);
         else

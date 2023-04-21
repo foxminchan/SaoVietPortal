@@ -8,7 +8,7 @@ public interface IRepository<T> where T : class
     public void Update(T entity);
     public void Delete(T entity);
     public void Delete(Expression<Func<T, bool>> where);
-    public T? GetById(object? id);
+    public bool TryGetById(object? id, out T? entity);
     public int Count();
     public IEnumerable<T> GetList(
         Expression<Func<T, bool>>? filter = null,

@@ -8,6 +8,6 @@ public interface IPositionRepository : IRepository<Position>
     public void AddPosition(Position position);
     public void UpdatePosition(Position position);
     public void DeletePosition(int id);
-    public Position? GetPositionById(int? id);
+    public bool TryGetPositionById(int id, out Position? position);
     public IEnumerable<Position> GetAllPositions();
 }

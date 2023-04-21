@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Portal.Domain.ValueObjects;
 using StackExchange.Redis;
 using System.Text;
+using Portal.Domain.Primitives;
 
 namespace Portal.Application.Cache;
 
@@ -61,7 +61,7 @@ public class RedisCacheService : IRedisCacheService
             return GetByteToObject<T>(cachedValue);
 
         var newValue = valueFactory();
-        if (newValue != null)
+        if (newValue is not null)
             Database.StringSet(key, JsonConvert.SerializeObject(newValue), expiration);
 
         return newValue;
@@ -80,7 +80,7 @@ public class RedisCacheService : IRedisCacheService
         if (!string.IsNullOrEmpty(value))
             return GetByteToObject<T>(value);
 
-        if (valueFactory() != null)
+        if (valueFactory() is not null)
             Database.HashSet(keyWithPrefix, hashKey.ToLower(),
                 JsonConvert.SerializeObject(valueFactory()));
         return valueFactory();

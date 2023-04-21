@@ -14,7 +14,8 @@ public class StaffRepository : RepositoryBase<Staff>, IStaffRepository
 
     public void DeleteStaff(string staffId) => Delete(x => x.staffId == staffId);
 
-    public Staff? GetStaffById(string? staffId) => GetById(staffId);
+    public bool TryGetStaffById(string staffId, out Staff? staff) 
+        => TryGetById(staffId, out staff);
 
     public IEnumerable<Staff> GetStaff() => GetAll();
 }

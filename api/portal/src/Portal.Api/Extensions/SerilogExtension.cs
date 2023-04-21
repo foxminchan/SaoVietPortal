@@ -1,4 +1,4 @@
-﻿using Portal.Domain.ValueObjects;
+﻿using Portal.Domain.Primitives;
 using Serilog;
 using Serilog.Exceptions;
 using Serilog.Sinks.Elasticsearch;

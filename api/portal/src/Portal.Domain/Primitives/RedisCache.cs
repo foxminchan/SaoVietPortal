@@ -1,4 +1,4 @@
-﻿namespace Portal.Domain.ValueObjects;
+﻿namespace Portal.Domain.Primitives;
 
 public sealed class RedisCache
 {

@@ -9,5 +9,5 @@ public interface IBranchRepository : IRepository<Branch>
     public void UpdateBranch(Branch branch);
     public void DeleteBranch(string id);
     public IEnumerable<Branch> GetAllBranches();
-    public Branch? GetBranchById(string id);
+    public bool TryGetBranchById (string id, out Branch? branch);
 }

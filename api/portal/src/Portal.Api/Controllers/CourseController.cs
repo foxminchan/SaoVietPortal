@@ -6,7 +6,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using Portal.Domain.ValueObjects;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
 
@@ -147,7 +147,7 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.courseId != null && _courseService.GetCourseById(course.courseId) != null)
+            if (course.courseId is not null && _courseService.TryGetCourseById(course.courseId, out _))
                 return Conflict();
 
             var newCourse = _mapper.Map<Domain.Entities.Course>(course);
@@ -157,7 +157,7 @@ public class CourseController : ControllerBase
             var positions =
                 _redisCacheService.GetOrSet(CACHE_KEY, () => _courseService.GetAllCourses().ToList());
 
-            if (positions.FirstOrDefault(s => s.courseId == newCourse.courseId) == null)
+            if (positions.FirstOrDefault(s => s.courseId == newCourse.courseId) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
 
             return Ok();
@@ -193,7 +193,7 @@ public class CourseController : ControllerBase
     {
         try
         {
-            if (_courseService.GetCourseById(id) != null)
+            if (!_courseService.TryGetCourseById(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(() => _courseService.DeleteCourse(id));
@@ -244,7 +244,7 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.courseId != null && _courseService.GetCourseById(course.courseId) == null)
+            if (course.courseId is not null && !_courseService.TryGetCourseById(course.courseId, out _))
                 return NotFound();
 
             var updateCourse = _mapper.Map<Domain.Entities.Course>(course);

@@ -22,7 +22,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
         get
         {
             var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId != null)
+            if (userId is not null)
                 return userId;
             _logger.LogError("User ID not found in HttpContext");
             throw new Exception("User ID not found in HttpContext");
@@ -33,14 +33,14 @@ public class SecurityContextAccessor : ISecurityContextAccessor
 
     public string RefreshToken => _httpContextAccessor.HttpContext?.Request.Headers["RefreshToken"].ToString() ?? string.Empty;
 
-    public string IpAddress => _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString() ?? string.Empty;
+    public string IpAddress => _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString() ?? string.Empty;
 
     public bool IsAuthenticated
     {
         get
         {
             var isAuthenticated = _httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated;
-            if (isAuthenticated != null)
+            if (isAuthenticated is not null)
                 return isAuthenticated.Value;
             _logger.LogError("IsAuthenticated not found in HttpContext");
             throw new Exception("IsAuthenticated not found in HttpContext");
@@ -52,7 +52,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
         get
         {
             var role = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Role);
-            if (role != null)
+            if (role is not null)
                 return role;
             _logger.LogError("Role not found in HttpContext");
             throw new Exception("Role not found in HttpContext");
@@ -64,7 +64,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
         get
         {
             var permission = _httpContextAccessor.HttpContext?.User.FindFirstValue("Permission");
-            if (permission != null)
+            if (permission is not null)
                 return permission;
             _logger.LogError("Permission not found in HttpContext");
             throw new Exception("Permission not found in HttpContext");

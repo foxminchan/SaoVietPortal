@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Portal.Domain.ValueObjects;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Extensions;
 

@@ -16,5 +16,5 @@ public class StudentRepository : RepositoryBase<Student>, IStudentRepository
 
     public IEnumerable<Student> GetAllStudents() => GetAll();
 
-    public Student? GetStudentById(string id) => GetById(id);
+    public bool TryGetStudentById(string id, out Student? student) => TryGetById(id, out student);
 }

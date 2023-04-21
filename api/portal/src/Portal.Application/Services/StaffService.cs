@@ -15,7 +15,8 @@ public class StaffService
 
     public void DeleteStaff(string staffId) => _unitOfWork.staffRepository.DeleteStaff(staffId);
 
-    public Staff? GetStaffById(string? staffId) => _unitOfWork.staffRepository.GetStaffById(staffId);
+    public bool TryGetStaffById(string staffId, out Staff? staff) 
+        => _unitOfWork.staffRepository.TryGetStaffById(staffId, out staff);
 
     public IEnumerable<Staff> GetStaff() => _unitOfWork.staffRepository.GetStaff();
 }

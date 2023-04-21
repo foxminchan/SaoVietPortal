@@ -14,7 +14,8 @@ public class PositionRepository : RepositoryBase<Position>, IPositionRepository
 
     public void DeletePosition(int id) => Delete(x => x.positionId == id);
 
-    public Position? GetPositionById(int? id) => GetById(id);
+    public bool TryGetPositionById(int id, out Position? position) 
+        => TryGetById(id, out position);
 
     public IEnumerable<Position> GetAllPositions() => GetAll();
 }

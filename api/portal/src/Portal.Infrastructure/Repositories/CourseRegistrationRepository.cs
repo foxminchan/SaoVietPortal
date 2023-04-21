@@ -14,7 +14,8 @@ public class CourseRegistrationRepository : RepositoryBase<CourseRegistration>, 
 
     public void DeleteCourseRegistration(Guid id) => Delete(x => x.courseRegistrationId == id);
 
-    public CourseRegistration? GetCourseRegistrationById(Guid? id) => GetById(id);
+    public bool TryGetCourseRegistrationById(Guid id, out CourseRegistration? courseRegistration)
+        => TryGetById(id, out courseRegistration);
 
     public IEnumerable<CourseRegistration> GetAllCourseRegistrations() => GetAll();
 }

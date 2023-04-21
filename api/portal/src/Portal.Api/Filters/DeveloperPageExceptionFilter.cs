@@ -60,7 +60,7 @@ public class ErrorProblemDetailsResult : IResult
         problemDetails.Extensions.Add("routeValues", httpContext.GetRouteData().Values);
         problemDetails.Extensions.Add("query", httpContext.Request.Query);
         var endpoint = httpContext.GetEndpoint();
-        if (endpoint != null)
+        if (endpoint is not null)
         {
             var routeEndpoint = endpoint as RouteEndpoint;
             var httpMethods = endpoint.Metadata.GetMetadata<IHttpMethodMetadata>()?.HttpMethods;
@@ -69,7 +69,7 @@ public class ErrorProblemDetailsResult : IResult
                 endpoint.DisplayName,
                 routePattern = routeEndpoint?.RoutePattern.RawText,
                 routeOrder = routeEndpoint?.Order,
-                httpMethods = httpMethods != null ? string.Join(", ", httpMethods) : ""
+                httpMethods = httpMethods is not null ? string.Join(", ", httpMethods) : ""
             });
         }
 

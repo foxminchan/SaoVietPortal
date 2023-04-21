@@ -11,7 +11,8 @@ public class StudentService
 
     public IEnumerable<Student> GetAllStudents() => _unitOfWork.studentRepository.GetAllStudents();
 
-    public Student? GetStudentById(string id) => _unitOfWork.studentRepository.GetStudentById(id);
+    public bool TryGetStudentById(string id, out Student? student) 
+        => _unitOfWork.studentRepository.TryGetStudentById(id, out student);
 
     public void AddStudent(Student student) => _unitOfWork.studentRepository.AddStudent(student);
 

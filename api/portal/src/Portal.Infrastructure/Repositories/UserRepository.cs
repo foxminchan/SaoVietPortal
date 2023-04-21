@@ -10,22 +10,22 @@ public class UserRepository : RepositoryBase<ApplicationUser>, IUserRepository
 
     public IQueryable<string?> GetClaims(string userId)
     {
-        var userClaims = _context.UserClaims.Where(c => c.UserId == userId);
+        var userClaims = Context.UserClaims.Where(c => c.UserId == userId);
         return userClaims.Select(c => c.ClaimValue);
     }
 
     public IQueryable<string?> GetRoles(string userId)
     {
-        var userRoles = _context.UserRoles.Where(r => r.UserId == userId);
-        var roles = _context.Roles.Where(r => userRoles.Select(ur => ur.RoleId).Contains(r.Id));
+        var userRoles = Context.UserRoles.Where(r => r.UserId == userId);
+        var roles = Context.Roles.Where(r => userRoles.Select(ur => ur.RoleId).Contains(r.Id));
         return roles.Select(r => r.Name);
     }
 
     public IQueryable<string?> GetRoleClaims(string userId)
     {
-        var userRoles = _context.UserRoles.Where(r => r.UserId == userId);
-        var roles = _context.Roles.Where(r => userRoles.Select(ur => ur.RoleId).Contains(r.Id));
-        var roleClaims = _context.RoleClaims.Where(c => roles.Select(r => r.Id).Contains(c.RoleId));
+        var userRoles = Context.UserRoles.Where(r => r.UserId == userId);
+        var roles = Context.Roles.Where(r => userRoles.Select(ur => ur.RoleId).Contains(r.Id));
+        var roleClaims = Context.RoleClaims.Where(c => roles.Select(r => r.Id).Contains(c.RoleId));
         return roleClaims.Select(c => c.ClaimValue);
     }
 }

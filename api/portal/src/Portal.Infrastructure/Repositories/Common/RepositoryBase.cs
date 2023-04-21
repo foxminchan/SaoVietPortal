@@ -7,13 +7,13 @@ namespace Portal.Infrastructure.Repositories.Common;
 
 public abstract class RepositoryBase<T> : IRepository<T> where T : class
 {
-    protected readonly ApplicationDbContext _context;
+    protected readonly ApplicationDbContext Context;
     private readonly DbSet<T> _dbSet;
 
     protected RepositoryBase(ApplicationDbContext context)
     {
-        _context = context;
-        _dbSet = _context.Set<T>();
+        Context = context;
+        _dbSet = Context.Set<T>();
     }
 
     public virtual IEnumerable<T> GetAll() => _dbSet;
@@ -23,12 +23,12 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
     public virtual void Update(T entity)
     {
         _dbSet.Attach(entity);
-        _context.Entry(entity).State = EntityState.Modified;
+        Context.Entry(entity).State = EntityState.Modified;
     }
 
     public virtual void Delete(T entity)
     {
-        if (_context.Entry(entity).State == EntityState.Detached)
+        if (Context.Entry(entity).State == EntityState.Detached)
             _dbSet.Attach(entity);
         _dbSet.Remove(entity);
     }
@@ -42,7 +42,11 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 
     public virtual int Count() => _dbSet.Count();
 
-    public virtual T? GetById(object? id) => _dbSet.Find(id);
+    public virtual bool TryGetById(object? id, out T? entity)
+    {
+        entity = _dbSet.Find(id);
+        return entity is not null;
+    }
 
     public virtual IEnumerable<T> GetList(
         Expression<Func<T, bool>>? filter = null,
@@ -54,7 +58,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
     {
         IQueryable<T> query = _dbSet;
 
-        if (filter != null)
+        if (filter is not null)
         {
             query = query.Where(filter);
 
@@ -65,10 +69,10 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         }
 
 
-        if (includeProperties != null)
+        if (includeProperties is not null)
             query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 
-        if (orderBy != null)
+        if (orderBy is not null)
             query = orderBy(query);
 
         if (skip != 0)
@@ -77,26 +81,26 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         if (take != 0)
             _ = query.Take(take);
 
-        if (!string.IsNullOrEmpty(fields))
-        {
-            var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        if (string.IsNullOrEmpty(fields)) 
+            return query.AsNoTracking();
 
-            var selectedProperties = fields.Split(',').Select(x => x.Trim())
-                .Where(x => !string.IsNullOrEmpty(x))
-                .Select(x => propertyInfos.FirstOrDefault(p => p.Name.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
-                .Where(x => x != null);
+        var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-            var parameter = Expression.Parameter(typeof(T), "x");
+        var selectedProperties = fields.Split(',').Select(x => x.Trim())
+            .Where(x => !string.IsNullOrEmpty(x))
+            .Select(x => propertyInfos.FirstOrDefault(p => p.Name.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
+            .Where(x => x is not null);
 
-            var memberBindings = selectedProperties.Select(p => Expression
-                .Bind(p ?? throw new ArgumentNullException(nameof(p)), Expression.Property(parameter, p)));
+        var parameter = Expression.Parameter(typeof(T), "x");
 
-            var memberInit = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
+        var memberBindings = selectedProperties.Select(p => Expression
+            .Bind(p ?? throw new ArgumentNullException(nameof(p)), Expression.Property(parameter, p)));
 
-            var selector = Expression.Lambda<Func<T, T>>(memberInit, parameter);
+        var memberInit = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
 
-            _ = query.Select(selector);
-        }
+        var selector = Expression.Lambda<Func<T, T>>(memberInit, parameter);
+
+        _ = query.Select(selector);
 
         return query.AsNoTracking();
     }

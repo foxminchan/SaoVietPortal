@@ -6,7 +6,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Services;
 using Portal.Application.Transaction;
-using Portal.Domain.ValueObjects;
+using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
 
@@ -146,7 +146,7 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.branchId != null && _branchService.GetBranchById(branch.branchId) != null)
+            if (branch.branchId is not null && _branchService.TryGetBranchById(branch.branchId, out _))
                 return Conflict();
 
             var newBranch = _mapper.Map<Domain.Entities.Branch>(branch);
@@ -154,7 +154,7 @@ public class BranchController : ControllerBase
             _transactionService.ExecuteTransaction(() => _branchService.AddBranch(newBranch));
 
             var branches = _redisCacheService.GetOrSet(CACHE_KEY, () => _branchService.GetAllBranches().ToList());
-            if (branches.FirstOrDefault(s => s.branchId == newBranch.branchId) == null)
+            if (branches.FirstOrDefault(s => s.branchId == newBranch.branchId) is null)
                 branches.Add(_mapper.Map<Domain.Entities.Branch>(newBranch));
 
             return Ok();
@@ -189,7 +189,7 @@ public class BranchController : ControllerBase
     {
         try
         {
-            if (_branchService.GetBranchById(id) != null)
+            if (_branchService.TryGetBranchById(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(() => _branchService.DeleteBranch(id));
@@ -241,7 +241,7 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.branchId != null && _branchService.GetBranchById(branch.branchId) == null)
+            if (branch.branchId is not null && !_branchService.TryGetBranchById(branch.branchId, out _))
                 return NotFound();
 
             var updateBranch = _mapper.Map<Domain.Entities.Branch>(branch);

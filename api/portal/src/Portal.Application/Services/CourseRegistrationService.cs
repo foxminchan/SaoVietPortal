@@ -15,7 +15,8 @@ public class CourseRegistrationService
 
     public void DeleteCourseRegistration(Guid id) => _unitOfWork.courseRegistrationRepository.DeleteCourseRegistration(id);
 
-    public CourseRegistration? GetCourseRegistrationById(Guid? id) => _unitOfWork.courseRegistrationRepository.GetCourseRegistrationById(id);
+    public bool TryGetCourseRegistrationById(Guid id, out CourseRegistration? courseRegistration) 
+        => _unitOfWork.courseRegistrationRepository.TryGetCourseRegistrationById(id, out courseRegistration);
 
     public IEnumerable<CourseRegistration> GetAllCourseRegistrations() => _unitOfWork.courseRegistrationRepository.GetAllCourseRegistrations();
 }

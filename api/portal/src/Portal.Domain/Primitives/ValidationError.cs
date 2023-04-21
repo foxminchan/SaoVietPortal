@@ -20,7 +20,7 @@ public sealed class ValidationError
                     { message = error.ErrorMessage }
                 }
             })
-            .ToList(); 
+            .ToList();
     }
 
     public override string ToString() => JsonConvert.SerializeObject(this);

@@ -31,7 +31,7 @@ public class StaffValidator : AbstractValidator<Staff>
             .Must((_, branchId) => branchId is null || unitOfWork.branchRepository.TryGetBranchById(branchId, out var _))
             .WithMessage("Branch with id {PropertyValue} does not exist");
         RuleFor(x => x.positionId)
-            .Must((_, positionId) => !positionId.HasValue || 
+            .Must((_, positionId) => !positionId.HasValue ||
                                      unitOfWork.positionRepository.TryGetPositionById(positionId.Value, out var _))
             .WithMessage("Position with id {PropertyValue} does not exist");
     }

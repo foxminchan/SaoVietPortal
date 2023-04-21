@@ -194,7 +194,7 @@ public class PositionController : ControllerBase
             _transactionService.ExecuteTransaction(() => _positionService.DeletePosition(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) 
+                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
                 positions.RemoveAll(s => s.positionId == id);
 
@@ -246,7 +246,7 @@ public class PositionController : ControllerBase
             _transactionService.ExecuteTransaction(() => _positionService.UpdatePosition(updatePosition));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList()) 
+                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
 

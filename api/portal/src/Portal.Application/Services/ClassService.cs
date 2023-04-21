@@ -11,7 +11,7 @@ public class ClassService
 
     public IEnumerable<Class> GetAllClasses() => _unitOfWork.classRepository.GetAllClasses();
 
-    public bool TryGetClassById(string classId, out Class? @class) 
+    public bool TryGetClassById(string classId, out Class? @class)
         => _unitOfWork.classRepository.TryGetClassById(classId, out @class);
 
     public void AddClass(Class @class) => _unitOfWork.classRepository.AddClass(@class);

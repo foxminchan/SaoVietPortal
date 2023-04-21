@@ -226,7 +226,7 @@ public class StaffController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _staffService.AddStaff(newStaff));
 
-            var staffs = 
+            var staffs =
                 _redisCacheService.GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList());
             if (staffs.FirstOrDefault(s => s.staffId == newStaff.staffId) is null)
                 staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
@@ -269,7 +269,7 @@ public class StaffController : ControllerBase
             _transactionService.ExecuteTransaction(() => _staffService.DeleteStaff(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) 
+                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList())
                 is { Count: > 0 } staffs)
                 staffs.RemoveAll(s => s.staffId == id);
 
@@ -326,7 +326,7 @@ public class StaffController : ControllerBase
             _transactionService.ExecuteTransaction(() => _staffService.UpdateStaff(updateStaff));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList()) 
+                    .GetOrSet(CACHE_KEY, () => _staffService.GetStaff().ToList())
                 is { Count: > 0 } staffs)
                 staffs[staffs.FindIndex(s => s.staffId == updateStaff.staffId)] = updateStaff;
 

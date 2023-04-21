@@ -16,5 +16,5 @@ public class BranchRepository : RepositoryBase<Branch>, IBranchRepository
 
     public IEnumerable<Branch> GetAllBranches() => GetAll();
 
-    public bool TryGetBranchById (string id, out Branch? branch) => TryGetById(id, out branch);
+    public bool TryGetBranchById(string id, out Branch? branch) => TryGetById(id, out branch);
 }

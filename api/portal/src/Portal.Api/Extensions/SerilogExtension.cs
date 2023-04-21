@@ -18,6 +18,7 @@ public static class SerilogExtension
             loggerConfiguration.ReadFrom.Configuration(context.Configuration, sectionName: sectionName);
 
             loggerConfiguration
+                .WriteTo.File("Logs/log-.log", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 7)
                 .Enrich.WithProperty("Application", builder.Environment.ApplicationName)
                 .Enrich.FromLogContext()
                 .Enrich.WithExceptionDetails();

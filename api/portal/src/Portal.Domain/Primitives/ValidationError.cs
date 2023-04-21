@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 
 namespace Portal.Domain.Primitives;
 
+[Serializable]
 public sealed class ValidationError
 {
     public int errorCode { get; set; } = (int)HttpStatusCode.BadRequest;
@@ -19,7 +20,7 @@ public sealed class ValidationError
                     { message = error.ErrorMessage }
                 }
             })
-            .ToList(); ;
+            .ToList(); 
     }
 
     public override string ToString() => JsonConvert.SerializeObject(this);

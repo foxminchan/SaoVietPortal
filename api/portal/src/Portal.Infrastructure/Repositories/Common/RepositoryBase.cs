@@ -68,7 +68,6 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
                 throw new ArgumentException("Invalid filter expression.");
         }
 
-
         if (includeProperties is not null)
             query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 

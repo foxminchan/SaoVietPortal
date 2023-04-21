@@ -1,7 +1,6 @@
 ﻿using Polly;
 using Polly.Bulkhead;
 using Polly.Extensions.Http;
-using Portal.Application.Services;
 
 namespace Portal.Api.Extensions;
 
@@ -17,52 +16,7 @@ public static class PollyExtension
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
-        services.AddHttpClient<BranchService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<ClassService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<CourseRegistrationService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<CourseService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<PaymentMethodService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<PositionService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<ReceiptsExpensesService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<StaffService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<StudentProgressService>(httpClientBuilder)
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy())
-            .AddPolicyHandler(GetBulkheadPolicy());
-
-        services.AddHttpClient<StudentService>(httpClientBuilder)
+        services.AddHttpClient("api", httpClientBuilder)
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreakerPolicy())
             .AddPolicyHandler(GetBulkheadPolicy());
@@ -71,7 +25,8 @@ public static class PollyExtension
     private static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
         => HttpPolicyExtensions
             .HandleTransientHttpError()
-            .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+            .WaitAndRetryAsync(3, retryAttempt => TimeSpan
+                .FromSeconds(Math.Pow(2, retryAttempt)));
 
     private static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
         => HttpPolicyExtensions

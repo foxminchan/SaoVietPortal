@@ -61,7 +61,7 @@ public class SystemController : ControllerBase
     }
 
     /// <summary>
-    /// Clean cache
+    /// Clear cache data
     /// </summary>
     /// <returns></returns>
     /// <remarks>
@@ -70,11 +70,11 @@ public class SystemController : ControllerBase
     ///     GET /api/v1/System/cleanCache
     /// </remarks>
     /// <response code="200">Clean cache is successful</response>
-    [HttpGet("cleanCache")]
+    [HttpGet("clearCache")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult CleanCache()
+    public ActionResult ClearCache()
     {
         try
         {
@@ -89,7 +89,7 @@ public class SystemController : ControllerBase
     }
 
     /// <summary>
-    /// Clean index
+    /// Clear index files
     /// </summary>
     /// <returns></returns>
     /// <remarks>
@@ -98,11 +98,11 @@ public class SystemController : ControllerBase
     ///     GET /api/v1/System/clearIndex
     /// </remarks>
     /// <response code="200">Clean index is successful</response>
-    [HttpGet("cleanIndex")]
+    [HttpGet("clearIndex")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult CleanIndex()
+    public ActionResult ClearIndex()
     {
         try
         {
@@ -112,6 +112,37 @@ public class SystemController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error while cleaning index");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Clear logs file
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/v1/System/clearLogsFile
+    /// </remarks>
+    /// <response code="200">Clean logs file is successful</response>
+    [HttpGet("clearLogsFile")]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    public ActionResult ClearLogsFile()
+    {
+        try
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Logs", "*.log");
+
+            Directory.GetFiles(path).ToList().ForEach(System.IO.File.Delete);
+
+            return Ok(new { message = "Logs file cleaned" });
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while cleaning logs file");
             return StatusCode(500);
         }
     }

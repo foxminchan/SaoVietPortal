@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
-using Portal.Application.Services;
 using Portal.Application.Transaction;
+using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
@@ -20,8 +20,8 @@ namespace Portal.Api.Controllers;
 public class StudentController : ControllerBase
 {
     private const string CACHE_KEY = "StudentData";
-    private readonly StudentService _studentService;
-    private readonly TransactionService _transactionService;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ITransactionService _transactionService;
     private readonly ILogger<StudentController> _logger;
     private readonly IMapper _mapper;
     private readonly IValidator<Student> _validator;
@@ -29,8 +29,8 @@ public class StudentController : ControllerBase
     private readonly ILuceneService _luceneService;
 
     public StudentController(
-        StudentService studentService,
-        TransactionService transactionService,
+        IUnitOfWork unitOfWork,
+        ITransactionService transactionService,
         ILogger<StudentController> logger,
         IMapper mapper,
         IValidator<Student> validator,
@@ -38,7 +38,7 @@ public class StudentController : ControllerBase
         ILuceneService luceneService
     )
     {
-        _studentService = studentService;
+        _unitOfWork = unitOfWork;
         _transactionService = transactionService;
         _logger = logger;
         _mapper = mapper;
@@ -69,7 +69,7 @@ public class StudentController : ControllerBase
         try
         {
             return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _studentService.GetAllStudents().ToList())) switch
+                    () => _unitOfWork.studentRepository.GetAllStudents().ToList())) switch
             {
                 { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
                 _ => NotFound()
@@ -105,7 +105,7 @@ public class StudentController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
+                    .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
                     .FirstOrDefault(s => s.studentId == id) switch
             {
                 { } student => Ok(student),
@@ -141,7 +141,7 @@ public class StudentController : ControllerBase
         try
         {
             var students = _redisCacheService
-                .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
+                .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
                 .Select(_mapper.Map<Student>).ToList();
 
             if (!students.Any()) return NotFound();
@@ -219,14 +219,14 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId is not null && _studentService.TryGetStudentById(student.studentId, out _))
+            if (student.studentId is not null && _unitOfWork.studentRepository.TryGetStudentById(student.studentId, out _))
                 return Conflict();
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
 
-            _transactionService.ExecuteTransaction(() => _studentService.AddStudent(newStudent));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.AddStudent(newStudent));
 
-            var students = _redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList());
+            var students = _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList());
             if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) is null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
@@ -262,13 +262,13 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if (!_studentService.TryGetStudentById(id, out _))
+            if (!_unitOfWork.studentRepository.TryGetStudentById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _studentService.DeleteStudent(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.DeleteStudent(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
+                    .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
                 is { Count: > 0 } students)
                 students.RemoveAll(s => s.studentId == id);
 
@@ -318,13 +318,13 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId is not null && !_studentService.TryGetStudentById(student.studentId, out _))
+            if (student.studentId is not null && !_unitOfWork.studentRepository.TryGetStudentById(student.studentId, out _))
                 return NotFound();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
-            _transactionService.ExecuteTransaction(() => _studentService.UpdateStudent(updateStudent));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.UpdateStudent(updateStudent));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) is
+            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
                 students[students.FindIndex(s => s.studentId == updateStudent.studentId)] = updateStudent;
 

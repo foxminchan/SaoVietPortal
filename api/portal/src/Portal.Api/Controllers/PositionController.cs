@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
-using Portal.Application.Services;
 using Portal.Application.Transaction;
+using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Primitives;
 
 namespace Portal.Api.Controllers;
@@ -17,22 +17,22 @@ namespace Portal.Api.Controllers;
 public class PositionController : ControllerBase
 {
     private const string CACHE_KEY = "PositionData";
-    private readonly PositionService _positionService;
-    private readonly TransactionService _transactionService;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ITransactionService _transactionService;
     private readonly ILogger<PositionController> _logger;
     private readonly IMapper _mapper;
     private readonly IValidator<Position> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public PositionController(
-        PositionService positionService,
-        TransactionService transactionService,
+        IUnitOfWork unitOfWork,
+        ITransactionService transactionService,
         ILogger<PositionController> logger,
         IMapper mapper,
         IValidator<Position> validator,
         IRedisCacheService redisCacheService)
     {
-        _positionService = positionService;
+        _unitOfWork = unitOfWork;
         _transactionService = transactionService;
         _logger = logger;
         _mapper = mapper;
@@ -62,7 +62,7 @@ public class PositionController : ControllerBase
         try
         {
             return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _positionService.GetAllPositions().ToList())) switch
+                    () => _unitOfWork.positionRepository.GetAllPositions().ToList())) switch
             {
                 { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
                 _ => NotFound()
@@ -98,7 +98,7 @@ public class PositionController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
+                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
                     .FirstOrDefault(s => s.positionId == id) switch
             {
                 { } position => Ok(position),
@@ -149,10 +149,10 @@ public class PositionController : ControllerBase
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
-            _transactionService.ExecuteTransaction(() => _positionService.AddPosition(newPosition));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.AddPosition(newPosition));
 
             var positions =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList());
+                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList());
             if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
@@ -188,13 +188,13 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (!_positionService.TryGetPosition(id, out _))
+            if (!_unitOfWork.positionRepository.TryGetPositionById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _positionService.DeletePosition(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.DeletePosition(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
+                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
                 positions.RemoveAll(s => s.positionId == id);
 
@@ -239,14 +239,14 @@ public class PositionController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (position.positionId.HasValue && !_positionService.TryGetPosition(position.positionId.Value, out _))
+            if (position.positionId.HasValue && !_unitOfWork.positionRepository.TryGetPositionById(position.positionId.Value, out _))
                 return NotFound();
 
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
-            _transactionService.ExecuteTransaction(() => _positionService.UpdatePosition(updatePosition));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.UpdatePosition(updatePosition));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _positionService.GetAllPositions().ToList())
+                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
 

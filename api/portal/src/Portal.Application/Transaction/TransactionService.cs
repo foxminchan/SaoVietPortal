@@ -4,7 +4,7 @@ using Portal.Infrastructure;
 
 namespace Portal.Application.Transaction;
 
-public class TransactionService
+public class TransactionService : ITransactionService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<TransactionService> _logger;

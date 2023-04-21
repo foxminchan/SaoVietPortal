@@ -15,7 +15,6 @@ using Portal.Api.Models;
 using Portal.Api.Validations;
 using Portal.Application.Health;
 using Portal.Application.Search;
-using Portal.Application.Services;
 using Portal.Application.Token;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
@@ -73,9 +72,9 @@ builder.Services.Configure<GzipCompressionProviderOptions>(options =>
 
 builder.Services.AddAuth();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddPollyPolicy();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddFluentValidationRulesToSwagger();
-builder.Services.AddPollyPolicy();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
 builder.Services.AddRedisCache(builder.Configuration);
@@ -112,20 +111,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddTransient<BranchService>();
-builder.Services.AddTransient<ClassService>();
-builder.Services.AddTransient<CourseRegistrationService>();
-builder.Services.AddTransient<CourseService>();
-builder.Services.AddTransient<PaymentMethodService>();
-builder.Services.AddTransient<PositionService>();
-builder.Services.AddTransient<ReceiptsExpensesService>();
-builder.Services.AddTransient<StaffService>();
-builder.Services.AddTransient<StudentProgressService>();
-builder.Services.AddTransient<StudentService>();
-builder.Services.AddTransient<TransactionService>();
+builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IValidator<Branch>, BranchValidator>();
 builder.Services.AddScoped<IValidator<Class>, ClassValidator>();
 builder.Services.AddScoped<IValidator<Course>, CourseValidator>();

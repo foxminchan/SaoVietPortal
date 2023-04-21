@@ -195,7 +195,7 @@ public class BranchController : ControllerBase
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.branchRepository.DeleteBranch(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, 
+            if (_redisCacheService.GetOrSet(CACHE_KEY,
                     () => _unitOfWork.branchRepository.GetAllBranches().ToList()) is
                 { Count: > 0 } branches)
                 branches.RemoveAll(s => s.branchId == id);

@@ -268,7 +268,7 @@ public class StudentController : ControllerBase
             _transactionService.ExecuteTransaction(() => _studentService.DeleteStudent(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList()) 
+                    .GetOrSet(CACHE_KEY, () => _studentService.GetAllStudents().ToList())
                 is { Count: > 0 } students)
                 students.RemoveAll(s => s.studentId == id);
 

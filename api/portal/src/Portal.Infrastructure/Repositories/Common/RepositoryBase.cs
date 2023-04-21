@@ -81,7 +81,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         if (take != 0)
             _ = query.Take(take);
 
-        if (string.IsNullOrEmpty(fields)) 
+        if (string.IsNullOrEmpty(fields))
             return query.AsNoTracking();
 
         var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);

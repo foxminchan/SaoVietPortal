@@ -20,8 +20,8 @@ public class LuceneService : ILuceneService
         var analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
         var indexConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
         using var writer = new IndexWriter(directory, indexConfig);
-        var docs = document.SelectMany(item 
-                => item.Value.Select(doc 
+        var docs = document.SelectMany(item
+                => item.Value.Select(doc
                     => new TextField(item.Key, doc.ToString(), Field.Store.YES)))
             .Select(field => new Document { field })
             .ToList();

@@ -14,7 +14,7 @@ public class StudentProgressRepository : RepositoryBase<StudentProgress>, IStude
 
     public void DeleteStudentProgress(Guid progressId) => Delete(x => x.progressId == progressId);
 
-    public bool TryGetStudentProgressById(Guid progressId, out StudentProgress? studentProgress) 
+    public bool TryGetStudentProgressById(Guid progressId, out StudentProgress? studentProgress)
         => TryGetById(progressId, out studentProgress);
 
     public IEnumerable<StudentProgress> GetStudentProgresses() => GetAll();

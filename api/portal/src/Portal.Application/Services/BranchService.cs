@@ -11,7 +11,7 @@ public class BranchService
 
     public IEnumerable<Branch> GetAllBranches() => _unitOfWork.branchRepository.GetAllBranches();
 
-    public bool TryGetBranchById(string id, out Branch? branch) 
+    public bool TryGetBranchById(string id, out Branch? branch)
         => _unitOfWork.branchRepository.TryGetBranchById(id, out branch);
 
     public void AddBranch(Branch branch) => _unitOfWork.branchRepository.AddBranch(branch);

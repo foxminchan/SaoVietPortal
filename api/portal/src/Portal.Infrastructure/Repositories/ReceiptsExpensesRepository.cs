@@ -14,7 +14,7 @@ public class ReceiptsExpensesRepository : RepositoryBase<ReceiptsExpenses>, IRec
 
     public void DeleteReceiptsExpenses(Guid receiptExpenseId) => Delete(x => x.receiptExpenseId == receiptExpenseId);
 
-    public bool TryGetReceiptsExpenses(Guid receiptExpenseId, out ReceiptsExpenses? receiptsExpenses) 
+    public bool TryGetReceiptsExpenses(Guid receiptExpenseId, out ReceiptsExpenses? receiptsExpenses)
         => TryGetById(receiptExpenseId, out receiptsExpenses);
 
     public IEnumerable<ReceiptsExpenses> GetReceiptsExpenses() => GetAll();

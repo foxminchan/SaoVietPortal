@@ -32,7 +32,7 @@ public class StudentProgress
     /// <summary>
     /// Trạng thái tiến độ học tập
     /// </summary>
-    public StudentProgressStatus progressStatus { get; set; }
+    public StudentProgressStatus? progressStatus { get; set; }
 
     /// <summary>
     /// Đánh giá bài học

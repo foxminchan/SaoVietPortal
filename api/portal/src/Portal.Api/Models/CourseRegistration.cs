@@ -16,7 +16,7 @@ public class CourseRegistration
     /// Trạng thái đăng ký khoá học
     /// </summary>
     /// <example>Chốt</example>
-    public CourseRegistrationStatus status { get; set; }
+    public CourseRegistrationStatus? status { get; set; }
 
     /// <summary>
     /// Ngày đăng ký khoá học

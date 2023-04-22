@@ -11,7 +11,7 @@ public class LuceneService : ILuceneService
 {
     private readonly string _indexPathDirectory;
 
-    public LuceneService(string indexPath) 
+    public LuceneService(string indexPath)
         => _indexPathDirectory = indexPath ?? throw new ArgumentNullException(nameof(indexPath));
 
     public void Index(IDictionary<string, List<Document>> document)

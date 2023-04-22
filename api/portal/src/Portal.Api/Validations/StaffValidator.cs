@@ -25,14 +25,16 @@ public class StaffValidator : AbstractValidator<Staff>
         RuleFor(x => x.address)
             .MaximumLength(80).WithMessage("Address must not exceed 80 characters");
         RuleFor(x => x.managerId)
-            .Must((_, managerId) => managerId is null || unitOfWork.staffRepository.TryGetStaffById(managerId, out var _))
+            .Must((_, managerId) => managerId is null 
+                                    || unitOfWork.staffRepository.TryGetStaffById(managerId, out var _))
             .WithMessage("Manager with id {PropertyValue} does not exist");
         RuleFor(x => x.branchId)
-            .Must((_, branchId) => branchId is null || unitOfWork.branchRepository.TryGetBranchById(branchId, out var _))
+            .Must((_, branchId) => branchId is null 
+                                   || unitOfWork.branchRepository.TryGetBranchById(branchId, out var _))
             .WithMessage("Branch with id {PropertyValue} does not exist");
         RuleFor(x => x.positionId)
-            .Must((_, positionId) => !positionId.HasValue ||
-                                     unitOfWork.positionRepository.TryGetPositionById(positionId.Value, out var _))
+            .Must((_, positionId) => !positionId.HasValue 
+                                     || unitOfWork.positionRepository.TryGetPositionById(positionId.Value, out var _))
             .WithMessage("Position with id {PropertyValue} does not exist");
     }
 }

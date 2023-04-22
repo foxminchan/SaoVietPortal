@@ -6,7 +6,9 @@ namespace Portal.Api.Extensions;
 
 public static class RedisCacheExtension
 {
-    public static void AddRedisCache(this IServiceCollection services, IConfiguration config,
+    public static void AddRedisCache(
+        this IServiceCollection services, 
+        IConfiguration config,
         Action<RedisCache>? setupAction = null)
     {
         if (services is null)

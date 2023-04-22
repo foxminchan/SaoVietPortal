@@ -78,7 +78,11 @@ builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
 builder.Services.AddRedisCache(builder.Configuration);
-builder.Services.AddResponseCaching();
+builder.Services.AddResponseCaching(options =>
+{
+    options.MaximumBodySize = 1024;
+    options.UseCaseSensitivePaths = true;
+});
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
@@ -111,8 +115,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IValidator<Branch>, BranchValidator>();

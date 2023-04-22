@@ -29,9 +29,9 @@ public class RedisCacheService : IRedisCacheService
             ConnectionMultiplexer.Connect(options.Value.GetConnectionString()));
     }
 
-    private ConnectionMultiplexer ConnectionMultiplexer => _connectionMultiplexer.Value;
+    private ConnectionMultiplexer connectionMultiplexer => _connectionMultiplexer.Value;
 
-    private IDatabase Database
+    private IDatabase database
     {
         get
         {
@@ -39,7 +39,7 @@ public class RedisCacheService : IRedisCacheService
 
             try
             {
-                return ConnectionMultiplexer.GetDatabase();
+                return connectionMultiplexer.GetDatabase();
             }
             finally
             {
@@ -56,13 +56,13 @@ public class RedisCacheService : IRedisCacheService
         if (string.IsNullOrEmpty(key))
             throw new ArgumentNullException(nameof(key));
 
-        var cachedValue = Database.StringGet(key);
+        var cachedValue = database.StringGet(key);
         if (!string.IsNullOrEmpty(cachedValue))
             return GetByteToObject<T>(cachedValue);
 
         var newValue = valueFactory();
         if (newValue is not null)
-            Database.StringSet(key, JsonConvert.SerializeObject(newValue), expiration);
+            database.StringSet(key, JsonConvert.SerializeObject(newValue), expiration);
 
         return newValue;
     }
@@ -76,24 +76,24 @@ public class RedisCacheService : IRedisCacheService
             throw new ArgumentNullException(nameof(hashKey));
 
         var keyWithPrefix = $"{_redisCacheOption.Prefix}:{key}";
-        var value = Database.HashGet(keyWithPrefix, hashKey.ToLower());
+        var value = database.HashGet(keyWithPrefix, hashKey.ToLower());
         if (!string.IsNullOrEmpty(value))
             return GetByteToObject<T>(value);
 
         if (valueFactory() is not null)
-            Database.HashSet(keyWithPrefix, hashKey.ToLower(),
+            database.HashSet(keyWithPrefix, hashKey.ToLower(),
                 JsonConvert.SerializeObject(valueFactory()));
         return valueFactory();
     }
 
     public IEnumerable<string> GetKeys(string pattern)
-        => ((RedisResult[])Database.ScriptEvaluate(GetKeysLuaScript, values: new RedisValue[] { pattern })!)
+        => ((RedisResult[])database.ScriptEvaluate(GetKeysLuaScript, values: new RedisValue[] { pattern })!)
             .Where(x => x.ToString()!.StartsWith(_redisCacheOption.Prefix))
             .Select(x => x.ToString())
             .ToArray()!;
 
     public IEnumerable<T> GetValues<T>(string key)
-        => Database.HashGetAll($"{_redisCacheOption.Prefix}:{key}").Select(x => GetByteToObject<T>(x.Value));
+        => database.HashGetAll($"{_redisCacheOption.Prefix}:{key}").Select(x => GetByteToObject<T>(x.Value));
 
     public bool RemoveAllKeys(string pattern = "*")
     {
@@ -101,15 +101,15 @@ public class RedisCacheService : IRedisCacheService
 
         var keys = GetKeys($"{_redisCacheOption.Prefix}:{pattern}");
         foreach (var key in keys)
-            succeed = Database.KeyDelete(key);
+            succeed = database.KeyDelete(key);
 
         return succeed;
     }
 
-    public void Remove(string key) => Database.KeyDelete($"{_redisCacheOption.Prefix}:{key}");
+    public void Remove(string key) => database.KeyDelete($"{_redisCacheOption.Prefix}:{key}");
 
     public void Reset()
-        => Database.ScriptEvaluate(
+        => database.ScriptEvaluate(
             ClearCacheLuaScript,
             values: new RedisValue[] { _redisCacheOption.Prefix + "*" },
             flags: CommandFlags.FireAndForget);

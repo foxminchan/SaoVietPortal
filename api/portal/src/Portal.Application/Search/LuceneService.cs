@@ -1,5 +1,4 @@
-﻿using Lucene.Net.Analysis.Standard;
-using Lucene.Net.Documents;
+﻿using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
@@ -10,14 +9,15 @@ namespace Portal.Application.Search;
 
 public class LuceneService : ILuceneService
 {
-    private readonly string _indexPath;
+    private readonly string _indexPathDirectory;
 
-    public LuceneService(string indexPath) => _indexPath = indexPath;
+    public LuceneService(string indexPath) 
+        => _indexPathDirectory = indexPath ?? throw new ArgumentNullException(nameof(indexPath));
 
     public void Index(IDictionary<string, List<Document>> document)
     {
-        using var directory = FSDirectory.Open(_indexPath);
-        var analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+        using var directory = FSDirectory.Open(_indexPathDirectory);
+        var analyzer = new VietnameseAnalyzer(LuceneVersion.LUCENE_48);
         var indexConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
         using var writer = new IndexWriter(directory, indexConfig);
         var docs = document.SelectMany(item
@@ -33,27 +33,30 @@ public class LuceneService : ILuceneService
 
     public IEnumerable<Document> Search(string query, int maxResults)
     {
-        using var directory = FSDirectory.Open(_indexPath);
-        var analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+        using var directory = FSDirectory.Open(_indexPathDirectory);
+        var analyzer = new VietnameseAnalyzer(LuceneVersion.LUCENE_48);
         var indexConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
         using var writer = new IndexWriter(directory, indexConfig);
-        var parser = new QueryParser(LuceneVersion.LUCENE_48, "title", analyzer);
-        var queryObj = parser.Parse(query);
-        var fuzzyQuery = new FuzzyQuery(new Term("title", query), 2);
+        var searcher = new IndexSearcher(writer.GetReader(applyAllDeletes: true));
+        var parser = new QueryParser(LuceneVersion.LUCENE_48, "content", analyzer);
+        var fuzzyQuery = new FuzzyQuery(new Term("content", query), 2);
+        var queryParser = parser.Parse(query);
         var booleanQuery = new BooleanQuery
         {
-            { queryObj, Occur.SHOULD },
+            { queryParser, Occur.SHOULD },
             { fuzzyQuery, Occur.SHOULD }
         };
-        var searcher = new IndexSearcher(writer.GetReader(applyAllDeletes: true));
         var hits = searcher.Search(booleanQuery, maxResults).ScoreDocs;
-        return hits.Select(hit => searcher.Doc(hit.Doc));
+        foreach (var hit in hits)
+        {
+            yield return searcher.Doc(hit.Doc);
+        }
     }
 
     public void ClearAll()
     {
-        using var directory = FSDirectory.Open(_indexPath);
-        var analyzer = new StandardAnalyzer(LuceneVersion.LUCENE_48);
+        using var directory = FSDirectory.Open(_indexPathDirectory);
+        var analyzer = new VietnameseAnalyzer(LuceneVersion.LUCENE_48);
         var indexConfig = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
         using var writer = new IndexWriter(directory, indexConfig);
         writer.DeleteAll();

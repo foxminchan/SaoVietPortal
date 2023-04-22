@@ -9,7 +9,7 @@ public class CourseRegistrationProfile : Profile
         CreateMap<Domain.Entities.CourseRegistration, Models.CourseRegistration>()
             .ForMember(dest => dest.courseRegistrationId, opt => opt.MapFrom(src => src.courseRegistrationId))
             .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
-            .ForMember(dest => dest.registerDate, opt => opt.MapFrom(src => src.registerDate))
+                .ForMember(dest => dest.registerDate, opt => opt.MapFrom(src => src.registerDate))
             .ForMember(dest => dest.appointmentDate, opt => opt.MapFrom(src => src.appointmentDate))
             .ForMember(dest => dest.registerFee, opt => opt.MapFrom(src => src.registerFee))
             .ForMember(dest => dest.discountAmount, opt => opt.MapFrom(src => src.discountAmount))

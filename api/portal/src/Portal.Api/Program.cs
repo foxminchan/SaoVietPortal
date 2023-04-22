@@ -1,4 +1,3 @@
-using FluentValidation;
 using Hangfire;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Diagnostics;
@@ -11,8 +10,6 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Portal.Api.Extensions;
 using Portal.Api.Filters;
-using Portal.Api.Models;
-using Portal.Api.Validations;
 using Portal.Application.Health;
 using Portal.Application.Search;
 using Portal.Application.Token;
@@ -74,6 +71,7 @@ builder.Services.AddAuth();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddPollyPolicy();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddFluentValidators();
 builder.Services.AddFluentValidationRulesToSwagger();
 builder.Services.AddProblemDetails();
 builder.Services.AddRateLimiting();
@@ -118,17 +116,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-builder.Services.AddScoped<IValidator<Branch>, BranchValidator>();
-builder.Services.AddScoped<IValidator<Class>, ClassValidator>();
-builder.Services.AddScoped<IValidator<Course>, CourseValidator>();
-builder.Services.AddScoped<IValidator<CourseRegistration>, CourseRegistrationValidator>();
-builder.Services.AddScoped<IValidator<PaymentMethod>, PaymentMethodValidator>();
-builder.Services.AddScoped<IValidator<Position>, PositionValidator>();
-builder.Services.AddScoped<IValidator<ReceiptsExpenses>, ReceiptsExpensesValidator>();
-builder.Services.AddScoped<IValidator<Staff>, StaffValidator>();
-builder.Services.AddScoped<IValidator<Student>, StudentValidator>();
-builder.Services.AddScoped<IValidator<StudentProgress>, StudentProgressValidator>();
 
 builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();

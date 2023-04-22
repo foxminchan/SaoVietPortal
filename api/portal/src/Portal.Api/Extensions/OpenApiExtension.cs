@@ -177,7 +177,6 @@ public static class OpenApiExtension
             c.DocumentTitle = "Sao Viet API";
             c.HeadContent = @"
                 <link rel='stylesheet' type='text/css' href='/css/swagger-ui.css' />
-                <script src='/js/swagger-ui.js' type='text/javascript'></script>
                 <script>
                     var defaultFavicon = document.querySelector('link[rel=""icon""]');
                     if (defaultFavicon) {

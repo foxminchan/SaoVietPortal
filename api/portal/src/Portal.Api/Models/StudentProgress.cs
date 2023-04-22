@@ -1,6 +1,4 @@
-﻿using Portal.Domain.Enum;
-
-namespace Portal.Api.Models;
+﻿namespace Portal.Api.Models;
 
 /// <summary>
 /// Thông tin tiến độ học tập của học viên
@@ -32,7 +30,7 @@ public class StudentProgress
     /// <summary>
     /// Trạng thái tiến độ học tập
     /// </summary>
-    public StudentProgressStatus? progressStatus { get; set; }
+    public string? progressStatus { get; set; }
 
     /// <summary>
     /// Đánh giá bài học

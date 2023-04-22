@@ -1,6 +1,4 @@
-﻿using Portal.Domain.Enum;
-
-namespace Portal.Api.Models;
+﻿namespace Portal.Api.Models;
 
 /// <summary>
 /// Thông tin đăng ký khoá học
@@ -16,7 +14,7 @@ public class CourseRegistration
     /// Trạng thái đăng ký khoá học
     /// </summary>
     /// <example>Chốt</example>
-    public CourseRegistrationStatus? status { get; set; }
+    public string? status { get; set; }
 
     /// <summary>
     /// Ngày đăng ký khoá học

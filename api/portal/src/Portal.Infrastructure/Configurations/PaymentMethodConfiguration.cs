@@ -10,13 +10,13 @@ public class PaymentMethodConfiguration : IEntityTypeConfiguration<PaymentMethod
     {
         builder.ToTable("PaymentMethod");
 
-        builder.HasKey(e => e.paymentMethodId);
-        builder.Property(e => e.paymentMethodId)
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("tinyint")
             .ValueGeneratedOnAdd();
 
-        builder.Property(e => e.paymentMethodName)
+        builder.Property(e => e.Name)
             .HasColumnName("Name")
             .HasColumnType("nvarchar(50)")
             .IsRequired();

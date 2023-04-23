@@ -15,7 +15,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class CourseController : ControllerBase
 {
-    private const string CACHE_KEY = "CourseData";
+    private const string CacheKey = "CourseData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<CourseController> _logger;
@@ -62,7 +62,7 @@ public class CourseController : ControllerBase
         try
         {
             return (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.courseRepository.GetAllCourses().ToList())) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList())) switch
             {
                 { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
                 _ => NotFound()
@@ -98,8 +98,8 @@ public class CourseController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.courseRepository.GetAllCourses().ToList())
-                    .FirstOrDefault(s => s.courseId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } course => Ok(course),
                 _ => NotFound()
@@ -122,8 +122,8 @@ public class CourseController : ControllerBase
     ///
     ///     POST /api/v1/Course
     ///     {
-    ///         "courseId": "string",
-    ///         "courseName": "string",
+    ///         "Id": "string",
+    ///         "Name": "string",
     ///         "description": "string"
     ///     }
     /// </remarks>
@@ -146,17 +146,17 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.courseId is not null && _unitOfWork.courseRepository.TryGetCourseById(course.courseId, out _))
+            if (course.Id is not null && _unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return Conflict();
 
             var newCourse = _mapper.Map<Domain.Entities.Course>(course);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.courseRepository.AddCourse(newCourse));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.AddCourse(newCourse));
 
             var positions =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.courseRepository.GetAllCourses().ToList());
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList());
 
-            if (positions.FirstOrDefault(s => s.courseId == newCourse.courseId) is null)
+            if (positions.FirstOrDefault(s => s.Id == newCourse.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
 
             return Ok();
@@ -190,14 +190,14 @@ public class CourseController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.courseRepository.TryGetCourseById(id, out _))
+            if (!_unitOfWork.CourseRepository.TryGetCourseById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.courseRepository.DeleteCourse(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.DeleteCourse(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.courseRepository.GetAllCourses().ToList()) is
+            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) is
                 { Count: > 0 } courses)
-                courses.RemoveAll(s => s.courseId == id);
+                courses.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -218,8 +218,8 @@ public class CourseController : ControllerBase
     ///
     ///     PUT /api/v1/Course
     ///     {
-    ///         "courseId": "string",
-    ///         "courseName": "string",
+    ///         "Id": "string",
+    ///         "Name": "string",
     ///         "description": "string"
     ///     }
     /// </remarks>
@@ -241,15 +241,15 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.courseId is not null && !_unitOfWork.courseRepository.TryGetCourseById(course.courseId, out _))
+            if (course.Id is not null && !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return NotFound();
 
             var updateCourse = _mapper.Map<Domain.Entities.Course>(course);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.courseRepository.UpdateCourse(updateCourse));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.UpdateCourse(updateCourse));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.courseRepository.GetAllCourses().ToList()) is
+            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) is
                 { Count: > 0 } courses)
-                courses[courses.FindIndex(s => s.courseId == updateCourse.courseId)] = updateCourse;
+                courses[courses.FindIndex(s => s.Id == updateCourse.Id)] = updateCourse;
 
             return Ok();
         }

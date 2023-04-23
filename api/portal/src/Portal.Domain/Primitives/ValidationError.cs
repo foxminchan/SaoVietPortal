@@ -7,8 +7,8 @@ namespace Portal.Domain.Primitives;
 [Serializable]
 public sealed class ValidationError
 {
-    public int errorCode { get; set; } = (int)HttpStatusCode.BadRequest;
-    public string? message { get; set; } = "Validation failed";
+    public int ErrorCode { get; set; } = (int)HttpStatusCode.BadRequest;
+    public string? Message { get; set; } = "Validation failed";
 
     public List<Dictionary<string, object>> Errors { get; }
 

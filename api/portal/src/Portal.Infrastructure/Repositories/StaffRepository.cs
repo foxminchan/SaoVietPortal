@@ -12,7 +12,7 @@ public class StaffRepository : RepositoryBase<Staff>, IStaffRepository
 
     public void UpdateStaff(Staff staff) => Update(staff);
 
-    public void DeleteStaff(string staffId) => Delete(x => x.staffId == staffId);
+    public void DeleteStaff(string staffId) => Delete(x => x.Id == staffId);
 
     public bool TryGetStaffById(string staffId, out Staff? staff)
         => TryGetById(staffId, out staff);

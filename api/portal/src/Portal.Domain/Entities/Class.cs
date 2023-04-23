@@ -2,13 +2,13 @@
 
 public class Class
 {
-    public string? classId { get; set; }
-    public string? startDate { get; set; }
-    public string? endDate { get; set; }
-    public float? fee { get; set; }
-    public string? courseId { get; set; }
-    public Course? course { get; set; }
-    public string? branchId { get; set; }
-    public Branch? branch { get; set; }
-    public List<CourseEnrollment>? courseEnrollments { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string StartDate { get; set; } = string.Empty;
+    public string EndDate { get; set; } = string.Empty;
+    public float Fee { get; set; }
+    public string CourseId { get; set; } = string.Empty;
+    public Course? Course { get; set; }
+    public string BranchId { get; set; } = string.Empty;
+    public Branch? Branch { get; set; }
+    public ICollection<CourseEnrollment> CourseEnrollments { get; private set; } = new HashSet<CourseEnrollment>();
 }

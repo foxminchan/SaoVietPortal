@@ -12,7 +12,7 @@ public class CourseRepository : RepositoryBase<Course>, ICourseRepository
 
     public void UpdateCourse(Course course) => Update(course);
 
-    public void DeleteCourse(string id) => Delete(x => x.courseId == id);
+    public void DeleteCourse(string id) => Delete(x => x.Id == id);
 
     public bool TryGetCourseById(string id, out Course? course) => TryGetById(id, out course);
 

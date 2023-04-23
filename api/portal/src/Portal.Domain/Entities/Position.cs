@@ -2,7 +2,7 @@
 
 public class Position
 {
-    public int? positionId { get; set; }
-    public string? positionName { get; set; }
-    public List<Staff>? staffs { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public ICollection<Staff> Staffs { get; private set; } = new HashSet<Staff>();
 }

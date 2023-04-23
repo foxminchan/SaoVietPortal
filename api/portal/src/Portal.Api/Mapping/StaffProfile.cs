@@ -7,14 +7,14 @@ public class StaffProfile : Profile
     public StaffProfile()
     {
         CreateMap<Domain.Entities.Staff, Models.Staff>()
-            .ForMember(dest => dest.staffId, opt => opt.MapFrom(src => src.staffId))
-            .ForMember(dest => dest.fullname, opt => opt.MapFrom(src => src.fullname))
-            .ForMember(dest => dest.dob, opt => opt.MapFrom(src => src.dob))
-            .ForMember(dest => dest.dsw, opt => opt.MapFrom(src => src.dsw))
-            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.positionId, opt => opt.MapFrom(src => src.positionId))
-            .ForMember(dest => dest.branchId, opt => opt.MapFrom(src => src.branchId))
-            .ForMember(dest => dest.managerId, opt => opt.MapFrom(src => src.managerId))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Fullname))
+            .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
+            .ForMember(dest => dest.Dsw, opt => opt.MapFrom(src => src.Dsw))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ForMember(dest => dest.PositionId, opt => opt.MapFrom(src => src.PositionId))
+            .ForMember(dest => dest.BranchId, opt => opt.MapFrom(src => src.BranchId))
+            .ForMember(dest => dest.ManagerId, opt => opt.MapFrom(src => src.ManagerId))
             .ReverseMap();
     }
 }

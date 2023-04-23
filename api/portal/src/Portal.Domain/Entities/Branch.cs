@@ -2,11 +2,11 @@
 
 public class Branch
 {
-    public string? branchId { get; set; }
-    public string? branchName { get; set; }
-    public string? address { get; set; }
-    public string? phone { get; set; }
-    public List<Class>? classes { get; set; }
-    public List<Staff>? staffs { get; set; }
-    public List<ReceiptsExpenses>? receiptsExpenses { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Phone { get; set; } = string.Empty;
+    public ICollection<Class> Classes { get; private set; } = new HashSet<Class>();
+    public ICollection<Staff> Staffs { get; private set; } = new HashSet<Staff>();
+    public ICollection<ReceiptsExpenses> ReceiptsExpenses { get; private set; } = new HashSet<ReceiptsExpenses>();
 }

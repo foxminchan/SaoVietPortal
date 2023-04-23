@@ -8,50 +8,50 @@ public class StudentProgress
     /// <summary>
     /// Student progress ID
     /// </summary>
-    public Guid progressId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Lesson name
     /// </summary>
     /// <example>Word cơ bản</example>
-    public string? lessonName { get; set; }
+    public string LessonName { get; set; } = string.Empty;
 
     /// <summary>
     /// Lesson content
     /// </summary>
     /// <example>Giới thiệu về Word</example>
-    public string? lessonContent { get; set; }
+    public string LessonContent { get; set; } = string.Empty;
 
     /// <summary>
     /// Lesson date
     /// </summary>
     /// <example>01/04/2023</example>
-    public string? lessonDate { get; set; }
+    public string LessonDate { get; set; } = string.Empty;
 
     /// <summary>
     /// Student progress status
     /// </summary>
     /// <example>Miễn học</example>
-    public string? progressStatus { get; set; }
+    public string Status { get; set; } = string.Empty;
 
     /// <summary>
     /// Lesson rating
     /// </summary>
     /// <example>10</example>
-    public int lessonRating { get; set; }
+    public int LessonRating { get; set; }
 
     /// <summary>
     /// Teacher ID
     /// </summary>
-    public string? staffId { get; set; }
+    public string StaffId { get; set; } = string.Empty;
 
     /// <summary>
     /// Student ID
     /// </summary>
-    public string? studentId { get; set; }
+    public string StudentId { get; set; } = string.Empty;
 
     /// <summary>
     /// Class ID
     /// </summary>
-    public string? classId { get; set; }
+    public string ClassId { get; set; } = string.Empty;
 }

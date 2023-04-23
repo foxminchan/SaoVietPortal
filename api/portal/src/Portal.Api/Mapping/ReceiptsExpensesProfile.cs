@@ -7,13 +7,13 @@ public class ReceiptsExpensesProfile : Profile
     public ReceiptsExpensesProfile()
     {
         CreateMap<Domain.Entities.ReceiptsExpenses, Models.ReceiptsExpenses>()
-            .ForMember(dest => dest.receiptExpenseId, opt => opt.MapFrom(src => src.receiptExpenseId))
-            .ForMember(dest => dest.type, opt => opt.MapFrom(src => src.type))
-            .ForMember(dest => dest.amount,
-opt => opt.MapFrom(src => src.amount))
-            .ForMember(dest => dest.date, opt => opt.MapFrom(src => src.date))
-            .ForMember(dest => dest.note, opt => opt.MapFrom(src => src.note))
-            .ForMember(dest => dest.branchId, opt => opt.MapFrom(src => src.branchId))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
+            .ForMember(dest => dest.Amount,
+opt => opt.MapFrom(src => src.Amount))
+            .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.Date))
+            .ForMember(dest => dest.Note, opt => opt.MapFrom(src => src.Note))
+            .ForMember(dest => dest.BranchId, opt => opt.MapFrom(src => src.BranchId))
             .ReverseMap();
     }
 }

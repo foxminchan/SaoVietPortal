@@ -2,18 +2,18 @@
 
 public class Staff
 {
-    public string? staffId { get; set; }
-    public string? fullname { get; set; }
-    public string? dob { get; set; }
-    public string? address { get; set; }
-    public string? dsw { get; set; }
-    public int positionId { get; set; }
-    public Position? position { get; set; }
-    public string? branchId { get; set; }
-    public Branch? branch { get; set; }
-    public string? managerId { get; set; }
-    public Staff? manager { get; set; }
-    public List<Staff>? staffs { get; set; }
-    public List<StudentProgress>? studentProgresses { get; set; }
-    public List<ApplicationUser>? users { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Fullname { get; set; } = string.Empty;
+    public string Dob { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Dsw { get; set; } = string.Empty;
+    public int PositionId { get; set; }
+    public Position? Position { get; set; }
+    public string BranchId { get; set; } = string.Empty;
+    public Branch? Branch { get; set; }
+    public string ManagerId { get; set; } = string.Empty;
+    public Staff? Manager { get; set; }
+    public ICollection<Staff> Staffs { get; private set; } = new HashSet<Staff>();
+    public ICollection<StudentProgress> StudentProgresses { get; private set; } = new HashSet<StudentProgress>();
+    public ICollection<ApplicationUser> Users { get; private set; } = new HashSet<ApplicationUser>();
 }

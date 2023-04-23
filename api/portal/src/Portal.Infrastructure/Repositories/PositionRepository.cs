@@ -12,7 +12,7 @@ public class PositionRepository : RepositoryBase<Position>, IPositionRepository
 
     public void UpdatePosition(Position position) => Update(position);
 
-    public void DeletePosition(int id) => Delete(x => x.positionId == id);
+    public void DeletePosition(int id) => Delete(x => x.Id == id);
 
     public bool TryGetPositionById(int id, out Position? position)
         => TryGetById(id, out position);

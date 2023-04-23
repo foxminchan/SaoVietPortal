@@ -2,8 +2,8 @@
 
 public class Course
 {
-    public string? courseId { get; set; }
-    public string? courseName { get; set; }
-    public string? description { get; set; }
-    public List<Class>? classes { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+    public ICollection<Class> Classes { get; set; } = new HashSet<Class>();
 }

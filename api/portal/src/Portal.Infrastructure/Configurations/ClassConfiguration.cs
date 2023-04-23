@@ -11,36 +11,36 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
     {
         builder.ToTable("Class");
 
-        builder.HasKey(e => e.classId);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.classId)
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("char(10)");
 
-        builder.Property(e => e.startDate)
+        builder.Property(e => e.StartDate)
             .HasConversion<StringConverter>()
             .HasColumnName("StartDate")
             .HasColumnType("date")
             .IsRequired();
 
-        builder.Property(e => e.endDate)
+        builder.Property(e => e.EndDate)
             .HasConversion<StringConverter>()
             .HasColumnName("EndDate")
             .HasColumnType("date");
 
-        builder.Property(e => e.fee)
+        builder.Property(e => e.Fee)
             .HasColumnName("Fee")
             .HasColumnType("float");
 
-        builder.HasOne(e => e.branch)
-            .WithMany(e => e.classes)
-            .HasForeignKey(e => e.branchId)
+        builder.HasOne(e => e.Branch)
+            .WithMany(e => e.Classes)
+            .HasForeignKey(e => e.BranchId)
             .HasConstraintName("FK_Class_Branch")
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(e => e.course)
-            .WithMany(e => e.classes)
-            .HasForeignKey(e => e.courseId)
+        builder.HasOne(e => e.Course)
+            .WithMany(e => e.Classes)
+            .HasForeignKey(e => e.CourseId)
             .HasConstraintName("FK_Class_Course")
             .OnDelete(DeleteBehavior.SetNull);
     }

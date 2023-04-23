@@ -205,12 +205,12 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
 
                     b.Property<string>("imageUrl")
                         .HasColumnType("nvarchar(max)")
-                        .HasColumnName("ImageUrl");
+                        .HasColumnName("AvatarUrl");
 
-                    b.Property<string>("staffId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("studentId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
                     b.HasKey("Id");
@@ -223,16 +223,16 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("staffId");
+                    b.HasIndex("Id");
 
-                    b.HasIndex("studentId");
+                    b.HasIndex("Id");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Branch", b =>
                 {
-                    b.Property<string>("branchId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(8)")
                         .HasColumnName("Id");
 
@@ -240,7 +240,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("nvarchar(80)")
                         .HasColumnName("Address");
 
-                    b.Property<string>("branchName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Name");
@@ -249,21 +249,21 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("char(10)")
                         .HasColumnName("Phone");
 
-                    b.HasKey("branchId");
+                    b.HasKey("Id");
 
                     b.ToTable("Branch", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Class", b =>
                 {
-                    b.Property<string>("classId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)")
                         .HasColumnName("Id");
 
-                    b.Property<string>("branchId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(8)");
 
-                    b.Property<string>("courseId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(10)");
 
                     b.Property<DateTime?>("endDate")
@@ -278,22 +278,22 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("date")
                         .HasColumnName("StartDate");
 
-                    b.HasKey("classId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("branchId");
+                    b.HasIndex("Id");
 
-                    b.HasIndex("courseId");
+                    b.HasIndex("Id");
 
                     b.ToTable("Class", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Course", b =>
                 {
-                    b.Property<string>("courseId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(10)")
                         .HasColumnName("Id");
 
-                    b.Property<string>("courseName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Name");
@@ -302,29 +302,29 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Description");
 
-                    b.HasKey("courseId");
+                    b.HasKey("Id");
 
                     b.ToTable("Course", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.CourseEnrollment", b =>
                 {
-                    b.Property<string>("studentId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
-                    b.Property<string>("classId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
-                    b.HasKey("studentId", "classId");
+                    b.HasKey("Id", "Id");
 
-                    b.HasIndex("classId");
+                    b.HasIndex("Id");
 
                     b.ToTable("CourseEnrollment", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.CourseRegistration", b =>
                 {
-                    b.Property<Guid>("courseRegistrationId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier")
                         .HasColumnName("Id");
@@ -333,21 +333,21 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("date")
                         .HasColumnName("AppointmentDate");
 
-                    b.Property<string>("classId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
                     b.Property<decimal>("discountAmount")
                         .HasColumnType("decimal(4,2)")
                         .HasColumnName("DiscountAmount");
 
-                    b.Property<byte?>("paymentMethodId")
+                    b.Property<byte?>("Id")
                         .HasColumnType("tinyint");
 
                     b.Property<DateTime?>("registerDate")
                         .HasColumnType("date")
                         .HasColumnName("RegisterDate");
 
-                    b.Property<double>("registerFee")
+                    b.Property<double>("Fee")
                         .HasColumnType("float")
                         .HasColumnName("RegisterFee");
 
@@ -355,59 +355,59 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("nvarchar(15)")
                         .HasColumnName("Status");
 
-                    b.Property<string>("studentId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
-                    b.HasKey("courseRegistrationId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("paymentMethodId");
+                    b.HasIndex("Id");
 
-                    b.HasIndex("studentId", "classId");
+                    b.HasIndex("Id", "Id");
 
                     b.ToTable("CourseRegistration", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.PaymentMethod", b =>
                 {
-                    b.Property<byte>("paymentMethodId")
+                    b.Property<byte>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint")
                         .HasColumnName("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("paymentMethodId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<byte>("Id"));
 
-                    b.Property<string>("paymentMethodName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Name");
 
-                    b.HasKey("paymentMethodId");
+                    b.HasKey("Id");
 
                     b.ToTable("PaymentMethod", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Position", b =>
                 {
-                    b.Property<int>("positionId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("Id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("positionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("positionName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("Name");
 
-                    b.HasKey("positionId");
+                    b.HasKey("Id");
 
                     b.ToTable("Position", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.ReceiptsExpenses", b =>
                 {
-                    b.Property<Guid>("receiptExpenseId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier")
                         .HasColumnName("Id");
@@ -416,7 +416,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("float")
                         .HasColumnName("Amount");
 
-                    b.Property<string>("branchId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(8)");
 
                     b.Property<DateTime>("date")
@@ -433,16 +433,16 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasDefaultValue(false)
                         .HasColumnName("Type");
 
-                    b.HasKey("receiptExpenseId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("branchId");
+                    b.HasIndex("Id");
 
                     b.ToTable("ReceiptsExpenses", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Staff", b =>
                 {
-                    b.Property<string>("staffId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(20)")
                         .HasColumnName("Id");
 
@@ -450,7 +450,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("nvarchar(80)")
                         .HasColumnName("Address");
 
-                    b.Property<string>("branchId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(8)");
 
                     b.Property<DateTime?>("dob")
@@ -469,23 +469,23 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                     b.Property<string>("managerId")
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("positionId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.HasKey("staffId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("branchId");
+                    b.HasIndex("Id");
 
                     b.HasIndex("managerId");
 
-                    b.HasIndex("positionId");
+                    b.HasIndex("Id");
 
                     b.ToTable("Staff", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.Student", b =>
                 {
-                    b.Property<string>("studentId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)")
                         .HasColumnName("Id");
 
@@ -520,19 +520,19 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("SocialNetwork");
 
-                    b.HasKey("studentId");
+                    b.HasKey("Id");
 
                     b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("Portal.Domain.Entities.StudentProgress", b =>
                 {
-                    b.Property<Guid>("progressId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("Uniqueidentifier")
                         .HasColumnName("Id");
 
-                    b.Property<string>("classId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
                     b.Property<string>("lessonContent")
@@ -554,19 +554,19 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
 
                     b.Property<string>("progressStatus")
                         .HasColumnType("nvarchar(15)")
-                        .HasColumnName("ProgressStatus");
+                        .HasColumnName("Status");
 
-                    b.Property<string>("staffId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(20)");
 
-                    b.Property<string>("studentId")
+                    b.Property<string>("Id")
                         .HasColumnType("char(10)");
 
-                    b.HasKey("progressId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("staffId");
+                    b.HasIndex("Id");
 
-                    b.HasIndex("studentId", "classId");
+                    b.HasIndex("Id", "Id");
 
                     b.ToTable("StudentProgress", (string)null);
                 });
@@ -626,13 +626,13 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Staff", "staff")
                         .WithMany("users")
-                        .HasForeignKey("staffId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Users_Staff");
 
                     b.HasOne("Portal.Domain.Entities.Student", "student")
                         .WithMany("users")
-                        .HasForeignKey("studentId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Users_Students");
 
@@ -645,13 +645,13 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Branch", "branch")
                         .WithMany("classes")
-                        .HasForeignKey("branchId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Class_Branch");
 
                     b.HasOne("Portal.Domain.Entities.Course", "course")
                         .WithMany("classes")
-                        .HasForeignKey("courseId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Class_Course");
 
@@ -664,14 +664,14 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Class", "class")
                         .WithMany("courseEnrollments")
-                        .HasForeignKey("classId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired()
                         .HasConstraintName("FK_CourseEnrollment_Class");
 
                     b.HasOne("Portal.Domain.Entities.Student", "student")
                         .WithMany("courseEnrollments")
-                        .HasForeignKey("studentId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_CourseEnrollment_Student");
@@ -685,13 +685,13 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.PaymentMethod", "paymentMethod")
                         .WithMany("courseRegistrations")
-                        .HasForeignKey("paymentMethodId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_CourseRegistration_PaymentMethod");
 
                     b.HasOne("Portal.Domain.Entities.CourseEnrollment", "courseEnrollment")
                         .WithMany("courseRegistrations")
-                        .HasForeignKey("studentId", "classId")
+                        .HasForeignKey("Id", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_CourseRegistrations_CourseEnrollment");
 
@@ -704,7 +704,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Branch", "branch")
                         .WithMany("receiptsExpenses")
-                        .HasForeignKey("branchId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_ReceiptsExpenses_Branch");
 
@@ -715,7 +715,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Branch", "branch")
                         .WithMany("staffs")
-                        .HasForeignKey("branchId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_Staff_Branch");
 
@@ -727,7 +727,7 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
 
                     b.HasOne("Portal.Domain.Entities.Position", "position")
                         .WithMany("staffs")
-                        .HasForeignKey("positionId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Staff_Position");
@@ -743,13 +743,13 @@ partial class ApplicationDbContextModelSnapshot : ModelSnapshot
                 {
                     b.HasOne("Portal.Domain.Entities.Staff", "staff")
                         .WithMany("studentProgresses")
-                        .HasForeignKey("staffId")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("FK_StudentProgress_Staff");
 
                     b.HasOne("Portal.Domain.Entities.CourseEnrollment", "courseEnrollment")
                         .WithMany("studentProgresses")
-                        .HasForeignKey("studentId", "classId")
+                        .HasForeignKey("Id", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("FK_StudentProgress_CourseEnrollment");
 

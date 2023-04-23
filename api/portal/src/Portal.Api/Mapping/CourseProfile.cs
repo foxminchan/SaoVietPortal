@@ -7,9 +7,9 @@ public class CourseProfile : Profile
     public CourseProfile()
     {
         CreateMap<Domain.Entities.Course, Models.Course>()
-            .ForMember(dest => dest.courseId, opt => opt.MapFrom(src => src.courseId))
-            .ForMember(dest => dest.courseName, opt => opt.MapFrom(src => src.courseName))
-            .ForMember(dest => dest.description, opt => opt.MapFrom(src => src.description))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ReverseMap();
     }
 }

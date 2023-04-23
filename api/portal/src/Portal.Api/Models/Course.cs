@@ -8,17 +8,17 @@ public class Course
     /// <summary>
     /// Course ID
     /// </summary>
-    public string? courseId { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Name of course
     /// </summary>
     /// <example>Tin học văn phòng</example>
-    public string? courseName { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// Course description
     /// </summary>
     /// <example>Thực hành với các phần mềm Microsoft Office</example>
-    public string? description { get; set; }
+    public string Description { get; set; } = string.Empty;
 }

@@ -181,6 +181,16 @@ public static class OpenApiExtension
                     },
                     new()
                     {
+                        Name = "CourseRegistration",
+                        Description = "Management of course registration",
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/CourseRegistration", UriKind.RelativeOrAbsolute)
+                        }
+                    },
+                    new()
+                    {
                         Name = "Class",
                         Description = "Management of class",
                         ExternalDocs = new OpenApiExternalDocs

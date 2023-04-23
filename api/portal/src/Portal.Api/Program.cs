@@ -22,6 +22,9 @@ using Portal.Infrastructure;
 using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
+using Microsoft.AspNetCore.Identity;
+using Portal.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +32,7 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.AddServerHeader = false;
     options.AllowResponseHeaderCompression = true;
-    options.ConfigureEndpointDefaults(o =>
-    {
-        o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
-    });
+    options.ConfigureEndpointDefaults(o => o.Protocols = HttpProtocols.Http1AndHttp2AndHttp3);
 });
 
 builder.Services.AddControllers(options =>
@@ -58,14 +58,13 @@ builder.Services.AddResponseCompression(options =>
     {
         "application/json",
         "application/xml",
-        "text/plain"
+        "text/plain",
+        "image/png",
+        "image/jpeg"
     });
 });
 
-builder.Services.Configure<GzipCompressionProviderOptions>(options =>
-{
-    options.Level = CompressionLevel.SmallestSize;
-});
+builder.Services.Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal);
 
 builder.Services.AddAuth();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -82,6 +81,10 @@ builder.Services.AddResponseCaching(options =>
     options.UseCaseSensitivePaths = true;
 });
 builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 {
@@ -104,15 +107,9 @@ builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(_ =>
-    {
-        _.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
-});
+options.AddDefaultPolicy(policy => policy.WithOrigins("https://localhost:8000").AllowAnyMethod().AllowAnyHeader()));
 
+builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<ITransactionService, TransactionService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
@@ -123,11 +120,7 @@ builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneServ
 
 builder.Services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
 builder.Services.TryAddSingleton(options =>
-{
-    var provider = options.GetRequiredService<ObjectPoolProvider>();
-    var policy = new StringBuilderPooledObjectPolicy();
-    return provider.Create(policy);
-});
+    options.GetRequiredService<ObjectPoolProvider>().Create(new StringBuilderPooledObjectPolicy()));
 
 builder.AddApiVersioning();
 builder.AddOpenApi();
@@ -149,9 +142,7 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 else
-{
     app.UseExceptionHandler("/error");
-}
 
 app.UseCors();
 app.UseExceptionHandler();

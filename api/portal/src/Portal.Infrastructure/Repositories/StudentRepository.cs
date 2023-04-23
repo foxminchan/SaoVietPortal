@@ -10,7 +10,7 @@ public class StudentRepository : RepositoryBase<Student>, IStudentRepository
 
     public void AddStudent(Student student) => Insert(student);
 
-    public void DeleteStudent(string id) => Delete(x => x.studentId == id);
+    public void DeleteStudent(string id) => Delete(x => x.Id == id);
 
     public void UpdateStudent(Student student) => Update(student);
 

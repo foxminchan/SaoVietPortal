@@ -11,41 +11,41 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
     {
         builder.ToTable("Students");
 
-        builder.HasKey(e => e.studentId);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.studentId)
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("char(10)");
 
-        builder.Property(e => e.fullname)
+        builder.Property(e => e.Fullname)
             .HasColumnName("Fullname")
             .HasColumnType("nvarchar(50)")
             .IsRequired();
 
-        builder.Property(e => e.gender)
+        builder.Property(e => e.Gender)
                 .HasColumnName("Gender")
                 .HasColumnType("bit")
                 .HasDefaultValue(false)
                 .IsRequired();
 
-        builder.Property(e => e.address)
+        builder.Property(e => e.Address)
             .HasColumnName("Address")
             .HasColumnType("nvarchar(80)");
 
-        builder.Property(e => e.dob)
+        builder.Property(e => e.Dob)
             .HasConversion<StringConverter>()
             .HasColumnName("Dob")
             .HasColumnType("date");
 
-        builder.Property(e => e.pod)
+        builder.Property(e => e.Pod)
             .HasColumnName("Pod")
             .HasColumnType("nvarchar(80)");
 
-        builder.Property(e => e.occupation)
+        builder.Property(e => e.Occupation)
             .HasColumnName("Occupation")
             .HasColumnType("nvarchar(80)");
 
-        builder.Property(e => e.socialNetwork)
+        builder.Property(e => e.SocialNetwork)
             .HasConversion<JsonConverter>()
             .HasColumnName("SocialNetwork")
             .HasColumnType("nvarchar(max)");

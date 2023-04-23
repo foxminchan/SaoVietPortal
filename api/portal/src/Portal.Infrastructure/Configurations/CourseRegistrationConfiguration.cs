@@ -11,43 +11,43 @@ public class CourseRegistrationConfiguration : IEntityTypeConfiguration<CourseRe
     {
         builder.ToTable("CourseRegistration");
 
-        builder.HasKey(e => e.courseRegistrationId);
-        builder.Property(e => e.courseRegistrationId)
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("Uniqueidentifier")
             .HasDefaultValueSql("newid()");
 
-        builder.Property(e => e.status)
+        builder.Property(e => e.Status)
             .HasColumnName("Status")
             .HasColumnType("nvarchar(15)");
 
-        builder.Property(e => e.registerDate)
+        builder.Property(e => e.RegisterDate)
             .HasConversion<StringConverter>()
             .HasColumnName("RegisterDate")
             .HasColumnType("date");
 
-        builder.Property(e => e.appointmentDate)
+        builder.Property(e => e.AppointmentDate)
             .HasConversion<StringConverter>()
             .HasColumnName("AppointmentDate")
             .HasColumnType("date");
 
-        builder.Property(e => e.registerFee)
+        builder.Property(e => e.Fee)
             .HasColumnName("RegisterFee")
             .HasColumnType("float");
 
-        builder.Property(e => e.discountAmount)
+        builder.Property(e => e.DiscountAmount)
             .HasColumnName("DiscountAmount")
             .HasColumnType("decimal(4,2)");
 
-        builder.HasOne(e => e.paymentMethod)
-            .WithMany(e => e.courseRegistrations)
-            .HasForeignKey(e => e.paymentMethodId)
+        builder.HasOne(e => e.PaymentMethod)
+            .WithMany(e => e.CourseRegistrations)
+            .HasForeignKey(e => e.PaymentMethodId)
             .HasConstraintName("FK_CourseRegistration_PaymentMethod")
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(e => e.courseEnrollment)
-            .WithMany(e => e.courseRegistrations)
-            .HasForeignKey(e => new { e.studentId, e.classId })
+        builder.HasOne(e => e.CourseEnrollment)
+            .WithMany(e => e.CourseRegistrations)
+            .HasForeignKey(e => new { studentId = e.StudentId, classId = e.ClassId })
             .HasConstraintName("FK_CourseRegistrations_CourseEnrollment")
             .OnDelete(DeleteBehavior.Cascade);
     }

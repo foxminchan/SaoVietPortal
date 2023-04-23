@@ -7,14 +7,14 @@ public class StudentProfile : Profile
     public StudentProfile()
     {
         CreateMap<Domain.Entities.Student, Models.Student>()
-            .ForMember(dest => dest.studentId, opt => opt.MapFrom(src => src.studentId))
-            .ForMember(dest => dest.fullname, opt => opt.MapFrom(src => src.fullname))
-            .ForMember(dest => dest.gender, opt => opt.MapFrom(src => src.gender))
-            .ForMember(dest => dest.address, opt => opt.MapFrom(src => src.address))
-            .ForMember(dest => dest.dob, opt => opt.MapFrom(src => src.dob))
-            .ForMember(dest => dest.pod, opt => opt.MapFrom(src => src.pod))
-            .ForMember(dest => dest.occupation, opt => opt.MapFrom(src => src.occupation))
-            .ForMember(dest => dest.socialNetwork, opt => opt.MapFrom(src => src.socialNetwork))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Fullname))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
+            .ForMember(dest => dest.Pod, opt => opt.MapFrom(src => src.Pod))
+            .ForMember(dest => dest.Occupation, opt => opt.MapFrom(src => src.Occupation))
+            .ForMember(dest => dest.SocialNetwork, opt => opt.MapFrom(src => src.SocialNetwork))
             .ReverseMap();
     }
 }

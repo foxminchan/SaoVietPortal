@@ -4,14 +4,14 @@ namespace Portal.Domain.Entities;
 
 public class Student
 {
-    public string? studentId { get; set; }
-    public string? fullname { get; set; }
-    public bool gender { get; set; }
-    public string? address { get; set; }
-    public string? dob { get; set; }
-    public string? pod { get; set; }
-    public string? occupation { get; set; }
-    public JsonElement? socialNetwork { get; set; }
-    public List<ApplicationUser>? users { get; set; }
-    public List<CourseEnrollment>? courseEnrollments { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Fullname { get; set; } = string.Empty;
+    public bool Gender { get; set; }
+    public string Address { get; set; } = string.Empty;
+    public string Dob { get; set; } = string.Empty;
+    public string Pod { get; set; } = string.Empty;
+    public string Occupation { get; set; } = string.Empty;
+    public JsonElement? SocialNetwork { get; set; }
+    public ICollection<ApplicationUser>? Users { get; private set; } = new HashSet<ApplicationUser>();
+    public ICollection<CourseEnrollment>? CourseEnrollments { get; private set; } = new HashSet<CourseEnrollment>();
 }

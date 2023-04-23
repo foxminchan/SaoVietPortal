@@ -11,36 +11,36 @@ public class ReceiptsExpensesConfiguration : IEntityTypeConfiguration<ReceiptsEx
     {
         builder.ToTable("ReceiptsExpenses");
 
-        builder.HasKey(e => e.receiptExpenseId);
-        builder.Property(e => e.receiptExpenseId)
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("Uniqueidentifier")
             .HasDefaultValueSql("newid()");
 
-        builder.Property(e => e.type)
+        builder.Property(e => e.Type)
             .HasColumnName("Type")
             .HasColumnType("Bit")
             .HasDefaultValue(false)
             .IsRequired();
 
-        builder.Property(e => e.date)
+        builder.Property(e => e.Date)
             .HasConversion<StringConverter>()
             .HasColumnName("Date")
             .HasColumnType("date")
             .IsRequired();
 
-        builder.Property(e => e.amount)
+        builder.Property(e => e.Amount)
             .HasColumnName("Amount")
             .HasColumnType("float")
             .IsRequired();
 
-        builder.Property(e => e.note)
+        builder.Property(e => e.Note)
             .HasColumnName("Note")
             .HasColumnType("nvarchar(max)");
 
-        builder.HasOne(e => e.branch)
-            .WithMany(e => e.receiptsExpenses)
-            .HasForeignKey(e => e.branchId)
+        builder.HasOne(e => e.Branch)
+            .WithMany(e => e.ReceiptsExpenses)
+            .HasForeignKey(e => e.BranchId)
             .HasConstraintName("FK_ReceiptsExpenses_Branch")
             .OnDelete(DeleteBehavior.SetNull);
     }

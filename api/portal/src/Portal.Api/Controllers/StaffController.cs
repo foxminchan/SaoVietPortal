@@ -19,7 +19,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class StaffController : ControllerBase
 {
-    private const string CACHE_KEY = "StaffData";
+    private const string CacheKey = "StaffData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<StaffController> _logger;
@@ -68,8 +68,8 @@ public class StaffController : ControllerBase
     {
         try
         {
-            return _redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.staffRepository.GetStaff().ToList()) switch
+            return _redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.StaffRepository.GetStaff().ToList()) switch
             {
                 { Count: > 0 } staffs => Ok(_mapper.Map<List<Staff>>(staffs)),
                 _ => NotFound()
@@ -105,8 +105,8 @@ public class StaffController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.staffRepository.GetStaff().ToList())
-                    .FirstOrDefault(s => s.staffId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } staff => Ok(staff),
                 _ => NotFound()
@@ -141,7 +141,7 @@ public class StaffController : ControllerBase
         try
         {
             var staffs = _redisCacheService
-                .GetOrSet(CACHE_KEY, () => _unitOfWork.staffRepository.GetStaff().ToList())
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
                 .Select(_mapper.Map<Staff>).ToList();
 
             if (!staffs.Any()) return NotFound();
@@ -191,13 +191,13 @@ public class StaffController : ControllerBase
     ///
     ///     POST /api/v1/Staff
     ///     {
-    ///         "staffId": "string",
+    ///         "Id": "string",
     ///         "fullname": "string",
     ///         "dob": "dd/MM/yyyy",
     ///         "address": "string",
     ///         "dsw": "dd/MM/yyyy",
-    ///         "positionId": integer,
-    ///         "branchId": "string",
+    ///         "Id": integer,
+    ///         "Id": "string",
     ///         "managerId": "string"
     ///     }
     /// </remarks>
@@ -219,16 +219,16 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.staffId is not null && _unitOfWork.staffRepository.TryGetStaffById(staff.staffId, out _))
+            if (staff.Id is not null && _unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return Conflict();
 
             var newStaff = _mapper.Map<Domain.Entities.Staff>(staff);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.staffRepository.AddStaff(newStaff));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.AddStaff(newStaff));
 
             var staffs =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.staffRepository.GetStaff().ToList());
-            if (staffs.FirstOrDefault(s => s.staffId == newStaff.staffId) is null)
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+            if (staffs.FirstOrDefault(s => s.Id == newStaff.Id) is null)
                 staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
 
             return Ok();
@@ -261,15 +261,15 @@ public class StaffController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.staffRepository.TryGetStaffById(id, out _))
+            if (!_unitOfWork.StaffRepository.TryGetStaffById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.staffRepository.DeleteStaff(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.DeleteStaff(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.staffRepository.GetStaff().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
                 is { Count: > 0 } staffs)
-                staffs.RemoveAll(s => s.staffId == id);
+                staffs.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -290,13 +290,13 @@ public class StaffController : ControllerBase
     ///
     ///     PUT /api/v1/Staff
     ///     {
-    ///         "staffId": "string",
+    ///         "Id": "string",
     ///         "fullname": "string",
     ///         "dob": "dd/MM/yyyy",
     ///         "address": "string",
     ///         "dsw": "dd/MM/yyyy",
-    ///         "positionId": integer,
-    ///         "branchId": "string",
+    ///         "Id": integer,
+    ///         "Id": "string",
     ///         "managerId": "string"
     ///     }
     /// </remarks>
@@ -317,16 +317,16 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.staffId is not null && !_unitOfWork.staffRepository.TryGetStaffById(staff.staffId, out _))
+            if (staff.Id is not null && !_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return NotFound();
 
             var updateStaff = _mapper.Map<Domain.Entities.Staff>(staff);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.staffRepository.UpdateStaff(updateStaff));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.UpdateStaff(updateStaff));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.staffRepository.GetStaff().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
                 is { Count: > 0 } staffs)
-                staffs[staffs.FindIndex(s => s.staffId == updateStaff.staffId)] = updateStaff;
+                staffs[staffs.FindIndex(s => s.Id == updateStaff.Id)] = updateStaff;
 
             return Ok();
         }

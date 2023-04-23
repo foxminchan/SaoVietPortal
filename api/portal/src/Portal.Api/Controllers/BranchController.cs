@@ -16,7 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class BranchController : ControllerBase
 {
-    private const string CACHE_KEY = "BranchData";
+    private const string CacheKey = "BranchData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<BranchController> _logger;
@@ -61,8 +61,8 @@ public class BranchController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.branchRepository.GetAllBranches().ToList())) switch
+            return (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.BranchRepository.GetAllBranches().ToList())) switch
             {
                 { Count: > 0 } branches => Ok(_mapper.Map<List<Branch>>(branches)),
                 _ => NotFound()
@@ -98,8 +98,8 @@ public class BranchController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.branchRepository.GetAllBranches().ToList())
-                    .FirstOrDefault(s => s.branchId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.BranchRepository.GetAllBranches().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } branch => Ok(branch),
                 _ => NotFound()
@@ -122,8 +122,8 @@ public class BranchController : ControllerBase
     ///
     ///     POST /api/v1/Branch
     ///     {
-    ///         "branchId": "string",
-    ///         "branchName": "string",
+    ///         "Id": "string",
+    ///         "Name": "string",
     ///         "address": "string",
     ///         "phone": "string"
     ///     }
@@ -146,15 +146,15 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.branchId is not null && _unitOfWork.branchRepository.TryGetBranchById(branch.branchId, out _))
+            if (branch.Id is not null && _unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return Conflict();
 
             var newBranch = _mapper.Map<Domain.Entities.Branch>(branch);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.branchRepository.AddBranch(newBranch));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.BranchRepository.AddBranch(newBranch));
 
-            var branches = _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.branchRepository.GetAllBranches().ToList());
-            if (branches.FirstOrDefault(s => s.branchId == newBranch.branchId) is null)
+            var branches = _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.BranchRepository.GetAllBranches().ToList());
+            if (branches.FirstOrDefault(s => s.Id == newBranch.Id) is null)
                 branches.Add(_mapper.Map<Domain.Entities.Branch>(newBranch));
 
             return Ok();
@@ -187,16 +187,16 @@ public class BranchController : ControllerBase
     {
         try
         {
-            if (_unitOfWork.branchRepository.TryGetBranchById(id, out _))
+            if (_unitOfWork.BranchRepository.TryGetBranchById(id, out _))
                 return NotFound();
 
             _transactionService.ExecuteTransaction(
-                () => _unitOfWork.branchRepository.DeleteBranch(id));
+                () => _unitOfWork.BranchRepository.DeleteBranch(id));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.branchRepository.GetAllBranches().ToList()) is
+            if (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.BranchRepository.GetAllBranches().ToList()) is
                 { Count: > 0 } branches)
-                branches.RemoveAll(s => s.branchId == id);
+                branches.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -217,8 +217,8 @@ public class BranchController : ControllerBase
     ///
     ///     PUT /api/v1/Branch
     ///     {
-    ///         "branchId": "string",
-    ///         "branchName": "string",
+    ///         "Id": "string",
+    ///         "Name": "string",
     ///         "address": "string",
     ///         "phone": "string"
     ///     }
@@ -241,15 +241,15 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.branchId is not null && !_unitOfWork.branchRepository.TryGetBranchById(branch.branchId, out _))
+            if (branch.Id is not null && !_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return NotFound();
 
             var updateBranch = _mapper.Map<Domain.Entities.Branch>(branch);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.branchRepository.UpdateBranch(updateBranch));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.BranchRepository.UpdateBranch(updateBranch));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.branchRepository.GetAllBranches().ToList()) is
+            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.BranchRepository.GetAllBranches().ToList()) is
                 { Count: > 0 } branches)
-                branches[branches.FindIndex(s => s.branchId == updateBranch.branchId)] = updateBranch;
+                branches[branches.FindIndex(s => s.Id == updateBranch.Id)] = updateBranch;
 
             return Ok();
         }

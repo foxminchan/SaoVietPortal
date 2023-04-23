@@ -7,14 +7,14 @@ public class CourseRegistrationProfile : Profile
     public CourseRegistrationProfile()
     {
         CreateMap<Domain.Entities.CourseRegistration, Models.CourseRegistration>()
-            .ForMember(dest => dest.courseRegistrationId, opt => opt.MapFrom(src => src.courseRegistrationId))
-            .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.status))
-                .ForMember(dest => dest.registerDate, opt => opt.MapFrom(src => src.registerDate))
-            .ForMember(dest => dest.appointmentDate, opt => opt.MapFrom(src => src.appointmentDate))
-            .ForMember(dest => dest.registerFee, opt => opt.MapFrom(src => src.registerFee))
-            .ForMember(dest => dest.discountAmount, opt => opt.MapFrom(src => src.discountAmount))
-            .ForMember(dest => dest.paymentMethodId, opt => opt.MapFrom(src => src.paymentMethodId))
-            .ForMember(dest => dest.studentId, opt => opt.MapFrom(src => src.studentId))
-            .ForMember(dest => dest.classId, opt => opt.MapFrom(src => src.classId));
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.RegisterDate, opt => opt.MapFrom(src => src.RegisterDate))
+            .ForMember(dest => dest.AppointmentDate, opt => opt.MapFrom(src => src.AppointmentDate))
+            .ForMember(dest => dest.Fee, opt => opt.MapFrom(src => src.Fee))
+            .ForMember(dest => dest.DiscountAmount, opt => opt.MapFrom(src => src.DiscountAmount))
+            .ForMember(dest => dest.PaymentMethodId, opt => opt.MapFrom(src => src.PaymentMethodId))
+            .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
+            .ForMember(dest => dest.ClassId, opt => opt.MapFrom(src => src.ClassId));
     }
 }

@@ -12,7 +12,7 @@ public class ClassRepository : RepositoryBase<Class>, IClassRepository
 
     public void UpdateClass(Class @class) => Update(@class);
 
-    public void DeleteClass(string id) => Delete(x => x.classId == id);
+    public void DeleteClass(string id) => Delete(x => x.Id == id);
 
     public IEnumerable<Class> GetAllClasses() => GetAll();
 

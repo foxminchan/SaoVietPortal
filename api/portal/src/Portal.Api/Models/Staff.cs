@@ -8,43 +8,44 @@ public class Staff
     /// <summary>
     /// Staff ID
     /// </summary>
-    public string? staffId { get; set; }
+    public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Staff full name
     /// </summary>
     /// <example>Nguyễn Đình Ánh</example>
-    public string? fullname { get; set; }
+    public string Fullname { get; set; } = string.Empty;
 
     /// <summary>
     /// Date of birth
     /// </summary>
     /// <example>16/01/1989</example>
-    public string? dob { get; set; }
+    public string Dob { get; set; } = string.Empty;
 
     /// <summary>
     /// Staff Address
     /// </summary>
     /// <example>Tân Phong, Biên Hoà, Đồng Nai</example>
-    public string? address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
     /// <summary>
     /// Date start work
     /// </summary>
-    public string? dsw { get; set; }
+    /// <example>01/02/2020</example>
+    public string Dsw { get; set; } = string.Empty;
 
     /// <summary>
     /// Position ID
     /// </summary>
-    public int? positionId { get; set; }
+    public int? PositionId { get; set; }
 
     /// <summary>
     /// Branch ID
     /// </summary>
-    public string? branchId { get; set; }
+    public string BranchId { get; set; } = string.Empty;
 
     /// <summary>
     /// Manager ID
     /// </summary>
-    public string? managerId { get; set; }
+    public string ManagerId { get; set; } = string.Empty;
 }

@@ -10,22 +10,22 @@ public class BranchConfiguration : IEntityTypeConfiguration<Branch>
     {
         builder.ToTable("Branch");
 
-        builder.HasKey(e => e.branchId);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.branchId)
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("char(8)");
 
-        builder.Property(e => e.branchName)
+        builder.Property(e => e.Name)
             .HasColumnName("Name")
             .HasColumnType("nvarchar(50)")
             .IsRequired();
 
-        builder.Property(e => e.address)
+        builder.Property(e => e.Address)
             .HasColumnName("Address")
             .HasColumnType("nvarchar(80)");
 
-        builder.Property(e => e.phone)
+        builder.Property(e => e.Phone)
             .HasColumnName("Phone")
             .HasColumnType("char(10)");
     }

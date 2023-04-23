@@ -16,7 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class PositionController : ControllerBase
 {
-    private const string CACHE_KEY = "PositionData";
+    private const string CacheKey = "PositionData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<PositionController> _logger;
@@ -61,8 +61,8 @@ public class PositionController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.positionRepository.GetAllPositions().ToList())) switch
+            return (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.PositionRepository.GetAllPositions().ToList())) switch
             {
                 { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
                 _ => NotFound()
@@ -98,8 +98,8 @@ public class PositionController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
-                    .FirstOrDefault(s => s.positionId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } position => Ok(position),
                 _ => NotFound()
@@ -122,7 +122,7 @@ public class PositionController : ControllerBase
     ///
     ///     POST /api/v1/Position
     ///     {
-    ///         "positionName": "string"
+    ///         "Name": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new position successfully</response>
@@ -137,7 +137,7 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (position.positionId.HasValue)
+            if (position.Id.HasValue)
                 return BadRequest("Position id is auto generated");
 
             var validationResult = _validator.Validate(position);
@@ -147,11 +147,11 @@ public class PositionController : ControllerBase
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.AddPosition(newPosition));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.AddPosition(newPosition));
 
             var positions =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList());
-            if (positions.FirstOrDefault(s => s.positionId == newPosition.positionId) is null)
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList());
+            if (positions.FirstOrDefault(s => s.Id == newPosition.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
             return Ok();
@@ -184,15 +184,15 @@ public class PositionController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.positionRepository.TryGetPositionById(id, out _))
+            if (!_unitOfWork.PositionRepository.TryGetPositionById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.DeletePosition(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.DeletePosition(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
-                positions.RemoveAll(s => s.positionId == id);
+                positions.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -213,8 +213,8 @@ public class PositionController : ControllerBase
     ///
     ///     PUT /api/v1/Position
     ///     {
-    ///         "positionId": "int",
-    ///         "positionName": "string"
+    ///         "Id": "int",
+    ///         "Name": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Update position successfully</response>
@@ -235,16 +235,16 @@ public class PositionController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (position.positionId.HasValue && !_unitOfWork.positionRepository.TryGetPositionById(position.positionId.Value, out _))
+            if (position.Id.HasValue && !_unitOfWork.PositionRepository.TryGetPositionById(position.Id.Value, out _))
                 return NotFound();
 
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.positionRepository.UpdatePosition(updatePosition));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.UpdatePosition(updatePosition));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.positionRepository.GetAllPositions().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
                 is { Count: > 0 } positions)
-                positions[positions.FindIndex(s => s.positionId == updatePosition.positionId)] = updatePosition;
+                positions[positions.FindIndex(s => s.Id == updatePosition.Id)] = updatePosition;
 
             return Ok();
         }

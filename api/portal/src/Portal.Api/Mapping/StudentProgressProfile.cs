@@ -7,15 +7,15 @@ public class StudentProgressProfile : Profile
     public StudentProgressProfile()
     {
         CreateMap<Domain.Entities.StudentProgress, Models.StudentProgress>()
-            .ForMember(dest => dest.progressId, opt => opt.MapFrom(src => src.progressId))
-            .ForMember(dest => dest.lessonName, opt => opt.MapFrom(src => src.lessonName))
-            .ForMember(dest => dest.lessonContent, opt => opt.MapFrom(src => src.lessonContent))
-            .ForMember(dest => dest.lessonDate, opt => opt.MapFrom(src => src.lessonDate))
-            .ForMember(dest => dest.progressStatus, opt => opt.MapFrom(src => src.progressStatus))
-            .ForMember(dest => dest.lessonRating, opt => opt.MapFrom(src => src.lessonRating))
-            .ForMember(dest => dest.staffId, opt => opt.MapFrom(src => src.staffId))
-            .ForMember(dest => dest.studentId, opt => opt.MapFrom(src => src.studentId))
-            .ForMember(dest => dest.classId, opt => opt.MapFrom(src => src.classId))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.LessonName, opt => opt.MapFrom(src => src.LessonName))
+            .ForMember(dest => dest.LessonContent, opt => opt.MapFrom(src => src.LessonContent))
+            .ForMember(dest => dest.LessonDate, opt => opt.MapFrom(src => src.LessonDate))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.LessonRating, opt => opt.MapFrom(src => src.LessonRating))
+            .ForMember(dest => dest.StaffId, opt => opt.MapFrom(src => src.StaffId))
+            .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
+            .ForMember(dest => dest.ClassId, opt => opt.MapFrom(src => src.ClassId))
             .ReverseMap();
     }
 }

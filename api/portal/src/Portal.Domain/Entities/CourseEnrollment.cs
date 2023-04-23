@@ -2,10 +2,10 @@
 
 public class CourseEnrollment
 {
-    public string? studentId { get; set; }
-    public Student? student { get; set; }
-    public string? classId { get; set; }
-    public Class? @class { get; set; }
-    public List<StudentProgress>? studentProgresses { get; set; }
-    public List<CourseRegistration>? courseRegistrations { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public Student? Student { get; set; }
+    public string ClassId { get; set; } = string.Empty;
+    public Class? Class { get; set; }
+    public ICollection<StudentProgress>? StudentProgresses { get; private set; } = new List<StudentProgress>();
+    public ICollection<CourseRegistration>? CourseRegistrations { get; private set; } = new List<CourseRegistration>();
 }

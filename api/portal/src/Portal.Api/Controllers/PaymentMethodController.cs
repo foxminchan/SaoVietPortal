@@ -16,7 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class PaymentMethodController : ControllerBase
 {
-    private const string CACHE_KEY = "PaymentMethodData";
+    private const string CacheKey = "PaymentMethodData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<PaymentMethodController> _logger;
@@ -61,8 +61,8 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.paymentMethodRepository.GetAllPaymentMethods().ToList())) switch
+            return (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())) switch
                 {
                     { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
                     _ => NotFound()
@@ -98,9 +98,9 @@ public class PaymentMethodController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.paymentMethodRepository
+                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
                         .GetAllPaymentMethods().ToList())
-                    .FirstOrDefault(s => s.paymentMethodId == id) switch
+                    .FirstOrDefault(s => s.Id == id) switch
                 {
                     { } paymentMethod => Ok(paymentMethod),
                     _ => NotFound()
@@ -123,7 +123,7 @@ public class PaymentMethodController : ControllerBase
     ///
     ///     POST /api/v1/PaymentMethod
     ///     {
-    ///         "paymentMethodName": "string"
+    ///         "Name": "string"
     ///     }
     /// </remarks>
     [HttpPost]
@@ -136,7 +136,7 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            if (paymentMethod.paymentMethodId.HasValue)
+            if (paymentMethod.Id.HasValue)
                 return BadRequest("Payment method id is auto generated");
 
             var validationResult = _validator.Validate(paymentMethod);
@@ -146,12 +146,12 @@ public class PaymentMethodController : ControllerBase
 
             var newPaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.paymentMethodRepository.AddPaymentMethod(newPaymentMethod));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository.AddPaymentMethod(newPaymentMethod));
 
             var paymentMethods =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.paymentMethodRepository
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
                     .GetAllPaymentMethods().ToList());
-            if (paymentMethods.FirstOrDefault(s => s.paymentMethodId == newPaymentMethod.paymentMethodId) is null)
+            if (paymentMethods.FirstOrDefault(s => s.Id == newPaymentMethod.Id) is null)
                 paymentMethods.Add(_mapper.Map<Domain.Entities.PaymentMethod>(newPaymentMethod));
 
             return Ok();
@@ -184,15 +184,15 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.paymentMethodRepository.TryGetPaymentMethod(id, out _))
+            if (!_unitOfWork.PaymentMethodRepository.TryGetPaymentMethod(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.paymentMethodRepository.DeletePaymentMethod(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository.DeletePaymentMethod(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.paymentMethodRepository.GetAllPaymentMethods().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())
                 is { Count: > 0 } paymentMethods)
-                paymentMethods.RemoveAll(s => s.paymentMethodId == id);
+                paymentMethods.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -213,8 +213,8 @@ public class PaymentMethodController : ControllerBase
     ///
     ///     PUT /api/v1/PaymentMethod
     ///     {
-    ///         "paymentMethodId": "int",
-    ///         "paymentMethodName": "string"
+    ///         "Id": "int",
+    ///         "Name": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Update payment method successfully</response>
@@ -235,17 +235,17 @@ public class PaymentMethodController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (paymentMethod.paymentMethodId.HasValue && !_unitOfWork.paymentMethodRepository.TryGetPaymentMethod(paymentMethod.paymentMethodId.Value, out _))
+            if (paymentMethod.Id.HasValue && !_unitOfWork.PaymentMethodRepository.TryGetPaymentMethod(paymentMethod.Id.Value, out _))
                 return NotFound();
 
             var updatePaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.paymentMethodRepository
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository
                 .UpdatePaymentMethod(updatePaymentMethod));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.paymentMethodRepository.GetAllPaymentMethods().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())
                 is { Count: > 0 } paymentMethods)
-                paymentMethods[paymentMethods.FindIndex(s => s.paymentMethodId == updatePaymentMethod.paymentMethodId)] = updatePaymentMethod;
+                paymentMethods[paymentMethods.FindIndex(s => s.Id == updatePaymentMethod.Id)] = updatePaymentMethod;
 
             return Ok();
         }

@@ -7,8 +7,8 @@ public class PaymentMethodProfile : Profile
     public PaymentMethodProfile()
     {
         CreateMap<Domain.Entities.PaymentMethod, Models.PaymentMethod>()
-            .ForMember(dest => dest.paymentMethodId, opt => opt.MapFrom(src => src.paymentMethodId))
-            .ForMember(dest => dest.paymentMethodName, opt => opt.MapFrom(src => src.paymentMethodName))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ReverseMap();
     }
 }

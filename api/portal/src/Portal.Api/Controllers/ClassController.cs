@@ -16,7 +16,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class ClassController : ControllerBase
 {
-    private const string CACHE_KEY = "ClassData";
+    private const string CacheKey = "ClassData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<ClassController> _logger;
@@ -62,8 +62,8 @@ public class ClassController : ControllerBase
     {
         try
         {
-            return _redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.classRepository.GetAllClasses().ToList()) switch
+            return _redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.ClassRepository.GetAllClasses().ToList()) switch
             {
                 { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
                 _ => NotFound()
@@ -99,8 +99,8 @@ public class ClassController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.classRepository.GetAllClasses().ToList())
-                    .FirstOrDefault(s => s.classId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } @class => Ok(@class),
                 _ => NotFound()
@@ -123,12 +123,12 @@ public class ClassController : ControllerBase
     ///
     ///     POST /api/v1/Class
     ///     {
-    ///         "classId": "string",
+    ///         "Id": "string",
     ///         "startDate": "dd/MM/yyyy",
     ///         "endDate": "dd/MM/yyyy",
     ///         "fee": "float",
-    ///         "courseId": "string",
-    ///         "branchId": "string"
+    ///         "Id": "string",
+    ///         "Id": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new class successfully</response>
@@ -149,15 +149,15 @@ public class ClassController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (@class.classId is not null && _unitOfWork.classRepository.TryGetClassById(@class.classId, out _))
+            if (@class.Id is not null && _unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return Conflict();
 
             var newClass = _mapper.Map<Domain.Entities.Class>(@class);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.classRepository.AddClass(newClass));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.AddClass(newClass));
 
             var classes =
-                _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.classRepository.GetAllClasses().ToList());
-            if (classes.FirstOrDefault(s => s.classId == newClass.classId) is null)
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList());
+            if (classes.FirstOrDefault(s => s.Id == newClass.Id) is null)
                 classes.Add(_mapper.Map<Domain.Entities.Class>(newClass));
 
             return Ok();
@@ -190,15 +190,15 @@ public class ClassController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.classRepository.TryGetClassById(id, out _))
+            if (!_unitOfWork.ClassRepository.TryGetClassById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.classRepository.DeleteClass(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.DeleteClass(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.classRepository.GetAllClasses().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
                 is { Count: > 0 } classes)
-                classes.RemoveAll(s => s.classId == id);
+                classes.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -219,12 +219,12 @@ public class ClassController : ControllerBase
     ///
     ///     PUT /api/v1/Class
     ///     {
-    ///         "classId": "string",
+    ///         "Id": "string",
     ///         "startDate": "dd/MM/yyyy",
     ///         "endDate": "dd/MM/yyyy",
     ///         "fee": "float",
-    ///         "courseId": "string",
-    ///         "branchId": "string"
+    ///         "Id": "string",
+    ///         "Id": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Update class successfully</response>
@@ -243,16 +243,16 @@ public class ClassController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (@class.classId is not null && !_unitOfWork.classRepository.TryGetClassById(@class.classId, out _))
+            if (@class.Id is not null && !_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return NotFound();
 
             var updateClass = _mapper.Map<Domain.Entities.Class>(@class);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.classRepository.UpdateClass(updateClass));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.UpdateClass(updateClass));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.classRepository.GetAllClasses().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
                 is { Count: > 0 } classes)
-                classes[classes.FindIndex(s => s.classId == updateClass.classId)] = updateClass;
+                classes[classes.FindIndex(s => s.Id == updateClass.Id)] = updateClass;
 
             return Ok();
         }

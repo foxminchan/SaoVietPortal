@@ -2,25 +2,24 @@
 
 public interface IUnitOfWork : IDisposable
 {
-    IStudentRepository studentRepository { get; }
+    public IStudentRepository StudentRepository { get; }
 
-    IBranchRepository branchRepository { get; }
+    public IBranchRepository BranchRepository { get; }
 
-    IClassRepository classRepository { get; }
+    public IClassRepository ClassRepository { get; }
 
-    ICourseRepository courseRepository { get; }
+    public ICourseRepository CourseRepository { get; }
 
-    IPaymentMethodRepository paymentMethodRepository { get; }
+    public IPaymentMethodRepository PaymentMethodRepository { get; }
 
-    ICourseRegistrationRepository courseRegistrationRepository { get; }
+    public ICourseRegistrationRepository CourseRegistrationRepository { get; }
 
-    IPositionRepository positionRepository { get; }
+    public IPositionRepository PositionRepository { get; }
 
-    IReceiptsExpensesRepository receiptsExpensesRepository { get; }
+    public IReceiptsExpensesRepository ReceiptsExpensesRepository { get; }
 
-    IStaffRepository staffRepository { get; }
+    public IStaffRepository StaffRepository { get; }
 
-    IStudentProgressRepository studentProgressRepository { get; }
+    public IStudentProgressRepository StudentProgressRepository { get; }
 
-    IUserRepository userRepository { get; }
 }

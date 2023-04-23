@@ -11,46 +11,46 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
     {
         builder.ToTable("Staff");
 
-        builder.HasKey(e => e.staffId);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.staffId)
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("varchar(20)");
 
-        builder.Property(e => e.fullname)
+        builder.Property(e => e.Fullname)
             .HasColumnName("Fullname")
             .HasColumnType("nvarchar(50)")
             .IsRequired();
 
-        builder.Property(e => e.dob)
+        builder.Property(e => e.Dob)
             .HasConversion<StringConverter>()
             .HasColumnName("Dob")
             .HasColumnType("date");
 
-        builder.Property(e => e.address)
+        builder.Property(e => e.Address)
             .HasColumnName("Address")
             .HasColumnType("nvarchar(80)");
 
-        builder.Property(e => e.dsw)
+        builder.Property(e => e.Dsw)
             .HasConversion<StringConverter>()
             .HasColumnName("Dsw")
             .HasColumnType("date");
 
-        builder.HasOne(e => e.position)
-            .WithMany(e => e.staffs)
-            .HasForeignKey(e => e.positionId)
+        builder.HasOne(e => e.Position)
+            .WithMany(e => e.Staffs)
+            .HasForeignKey(e => e.PositionId)
             .HasConstraintName("FK_Staff_Position")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(e => e.branch)
-            .WithMany(e => e.staffs)
-            .HasForeignKey(e => e.branchId)
+        builder.HasOne(e => e.Branch)
+            .WithMany(e => e.Staffs)
+            .HasForeignKey(e => e.BranchId)
             .HasConstraintName("FK_Staff_Branch")
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(e => e.manager)
-            .WithMany(e => e.staffs)
-            .HasForeignKey(e => e.managerId)
+        builder.HasOne(e => e.Manager)
+            .WithMany(e => e.Staffs)
+            .HasForeignKey(e => e.ManagerId)
             .HasConstraintName("FK_Staff_Manager")
             .OnDelete(DeleteBehavior.NoAction);
     }

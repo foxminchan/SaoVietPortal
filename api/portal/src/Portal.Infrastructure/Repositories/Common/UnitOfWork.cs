@@ -7,42 +7,39 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly ApplicationDbContext _context;
 
-    public IStudentRepository studentRepository { get; private set; }
+    public IStudentRepository StudentRepository { get; private set; }
 
-    public IBranchRepository branchRepository { get; private set; }
+    public IBranchRepository BranchRepository { get; private set; }
 
-    public IClassRepository classRepository { get; private set; }
+    public IClassRepository ClassRepository { get; private set; }
 
-    public ICourseRepository courseRepository { get; private set; }
+    public ICourseRepository CourseRepository { get; private set; }
 
-    public IPaymentMethodRepository paymentMethodRepository { get; private set; }
+    public IPaymentMethodRepository PaymentMethodRepository { get; private set; }
 
-    public ICourseRegistrationRepository courseRegistrationRepository { get; private set; }
+    public ICourseRegistrationRepository CourseRegistrationRepository { get; private set; }
 
-    public IPositionRepository positionRepository { get; private set; }
+    public IPositionRepository PositionRepository { get; private set; }
 
-    public IReceiptsExpensesRepository receiptsExpensesRepository { get; private set; }
+    public IReceiptsExpensesRepository ReceiptsExpensesRepository { get; private set; }
 
-    public IStaffRepository staffRepository { get; private set; }
+    public IStaffRepository StaffRepository { get; private set; }
 
-    public IStudentProgressRepository studentProgressRepository { get; private set; }
-
-    public IUserRepository userRepository { get; private set; }
+    public IStudentProgressRepository StudentProgressRepository { get; private set; }
 
     public UnitOfWork(ApplicationDbContext context)
     {
         _context = context;
-        studentRepository = new StudentRepository(_context);
-        branchRepository = new BranchRepository(_context);
-        classRepository = new ClassRepository(_context);
-        courseRepository = new CourseRepository(_context);
-        paymentMethodRepository = new PaymentMethodRepository(_context);
-        courseRegistrationRepository = new CourseRegistrationRepository(_context);
-        positionRepository = new PositionRepository(_context);
-        receiptsExpensesRepository = new ReceiptsExpensesRepository(_context);
-        staffRepository = new StaffRepository(_context);
-        studentProgressRepository = new StudentProgressRepository(_context);
-        userRepository = new UserRepository(_context);
+        StudentRepository = new StudentRepository(_context);
+        BranchRepository = new BranchRepository(_context);
+        ClassRepository = new ClassRepository(_context);
+        CourseRepository = new CourseRepository(_context);
+        PaymentMethodRepository = new PaymentMethodRepository(_context);
+        CourseRegistrationRepository = new CourseRegistrationRepository(_context);
+        PositionRepository = new PositionRepository(_context);
+        ReceiptsExpensesRepository = new ReceiptsExpensesRepository(_context);
+        StaffRepository = new StaffRepository(_context);
+        StudentProgressRepository = new StudentProgressRepository(_context);
     }
 
     public void Dispose()

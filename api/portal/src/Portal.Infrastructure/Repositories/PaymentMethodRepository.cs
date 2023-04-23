@@ -12,7 +12,7 @@ public class PaymentMethodRepository : RepositoryBase<PaymentMethod>, IPaymentMe
 
     public void UpdatePaymentMethod(PaymentMethod paymentMethod) => Update(paymentMethod);
 
-    public void DeletePaymentMethod(int? id) => Delete(x => x.paymentMethodId == id);
+    public void DeletePaymentMethod(int? id) => Delete(x => x.Id == id);
 
     public bool TryGetPaymentMethod(int id, out PaymentMethod? paymentMethod)
         => TryGetById(id, out paymentMethod);

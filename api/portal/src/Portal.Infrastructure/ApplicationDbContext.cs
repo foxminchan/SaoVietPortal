@@ -6,17 +6,17 @@ namespace Portal.Infrastructure;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
-    public DbSet<Student>? students { get; set; }
-    public DbSet<Branch>? branches { get; set; }
-    public DbSet<Course>? courses { get; set; }
-    public DbSet<Class>? classes { get; set; }
-    public DbSet<CourseEnrollment>? courseEnrollments { get; set; }
-    public DbSet<Staff>? staffs { get; set; }
-    public DbSet<Position>? positions { get; set; }
-    public DbSet<ReceiptsExpenses>? receiptsExpenses { get; set; }
-    public DbSet<StudentProgress>? studentProgresses { get; set; }
-    public DbSet<CourseRegistration>? courseRegistrations { get; set; }
-    public DbSet<PaymentMethod>? paymentMethods { get; set; }
+    public DbSet<Student>? Students { get; set; }
+    public DbSet<Branch>? Branches { get; set; }
+    public DbSet<Course>? Courses { get; set; }
+    public DbSet<Class>? Classes { get; set; }
+    public DbSet<CourseEnrollment>? CourseEnrollments { get; set; }
+    public DbSet<Staff>? Staffs { get; set; }
+    public DbSet<Position>? Positions { get; set; }
+    public DbSet<ReceiptsExpenses>? ReceiptsExpenses { get; set; }
+    public DbSet<StudentProgress>? StudentProgresses { get; set; }
+    public DbSet<CourseRegistration>? CourseRegistrations { get; set; }
+    public DbSet<PaymentMethod>? PaymentMethods { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

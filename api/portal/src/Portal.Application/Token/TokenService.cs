@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Portal.Domain.Entities;
-using Portal.Domain.Interfaces.Common;
 
 namespace Portal.Application.Token;
 
@@ -14,9 +13,8 @@ public class TokenService : ITokenService
     private readonly string _issuer;
     private readonly SigningCredentials _jwtSigningCredentials;
     private readonly Claim[] _audiences;
-    private readonly IUnitOfWork _unitOfWork;
 
-    public TokenService(IAuthenticationConfigurationProvider authenticationConfigurationProvider, IUnitOfWork unitOfWork)
+    public TokenService(IAuthenticationConfigurationProvider authenticationConfigurationProvider)
     {
         var bearerSection = authenticationConfigurationProvider.GetSchemeConfiguration(JwtBearerDefaults.AuthenticationScheme);
 
@@ -34,8 +32,6 @@ public class TokenService : ITokenService
             .Where(s => !string.IsNullOrEmpty(s.Value))
             .Select(s => new Claim(JwtRegisteredClaimNames.Aud, s.Value!))
             .ToArray();
-
-        _unitOfWork = unitOfWork;
     }
 
     public string GenerateToken(ApplicationUser user)
@@ -50,28 +46,12 @@ public class TokenService : ITokenService
         identity.AddClaim(new Claim(JwtRegisteredClaimNames.Iss, _issuer));
         identity.AddClaims(_audiences);
 
-        var roles = _unitOfWork.userRepository.GetRoles(user.Id)
-            .Where(role => !string.IsNullOrEmpty(role))
-            .Select(role => new Claim(ClaimTypes.Role, role ?? string.Empty));
-
-        var claims = _unitOfWork.userRepository.GetClaims(user.Id)
-            .Where(claim => !string.IsNullOrEmpty(claim))
-            .Select(claim => new Claim("Permission", claim ?? string.Empty));
-
-        var roleClaims = _unitOfWork.userRepository.GetRoleClaims(user.Id)
-            .Where(roleClaim => !string.IsNullOrEmpty(roleClaim))
-            .Select(roleClaim => new Claim("Permission", roleClaim ?? string.Empty));
-
-        identity.AddClaims(roles);
-        identity.AddClaims(claims);
-        identity.AddClaims(roleClaims);
-
         var token = new JwtSecurityToken(
-                       issuer: _issuer,
-                       claims: identity.Claims,
-                       notBefore: DateTime.UtcNow,
-                       expires: DateTime.UtcNow.AddDays(1),
-                       signingCredentials: _jwtSigningCredentials);
+            issuer: _issuer,
+            claims: identity.Claims,
+            notBefore: DateTime.UtcNow,
+            expires: DateTime.UtcNow.AddDays(1),
+            signingCredentials: _jwtSigningCredentials);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }

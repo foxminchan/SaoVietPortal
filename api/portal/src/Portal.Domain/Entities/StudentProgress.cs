@@ -2,15 +2,15 @@
 
 public class StudentProgress
 {
-    public Guid progressId { get; set; }
-    public string? lessonName { get; set; }
-    public string? lessonContent { get; set; }
-    public string? lessonDate { get; set; }
-    public string? progressStatus { get; set; }
-    public int lessonRating { get; set; }
-    public string? staffId { get; set; }
-    public Staff? staff { get; set; }
-    public string? studentId { get; set; }
-    public string? classId { get; set; }
-    public CourseEnrollment? courseEnrollment { get; set; }
+    public Guid Id { get; set; }
+    public string LessonName { get; set; } = string.Empty;
+    public string LessonContent { get; set; } = string.Empty;
+    public string LessonDate { get; set; } = string.Empty;
+    public string Status { get; set; } = string.Empty;
+    public int LessonRating { get; set; }
+    public string StaffId { get; set; } = string.Empty;
+    public Staff? Staff { get; set; }
+    public string StudentId { get; set; } = string.Empty;
+    public string ClassId { get; set; } = string.Empty;
+    public CourseEnrollment? CourseEnrollment { get; set; }
 }

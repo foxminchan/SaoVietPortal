@@ -12,7 +12,7 @@ public class StudentProgressRepository : RepositoryBase<StudentProgress>, IStude
 
     public void UpdateStudentProgress(StudentProgress studentProgress) => Update(studentProgress);
 
-    public void DeleteStudentProgress(Guid progressId) => Delete(x => x.progressId == progressId);
+    public void DeleteStudentProgress(Guid progressId) => Delete(x => x.Id == progressId);
 
     public bool TryGetStudentProgressById(Guid progressId, out StudentProgress? studentProgress)
         => TryGetById(progressId, out studentProgress);

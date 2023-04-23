@@ -10,17 +10,17 @@ public class CourseEnrollmentConfiguration : IEntityTypeConfiguration<CourseEnro
     {
         builder.ToTable("CourseEnrollment");
 
-        builder.HasKey(e => new { e.studentId, e.classId });
+        builder.HasKey(e => new { studentId = e.Id, classId = e.ClassId });
 
-        builder.HasOne(e => e.student)
-            .WithMany(e => e.courseEnrollments)
-            .HasForeignKey(e => e.studentId)
+        builder.HasOne(e => e.Student)
+            .WithMany(e => e.CourseEnrollments)
+            .HasForeignKey(e => e.Id)
             .HasConstraintName("FK_CourseEnrollment_Student")
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasOne(e => e.@class)
-            .WithMany(e => e.courseEnrollments)
-            .HasForeignKey(e => e.classId)
+        builder.HasOne(e => e.Class)
+            .WithMany(e => e.CourseEnrollments)
+            .HasForeignKey(e => e.ClassId)
             .HasConstraintName("FK_CourseEnrollment_Class")
             .OnDelete(DeleteBehavior.NoAction);
     }

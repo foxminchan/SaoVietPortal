@@ -10,18 +10,18 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
     {
         builder.ToTable("Course");
 
-        builder.HasKey(e => e.courseId);
+        builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.courseId)
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("varchar(10)");
 
-        builder.Property(e => e.courseName)
+        builder.Property(e => e.Name)
             .HasColumnName("Name")
             .HasColumnType("nvarchar(50)")
             .IsRequired();
 
-        builder.Property(e => e.description)
+        builder.Property(e => e.Description)
             .HasColumnName("Description")
             .HasColumnType("nvarchar(max)");
     }

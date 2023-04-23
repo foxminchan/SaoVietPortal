@@ -12,7 +12,7 @@ public class CourseRegistrationRepository : RepositoryBase<CourseRegistration>, 
 
     public void UpdateCourseRegistration(CourseRegistration courseRegistration) => Update(courseRegistration);
 
-    public void DeleteCourseRegistration(Guid id) => Delete(x => x.courseRegistrationId == id);
+    public void DeleteCourseRegistration(Guid id) => Delete(x => x.Id == id);
 
     public bool TryGetCourseRegistrationById(Guid id, out CourseRegistration? courseRegistration)
         => TryGetById(id, out courseRegistration);

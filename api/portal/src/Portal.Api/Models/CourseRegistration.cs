@@ -8,50 +8,50 @@ public class CourseRegistration
     /// <summary>
     /// Course registration ID
     /// </summary>
-    public Guid courseRegistrationId { get; set; }
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Registration status
     /// </summary>
     /// <example>Chốt</example>
-    public string? status { get; set; }
+    public string Status { get; set; } = string.Empty;
 
     /// <summary>
     /// Date of registration
     /// </summary>
     /// <example>03/03/2023</example>
-    public string? registerDate { get; set; }
+    public string RegisterDate { get; set; } = string.Empty;
 
     /// <summary>
     /// Appointment date
     /// </summary>
     /// <example>05/03/2023</example>
-    public string? appointmentDate { get; set; }
+    public string AppointmentDate { get; set; } = string.Empty;
 
     /// <summary>
     /// Registration fee
     /// </summary>
     /// <example>350000</example>
-    public float registerFee { get; set; }
+    public float Fee { get; set; }
 
     /// <summary>
     /// Percentage of discount
     /// </summary>
     /// <example>20</example>
-    public float discountAmount { get; set; }
+    public float DiscountAmount { get; set; }
 
     /// <summary>
     /// Payment method ID
     /// </summary>
-    public int? paymentMethodId { get; set; }
+    public int? PaymentMethodId { get; set; }
 
     /// <summary>
     /// Student ID
     /// </summary>
-    public string? studentId { get; set; }
+    public string StudentId { get; set; } = string.Empty;
 
     /// <summary>
     /// Class ID
     /// </summary>
-    public string? classId { get; set; }
+    public string ClassId { get; set; } = string.Empty;
 }

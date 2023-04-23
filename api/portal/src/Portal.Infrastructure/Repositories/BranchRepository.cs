@@ -12,7 +12,7 @@ public class BranchRepository : RepositoryBase<Branch>, IBranchRepository
 
     public void UpdateBranch(Branch branch) => Update(branch);
 
-    public void DeleteBranch(string id) => Delete(x => x.branchId == id);
+    public void DeleteBranch(string id) => Delete(x => x.Id == id);
 
     public IEnumerable<Branch> GetAllBranches() => GetAll();
 

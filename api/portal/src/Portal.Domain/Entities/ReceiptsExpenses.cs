@@ -2,11 +2,11 @@
 
 public class ReceiptsExpenses
 {
-    public Guid receiptExpenseId { get; set; }
-    public bool type { get; set; }
-    public string? date { get; set; }
-    public float amount { get; set; }
-    public string? note { get; set; }
-    public string? branchId { get; set; }
-    public Branch? branch { get; set; }
+    public Guid Id { get; set; }
+    public bool Type { get; set; }
+    public string Date { get; set; } = string.Empty;
+    public float Amount { get; set; }
+    public string Note { get; set; } = string.Empty;
+    public string BranchId { get; set; } = string.Empty;
+    public Branch? Branch { get; set; }
 }

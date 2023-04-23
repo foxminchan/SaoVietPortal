@@ -11,43 +11,43 @@ public class StudentProgressConfiguration : IEntityTypeConfiguration<StudentProg
     {
         builder.ToTable("StudentProgress");
 
-        builder.HasKey(e => e.progressId);
-        builder.Property(e => e.progressId)
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Id)
             .HasColumnName("Id")
             .HasColumnType("Uniqueidentifier")
             .HasDefaultValueSql("newid()");
 
-        builder.Property(e => e.lessonName)
+        builder.Property(e => e.LessonName)
             .HasColumnName("LessonName")
             .HasColumnType("nvarchar(80)")
             .IsRequired();
 
-        builder.Property(e => e.lessonContent)
+        builder.Property(e => e.LessonContent)
             .HasColumnName("LessonContent")
             .HasColumnType("nvarchar(max)");
 
-        builder.Property(e => e.lessonDate)
+        builder.Property(e => e.LessonDate)
             .HasConversion<StringConverter>()
             .HasColumnName("LessonDate")
             .HasColumnType("date");
 
-        builder.Property(e => e.progressStatus)
-            .HasColumnName("ProgressStatus")
+        builder.Property(e => e.Status)
+            .HasColumnName("Status")
             .HasColumnType("nvarchar(15)");
 
-        builder.Property(e => e.lessonRating)
+        builder.Property(e => e.LessonRating)
             .HasColumnName("LessonRating")
             .HasColumnType("float");
 
-        builder.HasOne(e => e.staff)
-            .WithMany(e => e.studentProgresses)
-            .HasForeignKey(e => e.staffId)
+        builder.HasOne(e => e.Staff)
+            .WithMany(e => e.StudentProgresses)
+            .HasForeignKey(e => e.StaffId)
             .HasConstraintName("FK_StudentProgress_Staff")
             .OnDelete(DeleteBehavior.SetNull);
 
-        builder.HasOne(e => e.courseEnrollment)
-            .WithMany(e => e.studentProgresses)
-            .HasForeignKey(e => new { e.studentId, e.classId })
+        builder.HasOne(e => e.CourseEnrollment)
+            .WithMany(e => e.StudentProgresses)
+            .HasForeignKey(e => new { studentId = e.StudentId, classId = e.ClassId })
             .HasConstraintName("FK_StudentProgress_CourseEnrollment")
             .OnDelete(DeleteBehavior.Cascade);
     }

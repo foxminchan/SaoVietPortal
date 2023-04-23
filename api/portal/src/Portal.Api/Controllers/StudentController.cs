@@ -19,7 +19,7 @@ namespace Portal.Api.Controllers;
 [ApiConventionType(typeof(DefaultApiConventions))]
 public class StudentController : ControllerBase
 {
-    private const string CACHE_KEY = "StudentData";
+    private const string CacheKey = "StudentData";
     private readonly IUnitOfWork _unitOfWork;
     private readonly ITransactionService _transactionService;
     private readonly ILogger<StudentController> _logger;
@@ -68,8 +68,8 @@ public class StudentController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CACHE_KEY,
-                    () => _unitOfWork.studentRepository.GetAllStudents().ToList())) switch
+            return (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.StudentRepository.GetAllStudents().ToList())) switch
             {
                 { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
                 _ => NotFound()
@@ -105,8 +105,8 @@ public class StudentController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
-                    .FirstOrDefault(s => s.studentId == id) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
+                    .FirstOrDefault(s => s.Id == id) switch
             {
                 { } student => Ok(student),
                 _ => NotFound()
@@ -141,7 +141,7 @@ public class StudentController : ControllerBase
         try
         {
             var students = _redisCacheService
-                .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
                 .Select(_mapper.Map<Student>).ToList();
 
             if (!students.Any()) return NotFound();
@@ -191,7 +191,7 @@ public class StudentController : ControllerBase
     ///
     ///     POST /api/v1/Student
     ///     {
-    ///         "studentId": "string",
+    ///         "Id": "string",
     ///         "fullname": "string",
     ///         "gender": bool,
     ///         "address": "string",
@@ -219,15 +219,15 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId is not null && _unitOfWork.studentRepository.TryGetStudentById(student.studentId, out _))
+            if (student.Id is not null && _unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return Conflict();
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.AddStudent(newStudent));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.AddStudent(newStudent));
 
-            var students = _redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList());
-            if (students.FirstOrDefault(s => s.studentId == newStudent.studentId) is null)
+            var students = _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+            if (students.FirstOrDefault(s => s.Id == newStudent.Id) is null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
             return Ok();
@@ -260,15 +260,15 @@ public class StudentController : ControllerBase
     {
         try
         {
-            if (!_unitOfWork.studentRepository.TryGetStudentById(id, out _))
+            if (!_unitOfWork.StudentRepository.TryGetStudentById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.DeleteStudent(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.DeleteStudent(id));
 
             if (_redisCacheService
-                    .GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
                 is { Count: > 0 } students)
-                students.RemoveAll(s => s.studentId == id);
+                students.RemoveAll(s => s.Id == id);
 
             return Ok();
         }
@@ -289,7 +289,7 @@ public class StudentController : ControllerBase
     ///
     ///     PUT /api/v1/Student
     ///     {
-    ///         "studentId": "string",
+    ///         "Id": "string",
     ///         "fullname": "string",
     ///         "gender": bool,
     ///         "address": "string",
@@ -316,15 +316,15 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.studentId is not null && !_unitOfWork.studentRepository.TryGetStudentById(student.studentId, out _))
+            if (student.Id is not null && !_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return NotFound();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
-            _transactionService.ExecuteTransaction(() => _unitOfWork.studentRepository.UpdateStudent(updateStudent));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.UpdateStudent(updateStudent));
 
-            if (_redisCacheService.GetOrSet(CACHE_KEY, () => _unitOfWork.studentRepository.GetAllStudents().ToList()) is
+            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList()) is
                 { Count: > 0 } students)
-                students[students.FindIndex(s => s.studentId == updateStudent.studentId)] = updateStudent;
+                students[students.FindIndex(s => s.Id == updateStudent.Id)] = updateStudent;
 
             return Ok();
         }

@@ -12,7 +12,7 @@ public class ReceiptsExpensesRepository : RepositoryBase<ReceiptsExpenses>, IRec
 
     public void UpdateReceiptsExpenses(ReceiptsExpenses receiptsExpenses) => Update(receiptsExpenses);
 
-    public void DeleteReceiptsExpenses(Guid receiptExpenseId) => Delete(x => x.receiptExpenseId == receiptExpenseId);
+    public void DeleteReceiptsExpenses(Guid receiptExpenseId) => Delete(x => x.Id == receiptExpenseId);
 
     public bool TryGetReceiptsExpenses(Guid receiptExpenseId, out ReceiptsExpenses? receiptsExpenses)
         => TryGetById(receiptExpenseId, out receiptsExpenses);

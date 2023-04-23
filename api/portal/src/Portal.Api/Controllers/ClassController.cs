@@ -58,7 +58,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetClasses()
+    public IActionResult GetClasses()
     {
         try
         {
@@ -94,7 +94,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetClassById([FromRoute] string id)
+    public IActionResult GetClassById([FromRoute] string id)
     {
         try
         {
@@ -140,7 +140,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public ActionResult InsertClass([FromBody] Class @class)
+    public IActionResult InsertClass([FromBody] Class @class)
     {
         try
         {
@@ -180,15 +180,13 @@ public class ClassController : ControllerBase
     ///     DELETE /api/v1/Class/{id}
     /// </remarks>
     /// <response code="200">Delete class successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no staff is found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteClass([FromRoute] string id)
+    public IActionResult DeleteClass([FromRoute] string id)
     {
         try
         {
@@ -237,7 +235,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdateClass([FromBody] Class @class)
+    public IActionResult UpdateClass([FromBody] Class @class)
     {
         try
         {

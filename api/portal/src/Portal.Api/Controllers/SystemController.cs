@@ -74,7 +74,7 @@ public class SystemController : ControllerBase
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult ClearCache()
+    public IActionResult ClearCache()
     {
         try
         {
@@ -102,7 +102,7 @@ public class SystemController : ControllerBase
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult ClearIndex()
+    public IActionResult ClearIndex()
     {
         try
         {
@@ -130,7 +130,7 @@ public class SystemController : ControllerBase
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public ActionResult ClearLogsFile()
+    public IActionResult ClearLogsFile()
     {
         try
         {

@@ -57,7 +57,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetCourses()
+    public IActionResult GetCourses()
     {
         try
         {
@@ -93,7 +93,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetCourseById([FromRoute] string id)
+    public IActionResult GetCourseById([FromRoute] string id)
     {
         try
         {
@@ -137,7 +137,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult InsertCourse([FromBody] Course course)
+    public IActionResult InsertCourse([FromBody] Course course)
     {
         try
         {
@@ -180,15 +180,13 @@ public class CourseController : ControllerBase
     ///     DELETE /api/v1/Course/{id}
     /// </remarks>
     /// <response code="200">Delete course successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no course is found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteCourse([FromRoute] string id)
+    public IActionResult DeleteCourse([FromRoute] string id)
     {
         try
         {
@@ -234,7 +232,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdateCourse([FromBody] Course course)
+    public IActionResult UpdateCourse([FromBody] Course course)
     {
         try
         {

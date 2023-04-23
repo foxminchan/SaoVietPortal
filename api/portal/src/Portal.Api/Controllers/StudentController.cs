@@ -64,7 +64,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStudents()
+    public IActionResult GetStudents()
     {
         try
         {
@@ -100,7 +100,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStudentById([FromRoute] string id)
+    public IActionResult GetStudentById([FromRoute] string id)
     {
         try
         {
@@ -136,7 +136,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStudentByName([FromQuery(Name = "name"), BindRequired] string name)
+    public IActionResult GetStudentByName([FromQuery(Name = "name"), BindRequired] string name)
     {
         try
         {
@@ -210,7 +210,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public ActionResult InsertStudent([FromBody] Student student)
+    public IActionResult InsertStudent([FromBody] Student student)
     {
         try
         {
@@ -250,15 +250,13 @@ public class StudentController : ControllerBase
     ///     DELETE /api/v1/Student/{id}
     /// </remarks>
     /// <response code="200">Delete student successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no student is found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteStudent([FromRoute] string id)
+    public IActionResult DeleteStudent([FromRoute] string id)
     {
         try
         {
@@ -309,7 +307,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdateStudent([FromBody] Student student)
+    public IActionResult UpdateStudent([FromBody] Student student)
     {
         try
         {

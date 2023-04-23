@@ -4,7 +4,6 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Portal.Api.Filters;
-using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
 namespace Portal.Api.Extensions;
@@ -58,6 +57,23 @@ public static class OpenApiExtension
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
 
+            c.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    Implicit = new OpenApiOAuthFlow
+                    {
+                        AuthorizationUrl = new Uri("/auth-server/connect/authorize", UriKind.RelativeOrAbsolute),
+                        Scopes = new Dictionary<string, string>
+                        {
+                            { "readAccess", "Access read operations" },
+                            { "writeAccess", "Access write operations" }
+                        }
+                    }
+                }
+            });
+
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -72,11 +88,16 @@ public static class OpenApiExtension
                         }
                     },
                     new List<string>()
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+                    },
+                    new[] { "readAccess", "writeAccess" }
                 }
             });
 
-            c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
-            c.OperationFilter<SecurityRequirementsOperationFilter>();
             c.SchemaFilter<SocialSchemeFilter>();
             c.ResolveConflictingActions(apiDescription => apiDescription.First());
         });
@@ -84,7 +105,7 @@ public static class OpenApiExtension
         builder.Services.AddSwaggerGenNewtonsoftSupport();
     }
 
-    public static IApplicationBuilder UseOpenApi(this IApplicationBuilder app)
+    public static void UseOpenApi(this IApplicationBuilder app)
     {
         app.UseSwagger(c =>
         {
@@ -170,6 +191,16 @@ public static class OpenApiExtension
                     },
                     new()
                     {
+                        Name = "PaymentMethod",
+                        Description = "Management of payment method",
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/PaymentMethod", UriKind.RelativeOrAbsolute)
+                        }
+                    },
+                    new()
+                    {
                         Name = "System",
                         Description = "Management of system",
                         ExternalDocs = new OpenApiExternalDocs
@@ -216,8 +247,7 @@ public static class OpenApiExtension
             {
                 options.SpecUrl($"/swagger/{description.GroupName}/swagger.json");
             }
+            options.EnableUntrustedSpec();
         });
-
-        return app;
     }
 }

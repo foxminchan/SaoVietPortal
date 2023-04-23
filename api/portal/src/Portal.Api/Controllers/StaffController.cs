@@ -64,7 +64,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStaffs()
+    public IActionResult GetStaffs()
     {
         try
         {
@@ -100,7 +100,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStaffById([FromRoute] string id)
+    public IActionResult GetStaffById([FromRoute] string id)
     {
         try
         {
@@ -136,7 +136,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetStaffByName([FromQuery(Name = "name"), BindRequired] string name)
+    public IActionResult GetStaffByName([FromQuery(Name = "name"), BindRequired] string name)
     {
         try
         {
@@ -210,7 +210,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public ActionResult InsertStaff([FromBody] Staff staff)
+    public IActionResult InsertStaff([FromBody] Staff staff)
     {
         try
         {
@@ -251,15 +251,13 @@ public class StaffController : ControllerBase
     ///     DELETE /api/v1/Staff/{id}
     /// </remarks>
     /// <response code="200">Delete staff successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no staff is found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteStaff([FromRoute] string id)
+    public IActionResult DeleteStaff([FromRoute] string id)
     {
         try
         {
@@ -310,7 +308,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdateStaff([FromBody] Staff staff)
+    public IActionResult UpdateStaff([FromBody] Staff staff)
     {
         try
         {

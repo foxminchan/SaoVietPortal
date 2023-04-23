@@ -57,7 +57,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetPositions()
+    public IActionResult GetPositions()
     {
         try
         {
@@ -93,7 +93,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetPositionById([FromRoute] int id)
+    public IActionResult GetPositionById([FromRoute] int id)
     {
         try
         {
@@ -122,7 +122,6 @@ public class PositionController : ControllerBase
     ///
     ///     POST /api/v1/Position
     ///     {
-    ///         "positionId": "int",
     ///         "positionName": "string"
     ///     }
     /// </remarks>
@@ -134,18 +133,17 @@ public class PositionController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public ActionResult InsertPosition([FromBody] Position position)
+    public IActionResult InsertPosition([FromBody] Position position)
     {
         try
         {
+            if (position.positionId.HasValue)
+                return BadRequest("Position id is auto generated");
 
             var validationResult = _validator.Validate(position);
 
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
-
-            if (position.positionId.HasValue)
-                return BadRequest("Position id is auto generated");
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
@@ -176,15 +174,13 @@ public class PositionController : ControllerBase
     ///     DELETE /api/v1/Position/{id}
     /// </remarks>
     /// <response code="200">Delete position successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no position is found</response>
     [HttpDelete("{id:int}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeletePosition([FromRoute] int id)
+    public IActionResult DeletePosition([FromRoute] int id)
     {
         try
         {
@@ -217,11 +213,11 @@ public class PositionController : ControllerBase
     ///
     ///     PUT /api/v1/Position
     ///     {
-    ///         "id": "int",
+    ///         "positionId": "int",
     ///         "positionName": "string"
     ///     }
     /// </remarks>
-    /// <response code="200">update position successfully</response>
+    /// <response code="200">Update position successfully</response>
     /// <response code="400">The input is invalid</response>
     /// <response code="404">If position id is not found</response>
     [HttpPut]
@@ -230,7 +226,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdatePosition([FromBody] Position position)
+    public IActionResult UpdatePosition([FromBody] Position position)
     {
         try
         {

@@ -57,7 +57,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetBranches()
+    public IActionResult GetBranches()
     {
         try
         {
@@ -93,7 +93,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public ActionResult GetBranchById([FromRoute] string id)
+    public IActionResult GetBranchById([FromRoute] string id)
     {
         try
         {
@@ -137,7 +137,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public ActionResult InsertPosition([FromBody] Branch branch)
+    public IActionResult InsertPosition([FromBody] Branch branch)
     {
         try
         {
@@ -177,15 +177,13 @@ public class BranchController : ControllerBase
     ///     DELETE /api/v1/Branch/{id}
     /// </remarks>
     /// <response code="200">Delete branch successfully</response>
-    /// <response code="400">The input is invalid</response>
     /// <response code="404">If no branch found</response>
     [HttpDelete("{id}")]
     [Authorize(Policy = "Developer")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult DeleteBranch([FromRoute] string id)
+    public IActionResult DeleteBranch([FromRoute] string id)
     {
         try
         {
@@ -234,7 +232,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public ActionResult UpdatePosition([FromBody] Branch branch)
+    public IActionResult UpdatePosition([FromBody] Branch branch)
     {
         try
         {

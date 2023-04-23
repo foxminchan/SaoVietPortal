@@ -64,10 +64,10 @@ public class ClassController : ControllerBase
         {
             return _redisCacheService.GetOrSet(CACHE_KEY,
                     () => _unitOfWork.classRepository.GetAllClasses().ToList()) switch
-                {
-                    { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -101,10 +101,10 @@ public class ClassController : ControllerBase
             return _redisCacheService
                     .GetOrSet(CACHE_KEY, () => _unitOfWork.classRepository.GetAllClasses().ToList())
                     .FirstOrDefault(s => s.classId == id) switch
-                {
-                    { } @class => Ok(@class),
-                    _ => NotFound()
-                };
+            {
+                { } @class => Ok(@class),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

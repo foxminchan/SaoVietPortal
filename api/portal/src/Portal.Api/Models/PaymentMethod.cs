@@ -1,17 +1,17 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Phương thức thanh toán
+/// Payment method information
 /// </summary>
 public class PaymentMethod
 {
     /// <summary>
-    /// Mã phương thức thanh toán
+    /// Payment method ID
     /// </summary>
     public int paymentMethodId { get; set; }
 
     /// <summary>
-    /// Tên phương thức thanh toán
+    /// Name of payment method
     /// </summary>
     /// <example>Tiền mặt</example>
     public string? paymentMethodName { get; set; }

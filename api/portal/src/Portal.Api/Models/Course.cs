@@ -1,23 +1,24 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Thông tin khoá học
+/// Course information
 /// </summary>
 public class Course
 {
     /// <summary>
-    /// Mã khoá học
+    /// Course ID
     /// </summary>
     public string? courseId { get; set; }
 
     /// <summary>
-    /// Tên khoá học
+    /// Name of course
     /// </summary>
     /// <example>Tin học văn phòng</example>
     public string? courseName { get; set; }
 
     /// <summary>
-    /// Mô tả khoá học
+    /// Course description
     /// </summary>
+    /// <example>Thực hành với các phần mềm Microsoft Office</example>
     public string? description { get; set; }
 }

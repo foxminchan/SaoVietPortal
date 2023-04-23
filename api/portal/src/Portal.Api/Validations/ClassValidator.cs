@@ -1,16 +1,17 @@
 ﻿using System.Globalization;
 using FluentValidation;
 using Portal.Api.Models;
+using Portal.Domain.Interfaces.Common;
 
 namespace Portal.Api.Validations;
 
 public class ClassValidator : AbstractValidator<Class>
 {
-    public ClassValidator()
+    public ClassValidator(IUnitOfWork unitOfWork)
     {
         RuleFor(x => x.classId)
             .NotEmpty().WithMessage("Class id is required")
-            .MaximumLength(10).WithMessage("Class id must not exceed 10 characters");
+            .Length(10).WithMessage("Class id must be 10 characters");
         RuleFor(x => x.startDate)
             .NotEmpty().WithMessage("Start date is required")
             .Must(startDate => DateTime.TryParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
@@ -22,5 +23,13 @@ public class ClassValidator : AbstractValidator<Class>
             .WithMessage("End date must be greater than start date");
         RuleFor(x => x.fee)
                 .GreaterThan(0).WithMessage("Fee must be greater than 0");
+        RuleFor(x => x.courseId)
+            .Must((_, courseId) => courseId is null
+                                    || unitOfWork.courseRepository.TryGetCourseById(courseId, out var _))
+            .WithMessage("Course with id {PropertyValue} does not exist");
+        RuleFor(x => x.branchId)
+            .Must((_, branchId) => branchId is null
+                                   || unitOfWork.branchRepository.TryGetBranchById(branchId, out var _))
+            .WithMessage("Branch with id {PropertyValue} does not exist");
     }
 }

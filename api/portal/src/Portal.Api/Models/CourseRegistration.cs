@@ -1,53 +1,57 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Thông tin đăng ký khoá học
+/// Course registration information
 /// </summary>
 public class CourseRegistration
 {
     /// <summary>
-    /// Mã phiếu đăng ký khoá học
+    /// Course registration ID
     /// </summary>
     public Guid courseRegistrationId { get; set; }
 
     /// <summary>
-    /// Trạng thái đăng ký khoá học
+    /// Registration status
     /// </summary>
     /// <example>Chốt</example>
     public string? status { get; set; }
 
     /// <summary>
-    /// Ngày đăng ký khoá học
+    /// Date of registration
     /// </summary>
+    /// <example>03/03/2023</example>
     public string? registerDate { get; set; }
 
     /// <summary>
-    /// Ngày hẹn đăng ký khoá học
+    /// Appointment date
     /// </summary>
+    /// <example>05/03/2023</example>
     public string? appointmentDate { get; set; }
 
     /// <summary>
-    /// Học phí đăng ký khoá học
+    /// Registration fee
     /// </summary>
+    /// <example>350000</example>
     public float registerFee { get; set; }
 
     /// <summary>
-    /// Phần trăm giảm giá
+    /// Percentage of discount
     /// </summary>
+    /// <example>20</example>
     public float discountAmount { get; set; }
 
     /// <summary>
-    /// Mã hình thức thanh toán
+    /// Payment method ID
     /// </summary>
     public int? paymentMethodId { get; set; }
 
     /// <summary>
-    /// Mã học viên
+    /// Student ID
     /// </summary>
     public string? studentId { get; set; }
 
     /// <summary>
-    /// Mã lớp học
+    /// Class ID
     /// </summary>
     public string? classId { get; set; }
 }

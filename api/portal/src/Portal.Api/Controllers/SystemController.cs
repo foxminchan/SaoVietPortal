@@ -43,7 +43,7 @@ public class SystemController : ControllerBase
     /// </remarks>
     /// <response code="200">Returns platform information</response>
     [HttpGet]
-    [Authorize(Policy = "Developer")]
+    [AllowAnonymous]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
     public IActionResult GetPlatform()

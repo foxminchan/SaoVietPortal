@@ -1,37 +1,40 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Thông tin lớp học
+/// Class information
 /// </summary>
 public class Class
 {
     /// <summary>
-    /// Mã lớp học
+    /// Class ID
     /// </summary>
     public string? classId { get; set; }
 
     /// <summary>
-    /// Ngày bắt đầu
+    /// Date of starting
     /// </summary>
+    /// <example>02/03/2023</example>
     public string? startDate { get; set; }
 
     /// <summary>
-    /// Ngày kết thúc
+    /// Date of ending
     /// </summary>
+    /// <example>15/07/2023</example>
     public string? endDate { get; set; }
 
     /// <summary>
-    /// Học phí
+    /// Class fee
     /// </summary>
+    /// <example>450000</example>
     public float? fee { get; set; }
 
     /// <summary>
-    /// Mã khoá học
+    /// Course ID
     /// </summary>
     public string? courseId { get; set; }
 
     /// <summary>
-    /// Mã chi nhánh
+    /// Branch ID
     /// </summary>
     public string? branchId { get; set; }
 }

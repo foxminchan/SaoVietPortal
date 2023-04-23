@@ -1,37 +1,41 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Thông tin thu chi
+/// Receipts and expenses information
 /// </summary>
 public class ReceiptsExpenses
 {
     /// <summary>
-    /// Mã phiếu thu chi
+    /// Receipts and expenses ID
     /// </summary>
     public Guid receiptExpenseId { get; set; }
 
     /// <summary>
-    /// Loại phiếu
+    /// Type of receipts and expenses
     /// </summary>
+    /// <example>true</example>
     public bool type { get; set; }
 
     /// <summary>
-    /// Ngày thu chi
+    /// Date of receipts and expenses
     /// </summary>
+    /// <example>04/03/2023</example>
     public string? date { get; set; }
 
     /// <summary>
-    /// Số tiền
+    /// Amount of receipts and expenses
     /// </summary>
+    /// <example>650000</example>
     public float amount { get; set; }
 
     /// <summary>
-    /// Nội dung
+    /// Receipts and expenses note
     /// </summary>
+    /// <example>Tiền mạng cho trung tâm</example>
     public string? note { get; set; }
 
     /// <summary>
-    /// Mã chi nhánh
+    /// Branch ID
     /// </summary>
     public string? branchId { get; set; }
 }

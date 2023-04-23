@@ -1,55 +1,57 @@
 ﻿namespace Portal.Api.Models;
 
 /// <summary>
-/// Thông tin tiến độ học tập của học viên
+/// Student progress information
 /// </summary>
 public class StudentProgress
 {
     /// <summary>
-    /// Mã tiến độ học tập
+    /// Student progress ID
     /// </summary>
     public Guid progressId { get; set; }
 
     /// <summary>
-    /// Tên bài học
+    /// Lesson name
     /// </summary>
     /// <example>Word cơ bản</example>
     public string? lessonName { get; set; }
 
     /// <summary>
-    /// Nội dung bài học
+    /// Lesson content
     /// </summary>
     /// <example>Giới thiệu về Word</example>
     public string? lessonContent { get; set; }
 
     /// <summary>
-    /// Ngày học
+    /// Lesson date
     /// </summary>
+    /// <example>01/04/2023</example>
     public string? lessonDate { get; set; }
 
     /// <summary>
-    /// Trạng thái tiến độ học tập
+    /// Student progress status
     /// </summary>
+    /// <example>Miễn học</example>
     public string? progressStatus { get; set; }
 
     /// <summary>
-    /// Đánh giá bài học
+    /// Lesson rating
     /// </summary>
     /// <example>10</example>
     public int lessonRating { get; set; }
 
     /// <summary>
-    /// Mã giáo viên
+    /// Teacher ID
     /// </summary>
     public string? staffId { get; set; }
 
     /// <summary>
-    /// Mã học viên
+    /// Student ID
     /// </summary>
     public string? studentId { get; set; }
 
     /// <summary>
-    /// Mã lớp học
+    /// Class ID
     /// </summary>
     public string? classId { get; set; }
 }

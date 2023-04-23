@@ -63,10 +63,10 @@ public class PaymentMethodController : ControllerBase
         {
             return (_redisCacheService.GetOrSet(CacheKey,
                     () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())) switch
-                {
-                    { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -101,10 +101,10 @@ public class PaymentMethodController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
                         .GetAllPaymentMethods().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
-                {
-                    { } paymentMethod => Ok(paymentMethod),
-                    _ => NotFound()
-                };
+            {
+                { } paymentMethod => Ok(paymentMethod),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

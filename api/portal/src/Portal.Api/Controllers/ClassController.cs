@@ -124,11 +124,11 @@ public class ClassController : ControllerBase
     ///     POST /api/v1/Class
     ///     {
     ///         "Id": "string",
-    ///         "startDate": "dd/MM/yyyy",
-    ///         "endDate": "dd/MM/yyyy",
-    ///         "fee": "float",
-    ///         "Id": "string",
-    ///         "Id": "string"
+    ///         "StartDate": "dd/MM/yyyy",
+    ///         "EndDate": "dd/MM/yyyy",
+    ///         "Fee": "float",
+    ///         "CourseId": "string",
+    ///         "BranchId": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new class successfully</response>
@@ -149,7 +149,7 @@ public class ClassController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (@class.Id is not null && _unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
+            if (_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return Conflict();
 
             var newClass = _mapper.Map<Domain.Entities.Class>(@class);
@@ -220,11 +220,11 @@ public class ClassController : ControllerBase
     ///     PUT /api/v1/Class
     ///     {
     ///         "Id": "string",
-    ///         "startDate": "dd/MM/yyyy",
-    ///         "endDate": "dd/MM/yyyy",
-    ///         "fee": "float",
-    ///         "Id": "string",
-    ///         "Id": "string"
+    ///         "StartDate": "dd/MM/yyyy",
+    ///         "EndDate": "dd/MM/yyyy",
+    ///         "Fee": "float",
+    ///         "CourseId": "string",
+    ///         "BranchId": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Update class successfully</response>
@@ -243,7 +243,7 @@ public class ClassController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (@class.Id is not null && !_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
+            if (!_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return NotFound();
 
             var updateClass = _mapper.Map<Domain.Entities.Class>(@class);

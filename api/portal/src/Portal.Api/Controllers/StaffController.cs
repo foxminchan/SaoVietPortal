@@ -192,13 +192,13 @@ public class StaffController : ControllerBase
     ///     POST /api/v1/Staff
     ///     {
     ///         "Id": "string",
-    ///         "fullname": "string",
-    ///         "dob": "dd/MM/yyyy",
-    ///         "address": "string",
-    ///         "dsw": "dd/MM/yyyy",
-    ///         "Id": integer,
-    ///         "Id": "string",
-    ///         "managerId": "string"
+    ///         "Fullname": "string",
+    ///         "Dob": "dd/MM/yyyy",
+    ///         "Address": "string",
+    ///         "Dsw": "dd/MM/yyyy",
+    ///         "PositionId": integer,
+    ///         "BranchId": "string",
+    ///         "ManagerId": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new staff successfully</response>
@@ -219,7 +219,7 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.Id is not null && _unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
+            if (_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return Conflict();
 
             var newStaff = _mapper.Map<Domain.Entities.Staff>(staff);
@@ -291,13 +291,13 @@ public class StaffController : ControllerBase
     ///     PUT /api/v1/Staff
     ///     {
     ///         "Id": "string",
-    ///         "fullname": "string",
-    ///         "dob": "dd/MM/yyyy",
-    ///         "address": "string",
-    ///         "dsw": "dd/MM/yyyy",
-    ///         "Id": integer,
-    ///         "Id": "string",
-    ///         "managerId": "string"
+    ///         "Fullname": "string",
+    ///         "Dob": "dd/MM/yyyy",
+    ///         "Address": "string",
+    ///         "Dsw": "dd/MM/yyyy",
+    ///         "PositionId": integer,
+    ///         "BranchId": "string",
+    ///         "ManagerId": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Update staff successfully</response>
@@ -317,7 +317,7 @@ public class StaffController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (staff.Id is not null && !_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
+            if (!_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return NotFound();
 
             var updateStaff = _mapper.Map<Domain.Entities.Staff>(staff);

@@ -2,6 +2,7 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
@@ -124,7 +125,7 @@ public class CourseController : ControllerBase
     ///     {
     ///         "Id": "string",
     ///         "Name": "string",
-    ///         "description": "string"
+    ///         "Description": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new course successfully</response>
@@ -146,7 +147,7 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.Id is not null && _unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
+            if (!course.Id.IsNullOrEmpty() && _unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return Conflict();
 
             var newCourse = _mapper.Map<Domain.Entities.Course>(course);
@@ -220,7 +221,7 @@ public class CourseController : ControllerBase
     ///     {
     ///         "Id": "string",
     ///         "Name": "string",
-    ///         "description": "string"
+    ///         "Description": "string"
     ///     }
     /// </remarks>
     /// <response code="200">update course successfully</response>
@@ -241,7 +242,7 @@ public class CourseController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (course.Id is not null && !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
+            if (!course.Id.IsNullOrEmpty() && !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return NotFound();
 
             var updateCourse = _mapper.Map<Domain.Entities.Course>(course);

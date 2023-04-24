@@ -192,13 +192,13 @@ public class StudentController : ControllerBase
     ///     POST /api/v1/Student
     ///     {
     ///         "Id": "string",
-    ///         "fullname": "string",
-    ///         "gender": bool,
-    ///         "address": "string",
-    ///         "dob": "dd/MM/yyyy",
-    ///         "pod": "string",
-    ///         "occupation": "string",
-    ///         "socialNetwork": "json"
+    ///         "Fullname": "string",
+    ///         "Gender": bool,
+    ///         "Address": "string",
+    ///         "Dob": "dd/MM/yyyy",
+    ///         "Pod": "string",
+    ///         "Occupation": "string",
+    ///         "SocialNetwork": "json"
     ///     }
     /// </remarks>
     /// <response code="200">Add new student successfully</response>
@@ -219,7 +219,7 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.Id is not null && _unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
+            if (_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return Conflict();
 
             var newStudent = _mapper.Map<Domain.Entities.Student>(student);
@@ -290,13 +290,13 @@ public class StudentController : ControllerBase
     ///     PUT /api/v1/Student
     ///     {
     ///         "Id": "string",
-    ///         "fullname": "string",
-    ///         "gender": bool,
-    ///         "address": "string",
-    ///         "dob": "dd/MM/yyyy",
-    ///         "pod": "string",
-    ///         "occupation": "string",
-    ///         "socialNetwork": "json"
+    ///         "Fullname": "string",
+    ///         "Gender": bool,
+    ///         "Address": "string",
+    ///         "Dob": "dd/MM/yyyy",
+    ///         "Pod": "string",
+    ///         "Occupation": "string",
+    ///         "SocialNetwork": "json"
     ///     }
     /// </remarks>
     /// <response code="200">Update student successfully</response>
@@ -316,7 +316,7 @@ public class StudentController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (student.Id is not null && !_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
+            if (!_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return NotFound();
 
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);

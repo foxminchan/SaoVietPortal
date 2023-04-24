@@ -124,8 +124,8 @@ public class BranchController : ControllerBase
     ///     {
     ///         "Id": "string",
     ///         "Name": "string",
-    ///         "address": "string",
-    ///         "phone": "string"
+    ///         "Address": "string",
+    ///         "Phone": "string"
     ///     }
     /// </remarks>
     /// <response code="200">Add new branch successfully</response>
@@ -146,7 +146,7 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.Id is not null && _unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
+            if (_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return Conflict();
 
             var newBranch = _mapper.Map<Domain.Entities.Branch>(branch);
@@ -219,8 +219,8 @@ public class BranchController : ControllerBase
     ///     {
     ///         "Id": "string",
     ///         "Name": "string",
-    ///         "address": "string",
-    ///         "phone": "string"
+    ///         "Address": "string",
+    ///         "Phone": "string"
     ///     }
     /// </remarks>
     /// <response code="200">update branch successfully</response>
@@ -241,7 +241,7 @@ public class BranchController : ControllerBase
             if (!validationResult.IsValid)
                 return BadRequest(new ValidationError(validationResult));
 
-            if (branch.Id is not null && !_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
+            if (!_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return NotFound();
 
             var updateBranch = _mapper.Map<Domain.Entities.Branch>(branch);

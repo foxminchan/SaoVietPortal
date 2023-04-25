@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -8,6 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Transaction;
+using Portal.Domain.Enum;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Primitives;
 
@@ -26,7 +26,7 @@ public class StaffController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidator<Staff> _validator;
     private readonly IRedisCacheService _redisCacheService;
-    private readonly ILuceneService _luceneService;
+    private readonly ILuceneService<Staff> _luceneService;
 
     public StaffController(
         IUnitOfWork unitOfWork,
@@ -35,7 +35,7 @@ public class StaffController : ControllerBase
         IMapper mapper,
         IValidator<Staff> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService luceneService
+        ILuceneService<Staff> luceneService
     )
     {
         _unitOfWork = unitOfWork;
@@ -146,27 +146,8 @@ public class StaffController : ControllerBase
 
             if (!staffs.Any()) return NotFound();
 
-            var propertyIndex = new Dictionary<string, List<Document>>();
-
-            foreach (var staff in staffs)
-            {
-                foreach (var property in staff.GetType().GetProperties())
-                {
-                    if (!propertyIndex.ContainsKey(property.Name))
-                        propertyIndex.Add(property.Name, new List<Document>());
-
-                    var value = property.GetValue(staff, null);
-
-                    if (value is null) continue;
-
-                    var document = new Document
-                        { new StringField(property.Name, value.ToString(), Field.Store.YES) };
-
-                    propertyIndex[property.Name].Add(document);
-                }
-            }
-
-            _luceneService.Index(propertyIndex);
+            if (!_luceneService.IsExistIndex(staffs.First()))
+                _luceneService.Index(staffs, nameof(LuceneOptions.Create));
 
             return _luceneService.Search(name, 20).ToList() switch
             {
@@ -231,6 +212,8 @@ public class StaffController : ControllerBase
             if (staffs.FirstOrDefault(s => s.Id == newStaff.Id) is null)
                 staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
 
+            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
+
             return Ok();
         }
         catch (Exception e)
@@ -266,10 +249,13 @@ public class StaffController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.DeleteStaff(id));
 
-            if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
-                is { Count: > 0 } staffs)
-                staffs.RemoveAll(s => s.Id == id);
+            var staffs = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+
+            if (staffs.FirstOrDefault(s => s.Id == id) is { } staff)
+                staffs.Remove(staff);
+
+            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Delete));
 
             return Ok();
         }
@@ -323,10 +309,12 @@ public class StaffController : ControllerBase
             var updateStaff = _mapper.Map<Domain.Entities.Staff>(staff);
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.UpdateStaff(updateStaff));
 
-            if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
-                is { Count: > 0 } staffs)
-                staffs[staffs.FindIndex(s => s.Id == updateStaff.Id)] = updateStaff;
+            var staffs = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+            if (staffs.FirstOrDefault(s => s.Id == updateStaff.Id) is { } data)
+                staffs[staffs.IndexOf(data)] = updateStaff;
+
+            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
 
             return Ok();
         }

@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Portal.Domain.Specification;
 
 namespace Portal.Domain.Interfaces.Common;
 
@@ -10,13 +11,8 @@ public interface IRepository<T> where T : class
     public void Delete(Expression<Func<T, bool>> where);
     public bool TryGetById(object? id, out T? entity);
     public int Count();
-    public IEnumerable<T> GetList(
-        Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        string[]? includeProperties = null,
-        int skip = 0,
-        int take = 0,
-        string fields = "");
+    public IQueryable<T> GetList(Criteria<T> criteria);
+    public IQueryable<T> GetField(Criteria<T> criteria, IQueryable<T> query);
     public IEnumerable<T> GetAll();
     public IEnumerable<T> GetMany(Expression<Func<T, bool>> where);
     public bool Any(Expression<Func<T, bool>> where);

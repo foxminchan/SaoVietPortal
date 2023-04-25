@@ -2,18 +2,19 @@
 using System.Linq.Expressions;
 using Portal.Domain.Interfaces.Common;
 using System.Reflection;
+using Portal.Domain.Specification;
 
 namespace Portal.Infrastructure.Repositories.Common;
 
 public abstract class RepositoryBase<T> : IRepository<T> where T : class
 {
-    protected readonly ApplicationDbContext Context;
+    private readonly ApplicationDbContext _context;
     private readonly DbSet<T> _dbSet;
 
     protected RepositoryBase(ApplicationDbContext context)
     {
-        Context = context;
-        _dbSet = Context.Set<T>();
+        _context = context;
+        _dbSet = _context.Set<T>();
     }
 
     public virtual IEnumerable<T> GetAll() => _dbSet;
@@ -23,12 +24,12 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
     public virtual void Update(T entity)
     {
         _dbSet.Attach(entity);
-        Context.Entry(entity).State = EntityState.Modified;
+        _context.Entry(entity).State = EntityState.Modified;
     }
 
     public virtual void Delete(T entity)
     {
-        if (Context.Entry(entity).State == EntityState.Detached)
+        if (_context.Entry(entity).State == EntityState.Detached)
             _dbSet.Attach(entity);
         _dbSet.Remove(entity);
     }
@@ -48,44 +49,41 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         return entity is not null;
     }
 
-    public virtual IEnumerable<T> GetList(
-        Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        string[]? includeProperties = null,
-        int skip = 0,
-        int take = 0,
-        string fields = "")
+    public virtual IQueryable<T> GetList(Criteria<T> criteria)
     {
         IQueryable<T> query = _dbSet;
 
-        if (filter is not null)
+        if (criteria.Filter is not null)
         {
-            query = query.Where(filter);
+            query = query.Where(criteria.Filter);
 
-            var filterBody = filter.Body.ToString();
+            var filterBody = criteria.Filter.Body.ToString();
 
             if (filterBody.Contains("()") || filterBody.Contains("new "))
                 throw new ArgumentException("Invalid filter expression.");
         }
 
-        if (includeProperties is not null)
-            query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+        if (criteria.IncludeProperties is not null)
+            query = criteria.IncludeProperties
+                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
 
-        if (orderBy is not null)
-            query = orderBy(query);
+        if (criteria.OrderBy is not null)
+            query = criteria.OrderBy(query);
 
-        if (skip != 0)
-            _ = query.Skip(skip);
+        if (criteria.Skip != 0)
+            _ = query.Skip(criteria.Skip);
 
-        if (take != 0)
-            _ = query.Take(take);
+        if (criteria.Take != 0)
+            _ = query.Take(criteria.Take);
 
-        if (string.IsNullOrEmpty(fields))
-            return query.AsNoTracking();
+        return string.IsNullOrEmpty(criteria.Fields) ? query.AsNoTracking() : GetField(criteria, query);
+    }
 
+    public IQueryable<T> GetField(Criteria<T> criteria, IQueryable<T> query)
+    {
         var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        var selectedProperties = fields.Split(',').Select(x => x.Trim())
+        var selectedProperties = criteria.Fields.Split(',').Select(x => x.Trim())
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(x => propertyInfos.FirstOrDefault(p => p.Name.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
             .Where(x => x is not null);

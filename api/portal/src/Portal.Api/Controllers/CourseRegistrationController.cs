@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
@@ -36,5 +37,42 @@ public class CourseRegistrationController : ControllerBase
         _mapper = mapper;
         _validator = validator;
         _redisCacheService = redisCacheService;
+    }
+
+    /// <summary>
+    /// Get all course registrations
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/v1/CourseRegistration
+    /// </remarks>
+    /// <response code="200">Returns the list of  course registrations</response>
+    /// <response code="404">If no course registrations are found</response>
+    [HttpGet]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200, Type = typeof(List<CourseRegistration>))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    [ResponseCache(Duration = 15)]
+    public IActionResult GetCourseRegistrations()
+    {
+        try
+        {
+            return (_redisCacheService.GetOrSet(CacheKey,
+                    () => _unitOfWork.CourseRegistrationRepository
+                        .GetAllCourseRegistrations().ToList())) switch
+                {
+                    { Count: > 0 } courseRegistrations => Ok(_mapper
+                        .Map<List<CourseRegistration>>(courseRegistrations)),
+                    _ => NotFound()
+                };
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting course registrations");
+            return StatusCode(500);
+        }
     }
 }

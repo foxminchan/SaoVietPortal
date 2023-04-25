@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Lucene.Net.Documents;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -8,6 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Transaction;
+using Portal.Domain.Enum;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Primitives;
 
@@ -26,7 +26,7 @@ public class StudentController : ControllerBase
     private readonly IMapper _mapper;
     private readonly IValidator<Student> _validator;
     private readonly IRedisCacheService _redisCacheService;
-    private readonly ILuceneService _luceneService;
+    private readonly ILuceneService<Student> _luceneService;
 
     public StudentController(
         IUnitOfWork unitOfWork,
@@ -35,7 +35,7 @@ public class StudentController : ControllerBase
         IMapper mapper,
         IValidator<Student> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService luceneService
+        ILuceneService<Student> luceneService
     )
     {
         _unitOfWork = unitOfWork;
@@ -146,27 +146,8 @@ public class StudentController : ControllerBase
 
             if (!students.Any()) return NotFound();
 
-            var propertyIndex = new Dictionary<string, List<Document>>();
-
-            foreach (var student in students)
-            {
-                foreach (var property in student.GetType().GetProperties())
-                {
-                    if (!propertyIndex.ContainsKey(property.Name))
-                        propertyIndex.Add(property.Name, new List<Document>());
-
-                    var value = property.GetValue(student, null);
-
-                    if (value is null) continue;
-
-                    var document = new Document
-                        { new StringField(property.Name, value.ToString(), Field.Store.YES) };
-
-                    propertyIndex[property.Name].Add(document);
-                }
-            }
-
-            _luceneService.Index(propertyIndex);
+            if (!_luceneService.IsExistIndex(students.First()))
+                _luceneService.Index(students, nameof(LuceneOptions.Create));
 
             return _luceneService.Search(name, 20).ToList() switch
             {
@@ -230,6 +211,8 @@ public class StudentController : ControllerBase
             if (students.FirstOrDefault(s => s.Id == newStudent.Id) is null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
+            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
+
             return Ok();
         }
         catch (Exception e)
@@ -265,10 +248,13 @@ public class StudentController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.DeleteStudent(id));
 
-            if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
-                is { Count: > 0 } students)
-                students.RemoveAll(s => s.Id == id);
+            var students = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+
+            if (students.FirstOrDefault(s => s.Id == id) is { } student)
+                students.Remove(student);
+
+            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Delete));
 
             return Ok();
         }
@@ -322,9 +308,12 @@ public class StudentController : ControllerBase
             var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.UpdateStudent(updateStudent));
 
-            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList()) is
-                { Count: > 0 } students)
-                students[students.FindIndex(s => s.Id == updateStudent.Id)] = updateStudent;
+            var students = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+            if (students.FirstOrDefault(s => s.Id == updateStudent.Id) is { } data)
+                students[students.IndexOf(data)] = updateStudent;
+
+            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
 
             return Ok();
         }

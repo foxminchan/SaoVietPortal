@@ -23,8 +23,6 @@ using Serilog;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IO.Compression;
 using Microsoft.AspNetCore.Identity;
-using Portal.Domain.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -116,7 +114,7 @@ builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddSingleton<HealthService>();
 builder.Services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
-builder.Services.AddSingleton<ILuceneService, LuceneService>(_ => new LuceneService("lucene-index"));
+builder.Services.AddSingleton(typeof(ILuceneService<>), typeof(LuceneService<>));
 
 builder.Services.TryAddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
 builder.Services.TryAddSingleton(options =>

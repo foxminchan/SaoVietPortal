@@ -63,11 +63,11 @@ public class CourseRegistrationController : ControllerBase
             return (_redisCacheService.GetOrSet(CacheKey,
                     () => _unitOfWork.CourseRegistrationRepository
                         .GetAllCourseRegistrations().ToList())) switch
-                {
-                    { Count: > 0 } courseRegistrations => Ok(_mapper
-                        .Map<List<CourseRegistration>>(courseRegistrations)),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } courseRegistrations => Ok(_mapper
+                    .Map<List<CourseRegistration>>(courseRegistrations)),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {

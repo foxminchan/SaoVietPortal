@@ -16,14 +16,14 @@ public class SystemController : ControllerBase
     private readonly IWebHostEnvironment _env;
     private readonly ILogger<SystemController> _logger;
     private readonly IRedisCacheService _redisCacheService;
-    private readonly ILuceneService _luceneService;
+    private readonly ILuceneService<string> _luceneService;
 
     public SystemController(
         IConfiguration config,
         IWebHostEnvironment env,
         ILogger<SystemController> logger,
         IRedisCacheService redisCacheService,
-        ILuceneService luceneService)
+        ILuceneService<string> luceneService)
     {
         _config = config;
         _env = env;

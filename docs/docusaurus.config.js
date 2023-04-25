@@ -6,20 +6,21 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
+  title: 'Student management portal Sao Viet',
+  tagline:
+    'Empowering Students with Seamless Management: Discover Sao Viet Portal',
+  favicon: 'img/favicon.png',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'https://foxminchan.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/',
+  baseUrl: '/SaoVietPortal',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'foxminchan', // Usually your GitHub org/user name.
+  projectName: 'SaoVietPortal', // Usually your repo name.
 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -41,15 +42,13 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/foxminchan/SaoVietPortal',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          editUrl: 'https://github.com/foxminchan/SaoVietPortal',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -62,23 +61,29 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/social-card.jpg',
       navbar: {
-        title: 'My Site',
+        title: 'Developer',
         logo: {
-          alt: 'My Site Logo',
-          src: 'img/logo.svg',
+          alt: 'Sao Viet Portal Logo',
+          src: 'img/logo.jpg',
         },
         items: [
           {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Portal Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/facebook/docusaurus',
+            type: 'docSidebar',
+            sidebarId: 'tutorialSidebar',
+            position: 'left',
+            label: 'Chatbot Docs',
+          },
+          { to: '/blog', label: 'Blog', position: 'left' },
+          {
+            href: 'https://github.com/foxminchan/SaoVietPortal',
             label: 'GitHub',
             position: 'right',
           },
@@ -97,19 +102,23 @@ const config = {
             ],
           },
           {
-            title: 'Community',
+            title: 'Contact',
             items: [
               {
-                label: 'Stack Overflow',
-                href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+                label: 'Facebook',
+                href: 'https://www.facebook.com/FoxMinChan/',
               },
               {
-                label: 'Discord',
-                href: 'https://discordapp.com/invite/docusaurus',
+                label: 'Github',
+                href: 'https://github.com/foxminchan',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/docusaurus',
+                label: 'Developer email',
+                href: 'mailto:nguyenxuannhan407@gmail.com',
+              },
+              {
+                label: 'Guide email',
+                href: 'mailto:nd.anh@hutech.edu.vn',
               },
             ],
           },
@@ -121,13 +130,13 @@ const config = {
                 to: '/blog',
               },
               {
-                label: 'GitHub',
-                href: 'https://github.com/facebook/docusaurus',
+                label: 'Company',
+                href: 'https://blogdaytinhoc.com/',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Sao Viet Portal Project, Inc.`,
       },
       prism: {
         theme: lightCodeTheme,

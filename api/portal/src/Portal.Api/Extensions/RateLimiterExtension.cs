@@ -5,7 +5,7 @@ namespace Portal.Api.Extensions;
 
 public static class RateLimiterExtension
 {
-    private const string POLICY = "PerUser";
+    private const string Policy = "PerUser";
 
     public static void AddRateLimiting(this IServiceCollection services)
     {
@@ -13,7 +13,7 @@ public static class RateLimiterExtension
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-            options.AddPolicy(POLICY, context =>
+            options.AddPolicy(Policy, context =>
             {
                 var username = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -30,5 +30,5 @@ public static class RateLimiterExtension
         });
     }
 
-    public static void RequirePerUserRateLimit(this IEndpointConventionBuilder builder) => builder.RequireRateLimiting(POLICY);
+    public static void RequirePerUserRateLimit(this IEndpointConventionBuilder builder) => builder.RequireRateLimiting(Policy);
 }

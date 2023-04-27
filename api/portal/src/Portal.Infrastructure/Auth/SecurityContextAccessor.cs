@@ -25,7 +25,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
             if (userId is not null)
                 return userId;
             _logger.LogError("User ID not found in HttpContext");
-            throw new Exception("User ID not found in HttpContext");
+            return string.Empty;
         }
     }
 
@@ -43,7 +43,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
             if (isAuthenticated is not null)
                 return isAuthenticated.Value;
             _logger.LogError("IsAuthenticated not found in HttpContext");
-            throw new Exception("IsAuthenticated not found in HttpContext");
+            return false;
         }
     }
 
@@ -55,7 +55,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
             if (role is not null)
                 return role;
             _logger.LogError("Role not found in HttpContext");
-            throw new Exception("Role not found in HttpContext");
+            return string.Empty;
         }
     }
 
@@ -67,7 +67,7 @@ public class SecurityContextAccessor : ISecurityContextAccessor
             if (permission is not null)
                 return permission;
             _logger.LogError("Permission not found in HttpContext");
-            throw new Exception("Permission not found in HttpContext");
+            return string.Empty;
         }
     }
 }

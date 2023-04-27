@@ -14,7 +14,8 @@ public static class OpenApiExtension
     {
         builder.Services.AddSwaggerGen(c =>
         {
-            c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
+            c.IncludeXmlComments(Path
+                .Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml"));
             c.SwaggerDoc(
                 "v1",
                 new OpenApiInfo

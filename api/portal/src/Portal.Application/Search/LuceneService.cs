@@ -71,6 +71,8 @@ public class LuceneService<T> : ILuceneService<T> where T : class
             case nameof(LuceneOptions.Delete):
                 _indexWriter.DeleteDocuments(new Term("id", "1"));
                 break;
+            default:                
+                throw new ArgumentOutOfRangeException(nameof(options), options, null);
         }
 
         _indexWriter.Flush(triggerMerge: false, applyAllDeletes: false);

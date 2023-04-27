@@ -12,9 +12,8 @@ public static class PlatformExtension
     public static JObject GetPlatform(this IConfiguration config, IWebHostEnvironment env)
         => JObject.Parse(JsonConvert.SerializeObject(config.PlatformModel(env)));
 
-    private static Platform PlatformModel(this IConfiguration config, IWebHostEnvironment env)
-    {
-        var dto = new Platform
+    private static Platform PlatformModel(this IConfiguration config, IHostEnvironment env)
+        => new()
         {
             AppName = env.ApplicationName,
 
@@ -24,7 +23,8 @@ public static class PlatformExtension
 
             FrameworkDescription = RuntimeInformation.FrameworkDescription,
 
-            EnvironmentVariables = config.AsEnumerable().ToDictionary(x => x.Key, x => x.Value),
+            EnvironmentVariables = config.AsEnumerable()
+                .ToDictionary(x => x.Key, x => x.Value),
 
             OsArchitecture = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
                 ? RuntimeInformation.IsOSPlatform(OSPlatform.Linux) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX)
@@ -49,7 +49,4 @@ public static class PlatformExtension
                 .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
                 .Aggregate(" ", (a, b) => $"{a} {b}")
         };
-
-        return dto;
-    }
 }

@@ -13,8 +13,8 @@ public sealed class RedisCache
     public string Prefix { get; set; } = string.Empty;
     public Uri Url { get; set; } = new("http://localhost:6379");
 
-    public string GetConnectionString() 
-        => string.IsNullOrEmpty(Password) 
-                ? Url.ToString() 
+    public string GetConnectionString()
+        => string.IsNullOrEmpty(Password)
+                ? Url.ToString()
                 : $"{Url},password={Password},ssl={Ssl},abortConnect=False";
 }

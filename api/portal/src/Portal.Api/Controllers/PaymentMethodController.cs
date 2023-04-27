@@ -62,7 +62,7 @@ public class PaymentMethodController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, 
+                    .GetOrSet(CacheKey,
                         () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList()) switch
             {
                 { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),

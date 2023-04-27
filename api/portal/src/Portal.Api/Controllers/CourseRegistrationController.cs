@@ -64,11 +64,11 @@ public class CourseRegistrationController : ControllerBase
             return _redisCacheService
                     .GetOrSet(CacheKey,
                     () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList()) switch
-                {
-                    { Count: > 0 } courseRegistrations 
-                        => Ok(_mapper.Map<List<CourseRegistration>>(courseRegistrations)),
-                    _ => NotFound()
-                };
+            {
+                { Count: > 0 } courseRegistrations
+                    => Ok(_mapper.Map<List<CourseRegistration>>(courseRegistrations)),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -100,14 +100,14 @@ public class CourseRegistrationController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, 
+                    .GetOrSet(CacheKey,
                         () => _unitOfWork.CourseRegistrationRepository
                             .GetAllCourseRegistrations().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
-                {
-                    { } courseRegistration => Ok(courseRegistration),
-                    _ => NotFound()
-                };
+            {
+                { } courseRegistration => Ok(courseRegistration),
+                _ => NotFound()
+            };
         }
         catch (Exception e)
         {
@@ -163,7 +163,7 @@ public class CourseRegistrationController : ControllerBase
                 .AddCourseRegistration(newCourseRegistration));
 
             var courseRegistrations =
-                _redisCacheService.GetOrSet(CacheKey, 
+                _redisCacheService.GetOrSet(CacheKey,
                     () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList());
             if (courseRegistrations.FirstOrDefault(s => s.Id == newCourseRegistration.Id) is null)
                 courseRegistrations.Add(_mapper.Map<Domain.Entities.CourseRegistration>(newCourseRegistration));
@@ -265,7 +265,7 @@ public class CourseRegistrationController : ControllerBase
                 () => _unitOfWork.CourseRegistrationRepository.UpdateCourseRegistration(updateCourseRegistration));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, 
+                    .GetOrSet(CacheKey,
                         () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList()) is
                 { Count: > 0 } courseRegistrations)
                 courseRegistrations[courseRegistrations.FindIndex(s => s.Id == updateCourseRegistration.Id)] = updateCourseRegistration;

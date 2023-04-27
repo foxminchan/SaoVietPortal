@@ -61,8 +61,8 @@ public class BranchController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.BranchRepository.GetAllBranches().ToList())) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.BranchRepository.GetAllBranches().ToList()) switch
             {
                 { Count: > 0 } branches => Ok(_mapper.Map<List<Branch>>(branches)),
                 _ => NotFound()
@@ -133,11 +133,12 @@ public class BranchController : ControllerBase
     /// <response code="409">Branch id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertPosition([FromBody] Branch branch)
+    [ProducesDefaultResponseType]
+    public IActionResult InsertBranch([FromBody] Branch branch)
     {
         try
         {
@@ -157,7 +158,7 @@ public class BranchController : ControllerBase
             if (branches.FirstOrDefault(s => s.Id == newBranch.Id) is null)
                 branches.Add(_mapper.Map<Domain.Entities.Branch>(newBranch));
 
-            return Ok();
+            return Created($"api/v1/Student/{newBranch.Id}", newBranch);
         }
         catch (Exception e)
         {
@@ -228,7 +229,7 @@ public class BranchController : ControllerBase
     /// <response code="404">If no branch found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -251,7 +252,7 @@ public class BranchController : ControllerBase
                 { Count: > 0 } branches)
                 branches[branches.FindIndex(s => s.Id == updateBranch.Id)] = updateBranch;
 
-            return Ok();
+            return Created($"api/v1/Branch/{updateBranch.Id}", updateBranch);
         }
         catch (Exception e)
         {

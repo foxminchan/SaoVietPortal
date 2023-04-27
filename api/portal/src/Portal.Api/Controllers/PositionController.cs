@@ -61,8 +61,8 @@ public class PositionController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.PositionRepository.GetAllPositions().ToList())) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList()) switch
             {
                 { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
                 _ => NotFound()
@@ -129,7 +129,7 @@ public class PositionController : ControllerBase
     /// <response code="409">Position id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -154,7 +154,7 @@ public class PositionController : ControllerBase
             if (positions.FirstOrDefault(s => s.Id == newPosition.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
-            return Ok();
+            return Created($"/api/v1/Position/{newPosition.Id}", newPosition);
         }
         catch (Exception e)
         {
@@ -222,7 +222,7 @@ public class PositionController : ControllerBase
     /// <response code="404">If position id is not found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -246,7 +246,7 @@ public class PositionController : ControllerBase
                 is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.Id == updatePosition.Id)] = updatePosition;
 
-            return Ok();
+            return Created($"/api/v1/Position/{updatePosition.Id}", updatePosition);
         }
         catch (Exception e)
         {

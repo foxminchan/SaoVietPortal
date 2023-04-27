@@ -83,23 +83,22 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
     {
         var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        var selectedProperties = criteria.Fields.Split(',').Select(x => x.Trim())
+        var selectedProperties = criteria.Fields.Split(',')
+            .Select(x => x.Trim())
             .Where(x => !string.IsNullOrEmpty(x))
             .Select(x => propertyInfos.FirstOrDefault(p => p.Name.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
             .Where(x => x is not null);
 
         var parameter = Expression.Parameter(typeof(T), "x");
 
-        var memberBindings = selectedProperties.Select(p => Expression
-            .Bind(p ?? throw new ArgumentNullException(nameof(p)), Expression.Property(parameter, p)));
+        var memberBindings = selectedProperties.Select(property => Expression
+            .Bind(property ?? throw new ArgumentNullException(nameof(property)), Expression.Property(parameter, property)));
 
         var memberInit = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
 
         var selector = Expression.Lambda<Func<T, T>>(memberInit, parameter);
 
-        _ = query.Select(selector);
-
-        return query.AsNoTracking();
+        return query.Select(selector).AsNoTracking();
     }
 
     public virtual IEnumerable<T> GetMany(Expression<Func<T, bool>> where) => _dbSet.Where(where);

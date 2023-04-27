@@ -61,8 +61,9 @@ public class PaymentMethodController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, 
+                        () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList()) switch
             {
                 { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
                 _ => NotFound()
@@ -128,7 +129,7 @@ public class PaymentMethodController : ControllerBase
     /// </remarks>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -154,7 +155,7 @@ public class PaymentMethodController : ControllerBase
             if (paymentMethods.FirstOrDefault(s => s.Id == newPaymentMethod.Id) is null)
                 paymentMethods.Add(_mapper.Map<Domain.Entities.PaymentMethod>(newPaymentMethod));
 
-            return Ok();
+            return Created($"/api/v1/PaymentMethod/{newPaymentMethod.Id}", newPaymentMethod);
         }
         catch (Exception e)
         {
@@ -222,7 +223,7 @@ public class PaymentMethodController : ControllerBase
     /// <response code="404">If payment method id is not found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -247,7 +248,7 @@ public class PaymentMethodController : ControllerBase
                 is { Count: > 0 } paymentMethods)
                 paymentMethods[paymentMethods.FindIndex(s => s.Id == updatePaymentMethod.Id)] = updatePaymentMethod;
 
-            return Ok();
+            return Created($"/api/v1/PaymentMethod/{updatePaymentMethod.Id}", updatePaymentMethod);
         }
         catch (Exception e)
         {

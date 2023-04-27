@@ -187,7 +187,7 @@ public class StaffController : ControllerBase
     /// <response code="409">Staff id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -214,7 +214,7 @@ public class StaffController : ControllerBase
 
             _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
 
-            return Ok();
+            return Created($"/api/v1/Staff/{newStaff.Id}", newStaff);
         }
         catch (Exception e)
         {
@@ -290,7 +290,7 @@ public class StaffController : ControllerBase
     /// <response code="400">Invalid input</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -316,7 +316,7 @@ public class StaffController : ControllerBase
 
             _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
 
-            return Ok();
+            return Created($"/api/v1/Staff/{updateStaff.Id}", updateStaff);
         }
         catch (Exception e)
         {

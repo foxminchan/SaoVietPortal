@@ -68,8 +68,8 @@ public class StudentController : ControllerBase
     {
         try
         {
-            return (_redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.StudentRepository.GetAllStudents().ToList())) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList()) switch
             {
                 { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
                 _ => NotFound()
@@ -132,6 +132,7 @@ public class StudentController : ControllerBase
     /// <response code="200">Response the list of students</response>
     /// <response code="404">If no students are found</response>
     [HttpGet("search")]
+    [Authorize(Policy = "Developer")]
     [ProducesResponseType(200, Type = typeof(Student))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -187,7 +188,7 @@ public class StudentController : ControllerBase
     /// <response code="409">Student id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -213,7 +214,7 @@ public class StudentController : ControllerBase
 
             _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
 
-            return Ok();
+            return Created($"api/v1/Student/{newStudent.Id}", newStudent);
         }
         catch (Exception e)
         {
@@ -289,7 +290,7 @@ public class StudentController : ControllerBase
     /// <response code="400">Invalid input</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -315,7 +316,7 @@ public class StudentController : ControllerBase
 
             _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
 
-            return Ok();
+            return Created($"api/v1/Student/{updateStudent.Id}", updateStudent);
         }
         catch (Exception e)
         {

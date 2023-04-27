@@ -1,6 +1,10 @@
 ﻿using Polly;
 using Polly.Bulkhead;
 using Polly.Extensions.Http;
+using Portal.Application.Cache;
+using Portal.Application.Transaction;
+using Portal.Domain.Interfaces.Common;
+using Portal.Infrastructure.Repositories.Common;
 
 namespace Portal.Api.Extensions;
 
@@ -16,7 +20,17 @@ public static class PollyExtension
             client.Timeout = TimeSpan.FromSeconds(30);
         });
 
-        services.AddHttpClient("api", httpClientBuilder)
+        services.AddHttpClient<IUnitOfWork, UnitOfWork>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<IRedisCacheService, RedisCacheService>(httpClientBuilder)
+            .AddPolicyHandler(GetRetryPolicy())
+            .AddPolicyHandler(GetCircuitBreakerPolicy())
+            .AddPolicyHandler(GetBulkheadPolicy());
+
+        services.AddHttpClient<ITransactionService, TransactionService>(httpClientBuilder)
             .AddPolicyHandler(GetRetryPolicy())
             .AddPolicyHandler(GetCircuitBreakerPolicy())
             .AddPolicyHandler(GetBulkheadPolicy());

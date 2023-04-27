@@ -62,8 +62,8 @@ public class ClassController : ControllerBase
     {
         try
         {
-            return _redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.ClassRepository.GetAllClasses().ToList()) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList()) switch
             {
                 { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
                 _ => NotFound()
@@ -136,7 +136,7 @@ public class ClassController : ControllerBase
     /// <response code="409">Class id has already existed</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -160,7 +160,7 @@ public class ClassController : ControllerBase
             if (classes.FirstOrDefault(s => s.Id == newClass.Id) is null)
                 classes.Add(_mapper.Map<Domain.Entities.Class>(newClass));
 
-            return Ok();
+            return Created($"/api/v1/Class/{newClass.Id}", newClass);
         }
         catch (Exception e)
         {
@@ -231,7 +231,7 @@ public class ClassController : ControllerBase
     /// <response code="400">Invalid input</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -254,7 +254,7 @@ public class ClassController : ControllerBase
                 is { Count: > 0 } classes)
                 classes[classes.FindIndex(s => s.Id == updateClass.Id)] = updateClass;
 
-            return Ok();
+            return Created($"/api/v1/Class/{updateClass.Id}", updateClass);
         }
         catch (Exception e)
         {

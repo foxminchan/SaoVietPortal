@@ -62,8 +62,8 @@ public class CourseController : ControllerBase
     {
         try
         {
-            return (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList())) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) switch
             {
                 { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
                 _ => NotFound()
@@ -133,7 +133,7 @@ public class CourseController : ControllerBase
     /// <response code="409">Course already exists</response>
     [HttpPost]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
@@ -160,7 +160,7 @@ public class CourseController : ControllerBase
             if (positions.FirstOrDefault(s => s.Id == newCourse.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
 
-            return Ok();
+            return Created($"/api/v1/Course/{newCourse.Id}", newCourse);
 
         }
         catch (Exception e)
@@ -229,7 +229,7 @@ public class CourseController : ControllerBase
     /// <response code="404">If course id is not found</response>
     [HttpPut]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(201)]
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
@@ -252,7 +252,7 @@ public class CourseController : ControllerBase
                 { Count: > 0 } courses)
                 courses[courses.FindIndex(s => s.Id == updateCourse.Id)] = updateCourse;
 
-            return Ok();
+            return Created($"/api/v1/Course/{updateCourse.Id}", updateCourse);
         }
         catch (Exception e)
         {

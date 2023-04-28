@@ -1,3 +1,219 @@
-@startuml
+@startuml SaoVietErDiagram
+
+!define pk(x) <b><color:#b8861b><&key></color> <color:#fd636a>x</color></b>
+!define fk(x) <b><color:#6bcb59><&key></color> <color:#719470>x</color></b>
+!define pfk(x) <b><color:#656ed5><&key></color> <color:#5291da>x</color></b>
+!define column(x) <color:#efefef><&media-record></color> x
+!define table(x) entity x
+
+title
+	<b><color:#023047>Entity Relationship Diagram of Sao Viet</color></b>
+end title
+
+skinparam linetype ortho
+skinparam shadowing true
+
+' Entities
+table(STUDENT) {
+	pk(Id: Char(10))
+	--
+	column(Fullname: Nvarchar(50))
+	column(Gender: Bit)
+	column(Address: Nvarchar(80))
+	column(Dob: Date)
+	column(Pod: Nvarchar(80))
+	column(Occupation: Nvarchar(80))
+	column(Social: Nvarchar(max))
+}
+
+table(COURSE_ENROLLMENT) {
+	pfk(ClassId: Char(10))
+	--
+ 	pfk(StudentId: Char(10))
+}
+
+table(CLASS) {
+	pk(Id: Char(10))
+	--
+	column(StartDate: Date)
+	column(EndDate: Date)
+	column(Fee: Float)
+	--
+	fk(CourseId: Varchar(10))
+	fk(BranchId: Char(8))
+}
+
+table(COURSE){
+	pk(Id: Varchar(10))
+	--
+	column(Name: Nvarchar(50))
+	column(Description: Nvarchar(max))
+}
+
+table(BRANCH){
+	pk(Id: Char(8))
+	--
+	column(Name: Nvarchar(50))
+	column(Address: Nvarchar(80))
+	column(Phone: Char(10))
+}
+
+table(RECEIPTS_EXPENSES){
+	pk(Id: Uniqueidentifier)
+	--
+	column(Type: Bit)
+	column(Date: Date)
+	column(Amount: Float)
+	column(Note: Nvarchar(max))
+	--
+	fk(BranchId: Char(8))
+}
+
+table(STAFF){
+	pk(Id: Varchar(20))
+	--
+	column(Fullname: Nvarchar(55))
+	column(Dob: Date)
+	column(Address: Nvarchar(80))
+	column(Dsw: Date)
+	--
+	fk(PositionId: Int)
+	fk(BranchId: Char(8))
+	fk(ManagerId: Varchar(20))
+}
+
+table(POSITION){
+	pk(Id: Int)
+	--
+	column(Name: Nvarchar(30))
+}
+
+table(STUDENT_PROGRESS){
+	pk(Id: Uniqueidentifier)
+	--
+	column(Name: Nvarchar(80))
+	column(Content: Nvarchar(max))
+	column(LessonDate: Date)
+	column(Status: Nvarchar(15))
+	column(Rating: Tinyint)
+	--
+	fk(TeacherId: Varchar(20))
+	fk(ClassId: Char(10))
+	fk(StudentId: Char(10))
+}
+
+table(COURSE_REGISTRATION){
+	pk(Id: Uniqueidentifier)
+	--
+	column(Status: Nvarchar(10))
+	column(RegistrationDate: Date)
+	column(AppointmentDate: Date)
+	column(Fee: Float)
+	column(Discount: Decimal(4,2))
+	--
+	fk(ClassId: Char(10))
+	fk(StudentId: Char(10))
+	fk(PaymentMethodId: Tinyint)
+}
+
+table(PAYMENT_METHOD){
+	pk(Id: Tinyint)
+	--
+	column(Name: Nvarchar(50))
+}
+
+table(ASPNETUSERS){
+	pk(Id: Nvarchar(450))
+	--
+	column(Username: Nvarchar(256))
+	column(NormalizedUserName: Nvarchar(256))
+	column(Email: Nvarchar(256))
+	column(NormalizedEmail: Nvarchar(256))
+	column(EmailConfirmed: Bit)
+	column(PasswordHash: Nvarchar(max))
+	column(SecurityStamp: Nvarchar(max))
+	column(ConcurrencyStamp: Nvarchar(max))
+	column(PhoneNumber: Nvarchar(max))
+	column(PhoneNumberConfirmed: Bit)
+	column(TwoFactorEnabled: Bit)
+	column(LockoutEnd: Datetimeoffset(7))
+	column(LockoutEnabled: Bit)
+	column(AccessFailedCount: Int)
+	column(ImageUrl: Nvarchar(max))
+	--
+	fk(StaffId: Varchar(20))
+	fk(StudentId: Char(10))
+}
+
+table(ASPNETUSERCLAIMS){
+	pk(Id: Int)
+	--
+	column(ClaimType: Nvarchar(max))
+	column(ClaimValue: Nvarchar(max))
+	--
+	fk(UserId: Nvarchar(450))
+}
+
+table(ASPNETUSERLOGINS){
+	pk(LoginProvider: Nvarchar(450))
+	pk(ProviderKey: Nvarchar(450))
+	--
+	column(ProviderDisplayName: Nvarchar(max))
+	--
+	fk(UserId: Nvarchar(450))
+}
+
+table(ASPNETUSERTOKENS){
+	pfk(UserId: Nvarchar(450))
+	pk(LoginProvider: Nvarchar(450))
+	pk(Name: Nvarchar(450))
+	--
+	column(Value: Nvarchar(max))
+}
+
+table(ASPNETUSERROLES){
+	pfk(UserId: Nvarchar(450))
+	--
+	pfk(RoleId: Nvarchar(450))
+}
+
+table(ASPNETROLES){
+	pk(Id: Nvarchar(450))
+	--
+	column(Name: Nvarchar(256))
+	column(NormalizedName: Nvarchar(256))
+	column(ConcurrencyStamp: Nvarchar(max))
+}
+
+table(ASPNETROLECLAIMS){
+	pk(Id: Int)
+	--
+	column(ClaimType: Nvarchar(max))
+	column(ClaimValue: Nvarchar(max))
+	--
+	fk(RoleId: Nvarchar(450))
+}
+
+' Relationships
+ASPNETUSERS ||..o{ ASPNETUSERCLAIMS: Has user claim
+ASPNETUSERS ||..o{ ASPNETUSERLOGINS: Has user login
+ASPNETUSERS ||--o{ ASPNETUSERTOKENS: Has user token
+ASPNETUSERS ||--o{ ASPNETUSERROLES: Has role
+ASPNETROLES ||--o{ ASPNETUSERROLES: Has role
+ASPNETROLES ||..o{ ASPNETROLECLAIMS: Has role claim
+STUDENT ||--o{ COURSE_ENROLLMENT: Takes
+COURSE_ENROLLMENT }o--|| CLASS: Enrolls
+COURSE_ENROLLMENT ||..o{ STUDENT_PROGRESS: Takes
+COURSE_ENROLLMENT ||..|{ COURSE_REGISTRATION: Registers
+COURSE ||..o{ CLASS: Belongs
+BRANCH ||..o{ CLASS: Has
+BRANCH ||..o{ RECEIPTS_EXPENSES: Revenue expenditure
+BRANCH ||..o{ STAFF: Works
+STAFF |o..o{ STAFF: Supervises
+STAFF ||..o{ STUDENT_PROGRESS: Teaches
+STAFF |o..o{ ASPNETUSERS: Is
+STUDENT |o..o{ ASPNETUSERS: Is
+POSITION ||..o{ STAFF: Level
+PAYMENT_METHOD ||..o{ COURSE_REGISTRATION: Method
 
 @enduml

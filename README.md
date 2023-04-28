@@ -1,6 +1,6 @@
 <h1 align="center">
 	<a name="readme-top"></a>
-	<p><img width=25% src="./resources/Assets/img/logo.jpg"></p>
+	<p><img width=25% src="./resources/Assets/logo.jpg"></p>
 Sao Viet Portal
 </h1>
 
@@ -103,7 +103,9 @@ And many more...
 The architecture of the application is designed to be highly scalable and flexible, which means that it can handle a large number of users and can easily adapt to changing needs and requirements. The following diagram shows the high-level components of the architecture:
 </p>
 
-<img src="./resources/Assets/img/overview-architecture.png" style="align: center;">
+<p align="center">
+  <img src="./resources/Assets/SaoVietArchitecture.png">
+</p>
 
 It showcases the following components:
 

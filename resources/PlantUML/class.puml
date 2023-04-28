@@ -1,3 +1,256 @@
-@startuml
+@startuml SaoVietClassDiagram
+
+title
+	<b><color:#023047>Class Diagram for SaoViet</color></b>
+end title
+
+skinparam linetype ortho
+skinparam shadowing true
+
+class Student {
+	- Id: string
+	- Fullname: string
+	- Gender: boolean
+	- Address: string
+	- Dob: string
+	- Pod: string
+	- Occupation: string
+	- Social: string
+	+ Student()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Course_Enrollment {
+	- ClassId: string
+	- StudentId: string
+	+ Course_Enrollment()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Class {
+	- Id: string
+	- StartDate: string
+	- EndDate: string
+	- Fee: Float
+	- CourseId: string
+	- BranchId: string
+	+ Class()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Course {
+	- Id: string
+	- Name: string
+	- Description: string
+	+ Course()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Branch {
+	- Id: string
+	- Name: string
+	- Address: string
+	- Phone: string
+	+ Branch()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Receipts_Expenses {
+	- Id: guid
+	- Type: boolean
+	- Date: string
+	- Amount: float
+	- Note: string
+	- BranchId: string
+	+ Receipts_Expenses()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Staff {
+	- Id: string
+	- Fullname: string
+	- Dob: string
+	- Address: string
+	- Dsw: string
+	- PositionId: int
+	- BranchId: string
+	- ManagerId: string
+	+ Staff()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Position {
+	- Id: int
+	- Name: string
+	+ Position()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Student_Progress {
+	- Id: guid
+	- Name: string
+	- Content: string
+	- LessonDate: string
+	- Status: string
+	- Rating: byte
+	- TeacherId: string
+	- ClassId: string
+	- StudentId: string
+	+ Student_Progress()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Course_Registraion {
+	- Id: guid
+	- Status: string
+	- RegistrationDate: string
+	- AppointmentDate: string
+	- Fee: float
+	- Discount: float
+	- ClassId: string
+	- StudentId: string
+	- PaymentMethodId: byte
+	+ Course_Registraion()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class Payment_Method {
+	- Id: byte
+	- Name: string
+	+ Payment_Method()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetUsers {
+	- Id: string
+	- UserName: string
+	- NormalizedUserName: string
+	- Email: string
+	- NormalizedEmail: string
+	- EmailConfirmed: boolean
+	- PasswordHash: string
+	- SecurityStamp: string
+	- ConcurrencyStamp: string
+	- PhoneNumber: string
+	- PhoneNumberConfirmed: boolean
+	- TwoFactorEnabled: boolean
+	- LockoutEnd: string
+	- LockoutEnabled: boolean
+	- AccessFailedCount: int
+	- ImangeUrl: string
+	- StudentId: string
+	- StaffId: string
+	+ AspNetUsers()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetUserClaims {
+	- Id: int
+	- UserId: string
+	- ClaimType: string
+	- ClaimValue: string
+	+ AspNetUserClaims()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetUserLogins {
+	- LoginProvider: string
+	- ProviderKey: string
+	- ProviderDisplayName: string
+	- UserId: string
+	+ AspNetUserLogins()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetUserTokens {
+	- UserId: string
+	- LoginProvider: string
+	- Name: string
+	- Value: string
+	+ AspNetUserTokens()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetUserRoles {
+	- UserId: string
+	- RoleId: string
+	+ AspNetUserRoles()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetRoles {
+	- Id: string
+	- Name: string
+	- NormalizedName: string
+	- ConcurrencyStamp: string
+	+ AspNetRoles()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+class AspNetRoleClaims {
+	- Id: int
+	- RoleId: string
+	- ClaimType: string
+	- ClaimValue: string
+	+ AspNetRoleClaims()
+	+ void Insert()
+	+ void Update()
+	+ void Delete()
+}
+
+AspNetUsers "1" o-- "0..*" Student
+AspNetUsers "1" o-- "0..*" Staff
+AspNetUsers "1" o-- "0..*" AspNetUserClaims
+AspNetUsers "1" o-- "0..*" AspNetUserLogins
+AspNetUsers "1" *-- "0..*" AspNetUserTokens
+AspNetUsers "1" *-- "0..*" AspNetUserRoles
+AspNetRoles "1" <.. "0..*" AspNetUserRoles
+AspNetRoles "1" o-- "0..*" AspNetRoleClaims
+Student "1" *-- "0..*" Course_Enrollment
+Class "1" <.. "0..*" Course_Enrollment
+Class "1" o-- "0..*" Course
+Course_Enrollment "1" o-- "0..*" Student_Progress
+Course_Enrollment "1" o-- "0..*" Course_Registraion
+Course_Registraion "1" o-- "0..*" Payment_Method
+Branch "1" o-- "0..*" Class
+Branch "1" o-- "0..*" Receipts_Expenses
+Branch "1" o-- "0..*" Staff
+Staff "1" <.. "0..*" Staff
+Staff "1" o-- "0..*" Position
+Staff "1" o-- "0..*" Student_Progress
 
 @enduml

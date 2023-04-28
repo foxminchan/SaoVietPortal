@@ -1,91 +1,99 @@
-@startuml SaoVietArchitecture C4
+	@startuml SaoVietArchitecture
 
-!theme C4_sandstone from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
-!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Context.puml
-!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Container.puml
-!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Component.puml
-!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
-!define DEVICONSOLD https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
-!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0/font-awesome-5
+	!theme C4_sandstone from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
+	!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Context.puml
+	!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Container.puml
+	!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/v2.3.0/C4_Component.puml
+	!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+	!define DEVICONSOLD https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+	!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v2.4.0/font-awesome-5
 
-!include FONTAWESOME/users.puml
-!include FONTAWESOME/envelope.puml
-!include DEVICONS/csharp.puml
-!include DEVICONS/redis.puml
-!include DEVICONS/dotnetcore.puml
-!include DEVICONS/python.puml
-!include DEVICONSOLD/msql_server.puml
+	!include FONTAWESOME/users.puml
+	!include FONTAWESOME/envelope.puml
+	!include DEVICONS/csharp.puml
+	!include DEVICONS/redis.puml
+	!include DEVICONS/dotnetcore.puml
+	!include DEVICONS/python.puml
+	!include DEVICONSOLD/msql_server.puml
 
-!include <office/Concepts/firewall>
+	!include <office/Concepts/firewall>
 
-HIDE_STEREOTYPE()
-SHOW_PERSON_PORTRAIT()
+	HIDE_STEREOTYPE()
+	SHOW_PERSON_PORTRAIT()
 
-skinparam shadowing true
-skinparam handwritten false
-skinparam defaultTextAlignment center
+	skinparam shadowing true
+	skinparam handwritten false
+	skinparam defaultTextAlignment center
+	skinparam lineStyle polyline
 
-AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine(), $legendText="async call")
+	AddRelTag("async", $textColor=$ARROW_FONT_COLOR, $lineColor=$ARROW_COLOR, $lineStyle=DashedLine(), $legendText="async call")
 
-AddRelTag("firewall", $textColor="$ARROW_FONT_COLOR", $lineColor="$ARROW_COLOR", $sprite="firewall,scale=0.3,color=red", $legendText="firewall")
+	AddRelTag("firewall", $textColor="$ARROW_FONT_COLOR", $lineColor="$ARROW_COLOR", $sprite="firewall,scale=0.3,color=red", $legendText="firewall")
 
-Person(User, "User", "An individual who has a personal account on Sao Viet", $sprite="users")
+	Person(User, "User", "An individual who has a personal account on Sao Viet", $sprite="users")
 
-System_Boundary(client, "Client") {
-	Container(application, "Application", "C#, .NET MAUI", "Integrate with portal service", $sprite="csharp")
-	Container(mobile, "Mobile", "C#, .NET MAUI", "Integrate with portal service and chatbot service", $sprite="csharp")
-	Container(website, "Website", "C#, Blazor Server", "Provide all the Sao Viet functions", $sprite="csharp")
-}
+	System_Boundary(client, "Client") {
+		Container(application, "Application", "C#, .NET MAUI", "Integrate with portal service", $sprite="csharp")
+		Container(mobile, "Mobile", "C#, .NET MAUI", "Integrate with portal service and chatbot service", $sprite="csharp")
+		Container(website, "Website", "C#, Blazor Server", "Provide all the Sao Viet functions", $sprite="csharp")
+	}
 
-System_Boundary(bff, "Backend for frontend") {
-	Container(bffMobile, "Bff for Mobile", ".NET Core, Duende", "Backend service optimized for mobile platform")
-	Container(bffApplication, "Bff for Application", ".NET Core, Duende", "Backend service optimized for application platform")
-	Container(bffWebsite, "Bff for Website", ".NET Core, Duende", "Backend service optimized for website platform")
-}
+	System_Boundary(bff, "Backend for frontend") {
+		Container(bffMobile, "Bff for Mobile", ".NET Core, Duende", "Backend service optimized for mobile platform")
+		Container(bffApplication, "Bff for Application", ".NET Core, Duende", "Backend service optimized for application platform")
+		Container(bffWebsite, "Bff for Website", ".NET Core, Duende", "Backend service optimized for website platform")
+	}
 
-ContainerDb(sdb, "Database", "Redis", "Stored user session", $sprite="redis")
+	ContainerDb(sdb, "Database", "Redis", "Stored user session", $sprite="redis")
 
-System_Boundary(server, "Server") {
-	Container(portal, "Portal service", "C#, ASP.NET Core", "Provide all the Sao Viet functions", $sprite="dotnetcore")
-	Container(chatbot, "Chatbot service", "Python, FastAPI", "Natural language processing and conversation management", $sprite="python")
-	ContainerDb(database, "Relational database", "SQL Server 2022", "Hold Sao Viet data", $sprite="msql_server")
-	Container(model, "NLP Model", "Python, PyTorch", "Natural language processing model", $sprite="python")
-	ContainerQueue(Kafka, "Message queue", "Kafka", "Message queue for asynchronous communication", $sprite="img:https://svn.apache.org/repos/asf/kafka/site/logos/originals/png/ICON%20-%20White%20on%20Transparent.png{scale=0.15}")
-}
+	System_Boundary(server, "Server") {
+		Container(portal, "Portal service", "C#, ASP.NET Core", "Provide all the Sao Viet functions", $sprite="dotnetcore")
+		Container(chatbot, "Chatbot service", "Python, FastAPI", "Natural language processing and conversation management", $sprite="python")
+		ContainerDb(database, "Relational database", "SQL Server 2022", "Hold Sao Viet data", $sprite="msql_server")
+		Container(model, "NLP Model", "Python, PyTorch", "Natural language processing model", $sprite="python")
+		ContainerQueue(Kafka, "Message queue", "Kafka", "Message queue for asynchronous communication", $sprite="img:https://svn.apache.org/repos/asf/kafka/site/logos/originals/png/ICON%20-%20White%20on%20Transparent.png{scale=0.15}")
+	}
 
-Container(otelCollector, "OpenTelemetry Collector", ".NET Core, OpenTelemetry", "Collect and export telemetry data", $sprite="img:https://cncf-branding.netlify.app/img/projects/opentelemetry/icon/white/opentelemetry-icon-white.png{scale=0.03}")
+	Container(otelCollector, "OpenTelemetry Collector", ".NET Core, OpenTelemetry", "Collect and export telemetry data", $sprite="img:https://cncf-branding.netlify.app/img/projects/opentelemetry/icon/white/opentelemetry-icon-white.png{scale=0.03}")
 
-System_Boundary(exporter, "Exporter") {
-	Container_Ext(log, "Log exporter", "ELK Stack, Seq", "Export log data")
-	Container_Ext(monitoring, "Monitoring exporter", "Grafana, Prometheus", "Export monitoring data")
-	Container_Ext(tracing, "Tracing exporter", "Jaeger, Zipkin", "Export tracing data")
-}
+	System_Boundary(exporter, "Exporter") {
+		Container_Ext(log, "Log exporter", "ELK Stack, Seq", "Export log data")
+		Container_Ext(monitoring, "Monitoring exporter", "Grafana, Prometheus", "Export monitoring data")
+		Container_Ext(tracing, "Tracing exporter", "Jaeger, Zipkin", "Export tracing data")
+	}
 
-System_Ext(email_system, "E-Mail System", "The internal Microsoft Exchange system", "envelope")
+	System_Ext(email_system, "E-Mail System", "The internal Microsoft Exchange system", "envelope")
 
-Rel(User, application, "Uses")
-Rel(User, mobile, "Uses")
-Rel(User, website, "Uses", "HTTPS")
-Rel(application, bffApplication, "Connect", "JWT Token")
-Rel(mobile, bffMobile, "Connect", "JWT Token")
-Rel(website, bffWebsite, "Connect", "Cookies", $tags="firewall")
-Rel(website, bffWebsite, "Connect", "OpenID Connect",  $tags="firewall")
-Rel_R(bffWebsite,sdb, "Store", "sync")
-Rel(bffMobile, portal, "Connect", "sync, JSON/HTTPS")
-Rel(bffApplication, portal, "Connect", "sync, JSON/HTTPS")
-Rel(bffWebsite, portal, "Connect", "sync, JSON/HTTPS")
-Rel(bffWebsite, chatbot, "Connect", "sync, JSON/HTTPS")
-Rel(bffMobile, chatbot, "Connect", "sync, JSON/HTTPS")
-Rel(bffApplication, chatbot, "Connect", "sync, JSON/HTTPS")
-Rel_L(portal, database, "Read from and Write to", "sync, EF Core")
-Rel_R(chatbot, Kafka, "Queue message", "async, Protobuf/grpc", $tags="async")
-Rel_R(Kafka, model, "Queue message", "async, Protobuf/grpc", $tags="async")
-Rel_D(portal, otelCollector, "Export telemetry data", "async, HTTPS")
-Rel_D(chatbot, otelCollector, "Export telemetry data", "async, HTTPS")
-Rel(otelCollector, log, "Export log data", "async, Oltp", $tags="async")
-Rel(otelCollector, monitoring, "Export monitoring data", "async, Oltp", $tags="async")
-Rel(otelCollector, tracing, "Export tracing data", "async, Oltp", $tags="async")
-Rel(portal, email_system, "Send e-mail using", "sync, SMTP")
-Rel(email_system, User, "Send e-mail to")
+	Rel(User, application, "Uses")
+	Rel(User, mobile, "Uses")
+	Rel(User, website, "Uses", "HTTPS")
 
-@enduml
+	Rel(application, bffApplication, "Connect", "JWT Token")
+	Rel(mobile, bffMobile, "Connect", "JWT Token")
+	Rel(website, bffWebsite, "Connect", "Cookies", $tags="firewall")
+	Rel(website, bffWebsite, "Connect", "OpenID Connect",  $tags="firewall")
+
+
+	Rel(bffMobile, portal, "Connect", "sync, JSON/HTTPS")
+	Rel(bffMobile, Kafka, "Connect", "async, JSON/HTTPS", $tags="async")
+	Rel(bffApplication, portal, "Connect", "sync, JSON/HTTPS")
+	Rel(bffApplication, Kafka, "Connect", "async, JSON/HTTPS", $tags="async")
+	Rel(bffWebsite, portal, "Connect", "sync, JSON/HTTPS")
+	Rel(bffWebsite, Kafka, "Connect", "async, JSON/HTTPS", $tags="async")
+	Rel(bffWebsite,sdb, "Store", "sync")
+
+
+	Rel(Kafka, chatbot, "Connect", "async, JSON/HTTPS", $tags="async")
+	Rel(portal, database, "Read from and Write to", "sync, EF Core")
+	Rel(chatbot, model, "Load", "sync, PyTorch")
+	Rel(portal, otelCollector, "Export telemetry data", "async, HTTPS")
+	Rel(chatbot, otelCollector, "Export telemetry data", "async, HTTPS")
+
+	Rel(otelCollector, log, "Export log data", "async, Oltp", $tags="async")
+	Rel(otelCollector, monitoring, "Export monitoring data", "async, Oltp", $tags="async")
+	Rel(otelCollector, tracing, "Export tracing data", "async, Oltp", $tags="async")
+
+	Rel(portal, email_system, "Send e-mail using", "sync, SMTP")
+	Rel(email_system, User, "Send e-mail to")
+
+	@enduml

@@ -1,6 +1,6 @@
 <h1 align="center">
 	<a name="readme-top"></a>
-	<p><img width=25% src="./resources/Assets/logo.jpg"></p>
+	<p><img width=25% src="./resources/Assets/Logo.jpg"></p>
 Sao Viet Portal
 </h1>
 
@@ -18,16 +18,12 @@ Sao Viet Portal
 
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
-  - [Introduction](#introduction)
-  - [Features](#features)
-  - [Timeline](#timeline)
+	- [Introduction](#introduction)
+	- [Features](#features)
+	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
 - [Getting Started](#getting-started)
-  - [Sao Viet Portal](#sao-viet-portal)
-  - [Web Application](#web-application)
-  - [Desktop Application](#desktop-application)
-  - [Chatbot](#chatbot)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -119,86 +115,16 @@ It showcases the following components:
 
 # Getting Started
 
-## Sao Viet Portal
-
 💻 Install the following tools:
 
 - [Install .NET Core 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
 - [Install Docker](https://www.docker.com/products/docker-desktop)
 - [Install MS SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 - [Redis](https://redis.io/download) (If you want run without docker)
+- [Install Node.js](https://nodejs.org/en/download/)
+- [Install Python 3.11](https://www.python.org/downloads/)
 
-🐳 In addition, you can set up the enviroment in container using docker:
-
-> First, you need to pull the image named .net core 7.0 sdk from docker hub
->
-> ```bash
-> docker pull mcr.microsoft.com/dotnet/sdk:7.0
-> ```
->
-> Set up the SQL Server 2022
->
-> ```bash
-> docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Password123" -p 1433:1433 --name sql1 -d mcr.microsoft.com/mssql/server:2022-latest
-> ```
->
-> Set up the Redis
->
-> ```bash
-> docker run -p 6379:6379 --name redis -d redis
-> ```
->
-> Run the command to start the application
->
-> ```bash
-> docker run -it --rm -v ${PWD}:/app -w /app mcr.microsoft.com/dotnet/sdk:7.0 dotnet run --project api/portal/src/Portal.Api/Portal.Api.csproj
-> ```
->
-> **Note**: You can use the command `docker ps` to check the status of the container
-
-For the database:
-
-1. Install the **dotnet ef** tool: `dotnet tool install --global dotnet-ef`
-2. Navigate to the `api/portal/src/Portal.Infrastructure` folder.
-   - Clean up old migrations: `dotnet ef migrations remove --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj --force`
-   - Create a new migration: `dotnet ef migrations add Initial --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj`
-   - Update the database: `dotnet ef database update --project Portal.Infrastructure.csproj --startup-project Portal.Api.csproj`
-3. Learn more about [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/).
-
-**⚠️Note**: You can use backup files to restore the database. The backup files are located in the `api/portal/database` folder.
-
-For JWT generation:
-
-To initialize the keys for JWT generation, run `dotnet user-jwts` in to the `api/portal/src/Portal.Api` folder.
-
-```bash
-dotnet user-jwts create --claim "Technical=Developer"
-```
-
-Set up external services:
-
-1. Navigate to the `api/portal/deploys/docker` folder.
-2. Run `docker-compose up -d` to start the external services.
-
-Install Tye for global tool using the following command:
-
-```bash
-dotnet tool install -g Microsoft.Tye
-```
-
-Run `tye run` in the repository root and navigate to the tye dashboard (usually http://localhost:8000) to see both applications running.
-
-## Web Application
-
-`Update later`
-
-## Desktop Application
-
-`Update later`
-
-## Chatbot
-
-`Update later`
+For more information, see [here](foxminchan.github.io/SaoVietPortal/).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

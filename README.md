@@ -23,7 +23,15 @@ Sao Viet Portal
 	- [Timeline](#timeline)
 - [Technologies](#technologies)
 - [Architecture](#architecture)
+- [API development](#api-development)
 - [Getting Started](#getting-started)
+	- [💻 Infrastructure](#-infrastructure)
+	- [🛠️ Backend](#️-backend)
+	- [🖥️ Frontend](#️-frontend)
+	- [📦 Optional tools](#-optional-tools)
+- [OpenAPI](#openapi)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Monitoring, Logging, Tracing and Health Check](#monitoring-logging-tracing-and-health-check)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -88,6 +96,7 @@ Sao Viet Portal utilizes various technologies to provide a robust and efficient 
 - [HCL](https://www.terraform.io/docs/language/index.html) - A declarative language that is designed to describe infrastructure in a concise way.
 - [FastAPI](https://fastapi.tiangolo.com/) - A modern, fast, web framework for building APIs with Python 3.6+ based on standard Python type hints.
 - [Apache Lucene](https://lucene.apache.org/) - A high-performance, full-featured text search engine library written entirely in Java.
+- [Pytorch](https://pytorch.org/) - An open source machine learning framework that accelerates the path from research prototyping to production deployment.
 
 And many more...
 
@@ -103,40 +112,132 @@ The architecture of the application is designed to be highly scalable and flexib
   <img src="./resources/Assets/SaoVietArchitecture.png">
 </p>
 
-It showcases the following components:
+<table align="center">
+	<thead>
+		<th>Name</th>
+		<th>UseCase</th>
+		<th>Technology</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td><b>User</b></td>
+			<td>N/A</td>
+    	<td>N/A</td>
+		</tr>
+		<tr>
+			<td><b>Client</b></td>
+			<td>A client is a user who uses the application with a web browser or mobile app and desktop app to access the application.</td>
+			<td>Blazor Server, .NET MAUI</td>
+		</tr>
+		<tr>
+			<td><b>Back end for Front end</b></td>
+			<td>A back end for front end is a server that is used by the client to access the application. It is responsible for handling requests from the client and returning responses to the client.</td>
+			<td>ASP.NET Core, Duende IdentityServer 4</td>
+		</tr>
+		<tr>
+				<td><b>Server</b></td>
+				<td>A server is a computer that is used to host the application. It is responsible for handling requests from the client and returning responses to the client. It is also responsible for storing data in a database.</td>
+				<td>ASP.NET Core, FastAPI, Kafka, etc.</td>
+		</tr>
+		<tr>
+				<td><b>Database</b></td>
+				<td>A database is a collection of data that is stored in a computer. It is used to store data in a structured way so that it can be easily accessed and manipulated.</td>
+				<td>SQL Server 2022, Apache Lucene, Redis</td>
+		</tr>
+		<tr>
+				<td><b>Opentelemetry</b></td>
+				<td>Opentelemetry is a set of open source tools that are used to monitor and trace applications. It is used to collect metrics and traces from the application and send them to a monitoring system.</td>
+				<td>Zipkin, Jaeger, Prometheus, Grafana, ELK Stack, Seq</td>
+		</tr>
+		<tr>
+				<td><b>Email System</b></td>
+				<td>An email system is a system that is used to send emails. It is used to send emails to users.</td>
+				<td>Microsoft exchange server</td>
+		</tr>
+	</tbody>
+</table>
 
-- **Client**: The client includes the web application, desktop application, and mobile application.
-- **BFF**: The BFF is a backend for frontend, which is responsible for handling the client's requests and forwarding them to the API.
-- **API Services**: The API services are responsible for handling the requests from the BFF and the database.
-- **OpenTelemetry Collector**: The OpenTelemetry Collector is responsible for collecting and processing telemetry data from the API services and the database.
-- **External Services**: The external services are responsible for handling the requests from the API services and the database.
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# API development
+
+<p align="center">
+  <img src="./resources/Assets/CleanArchitecture.png">
+</p>
+
+Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Getting Started
 
-💻 Install the following tools:
+## 💻 Infrastructure
 
-- [Install .NET Core 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
-- [Install Docker](https://www.docker.com/products/docker-desktop)
-- [Install MS SQL Server 2022](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
-- [Redis](https://redis.io/download) (If you want run without docker)
-- [Install Node.js](https://nodejs.org/en/download/)
-- [Install Python 3.11](https://www.python.org/downloads/)
+- **[`Windows 11`](https://www.microsoft.com/en-us/windows/windows-11)** - The operating system for developing and building this application.
+- **[`WSL 2 - Ubuntu 22.04.2 LTS`](https://docs.microsoft.com/en-us/windows/wsl/install)** - The subsystem for Linux to run Linux on Windows.
+- **[`Docker Desktop (Kubernetes enabled)`](https://www.docker.com/products/docker-desktop)** - The containerization platform to run the application.
+- **[`Kubernetes`](https://kubernetes.io/)** / **[`AKS`](https://azure.microsoft.com/en-us/services/kubernetes-service/)** / **[`Nomad`](https://www.nomadproject.io/)** - The container orchestration system to deploy the application.
+- **[`helm`](https://helm.sh/)** - The package manager for Kubernetes to install the application.
+- **[`tye`](https://github.com/dotnet/tye)** - The tool to run the application locally.
 
-For more information, see [here](foxminchan.github.io/SaoVietPortal/).
+## 🛠️ Backend
+
+- **[.NET Core 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)** - A free, cross-platform, open source developer platform for building many different types of applications.
+- **[`Duende IdentityServer 6`](https://duendesoftware.com/products/identityserver)** - A free, open source OpenID Connect and OAuth 2.0 framework for ASP.NET Core.
+- **[`EF Core`](https://docs.microsoft.com/en-us/ef/core/)** - A modern object-database mapper for .NET.
+- **[`OpenTelemetry`](https://opentelemetry.io/)** - A set of open source tools for monitoring and tracing applications.
+- **[`Serilog`](https://serilog.net/)** - A diagnostic logging library for .NET applications.
+- **[`FluentValidation`](https://fluentvalidation.net/)** - A popular .NET library for building strongly-typed validation rules.
+- **[`AutoMapper`](https://automapper.org/)** - A convention-based object-object mapper.
+- **[`FastAPI`](https://fastapi.tiangolo.com/)** - A modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
+- **[`Pytorch`](https://pytorch.org/)** - An open source machine learning framework that accelerates the path from research prototyping to production deployment.
+- **[`Kafka`](https://kafka.apache.org/)** - A distributed streaming platform.
+
+## 🖥️ Frontend
+
+- **[`Blazor`](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)** - A free, open source framework for building client web apps with .NET.
+- **[`.NET MAUI`](https://dotnet.microsoft.com/en-us/apps/maui)** - Build native, cross-platform desktop and mobile apps all in one framework.
+- **[`Docusuarus`](https://docusaurus.io/)** - Build optimized websites quickly, focus on your content.
+
+## 📦 Optional tools
+
+- **[`Visual Studio 2022`](https://visualstudio.microsoft.com/vs/)** - The IDE for developing and building this application.
+- **[`SQL Server 2022`](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)** - The relational database management system to store data.
+- **[`Laragon`](https://laragon.org/)** - Modern & Powerful - Easy Operation.
+- **[`Resharper`](https://www.jetbrains.com/resharper/)** - The Visual Studio extension for .NET developers.
+- **[`PyCharm`](https://www.jetbrains.com/pycharm/)** - The Python IDE for Professional Developers.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# OpenAPI
+
+> TODO
+
+For details on how to use the API, see the [Docusaurus](https://foxminchan.github.io/SaoVietPortal/) documentation.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# CI/CD Pipeline
+
+> TODO
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+# Monitoring, Logging, Tracing and Health Check
+
+> TODO
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Documentation
 
 - See the changelog at [here](./CHANGELOG.md).
-- See documentation on how to use the API at [here](./docs/README.md).
+- See documentation on how to use the API at [here](https://foxminchan.github.io/SaoVietPortal/)
 - See the wiki at [here](https://github.com/foxminchan/SaoVietPortal/wiki).
 - See code of conduct at [here](./CODE_OF_CONDUCT.md).
 - See contributing guidelines at [here](./.github/CONTRIBUTING.md).
 - See privacy policy at [here](./SECURITY.md).
-- See the article about the project at [here](#).
+- See all articles about the project at [here](./resources/articles/).
 - See the support at [here](./.github/SUPPORT.md).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -147,14 +248,51 @@ For more information, see [here](foxminchan.github.io/SaoVietPortal/).
 We welcome contributions from the community. If you would like to contribute to this project, please read our <a href="./.github/CONTRIBUTING.md">contributing guidelines</a> for more information.
 </p>
 
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key))
+
 <table align="center">
   <tbody>
-	<tr>
-		<td align="center"><a href="https://github.com/foxminchan"><img src="https://avatars.githubusercontent.com/u/56079798?v=4?s=100" width="100px;" alt="Nguyen Xuan Nhan"/><br /><sub><b>Nguyen Xuan Nhan</b></sub></a><br /><a href="https://github.com/foxminchan/SaoVietAPI/commits?author=foxminchan" title="Code">💻</a></td>
-		<td align="center"><a href="https://github.com/lycaphe8x"><img src="https://avatars.githubusercontent.com/u/3860060?v=4?s=100" width="100px;" alt="Nguyen Xuan Nhan"/><br /><sub><b>Nguyen Dinh Anh</b></sub></a><br /><a href="#" title="Guide">🧑‍🏫</a></td>
-	</tr>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/foxminchan">
+          <img src="https://avatars.githubusercontent.com/u/56079798?v=4?s=100" width="150px;" alt="Nguyen Xuan Nhan" />
+          <br />
+          <sub>
+            <b>Nguyen Xuan Nhan</b>
+          </sub>
+        </a>
+        <br />
+				<span title="Ideas, Planning, & Feedback">🤔</span>
+        <a href="https://github.com/foxminchan/SaoVietAPI/commits?author=foxminchan" title="Code">💻</a>
+				<span title="Documentation">📖</span>
+				<span title="Tests">⚠️</span>
+				<span title="Maintenance">🚧</span>
+				<span title="Bug reports">🐛</span>
+      </td>
+      <td align="center">
+        <a href="https://github.com/lycaphe8x">
+          <img src="https://avatars.githubusercontent.com/u/3860060?v=4?s=100" width="150px;" alt="Nguyen Xuan Nhan" />
+          <br />
+          <sub>
+            <b>Nguyen Dinh Anh</b>
+          </sub>
+        </a>
+        <br />
+        <span title="Guide">🧑‍🏫</span>
+				<span title="Business">💼</span>
+				<span title="User testing">📓</span>
+      </td>
+    </tr>
   </tbody>
 </table>
+
+Wanna be here? [Contribute](./.github/CONTRIBUTING.md).
+
+- Fork this repository.
+- Create your new branch with your feature: `git checkout -b my-feature`.
+- Commit your changes: `git commit -am 'feat: My new feature'`.
+- Push to the branch: `git push origin my-feature`.
+- Submit a pull request.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

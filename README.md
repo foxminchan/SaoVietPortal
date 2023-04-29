@@ -182,7 +182,7 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 
 ## 🛠️ Backend
 
-- **[.NET Core 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)** - A free, cross-platform, open source developer platform for building many different types of applications.
+- **[`.NET Core 7.0`](https://dotnet.microsoft.com/download/dotnet/7.0)** - A free, cross-platform, open source developer platform for building many different types of applications.
 - **[`Duende IdentityServer 6`](https://duendesoftware.com/products/identityserver)** - A free, open source OpenID Connect and OAuth 2.0 framework for ASP.NET Core.
 - **[`EF Core`](https://docs.microsoft.com/en-us/ef/core/)** - A modern object-database mapper for .NET.
 - **[`OpenTelemetry`](https://opentelemetry.io/)** - A set of open source tools for monitoring and tracing applications.
@@ -191,7 +191,7 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 - **[`AutoMapper`](https://automapper.org/)** - A convention-based object-object mapper.
 - **[`FastAPI`](https://fastapi.tiangolo.com/)** - A modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
 - **[`Pytorch`](https://pytorch.org/)** - An open source machine learning framework that accelerates the path from research prototyping to production deployment.
-- **[`Kafka`](https://kafka.apache.org/)** - A distributed streaming platform.
+- **[`Apache Kafka`](https://kafka.apache.org/)** - A distributed streaming platform.
 
 ## 🖥️ Frontend
 
@@ -219,7 +219,9 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 
 # CI/CD Pipeline
 
-> TODO
+<p align="center">
+  <img src="./resources/Assets/CiCd.png">
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

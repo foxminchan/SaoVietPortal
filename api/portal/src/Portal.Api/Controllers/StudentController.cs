@@ -36,7 +36,7 @@ public class StudentController : ControllerBase
         IValidator<Student> validator,
         IRedisCacheService redisCacheService,
         ILuceneService<Student> luceneService)
-    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) = 
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService, luceneService);
 
     /// <summary>

@@ -15,7 +15,7 @@ public static class HealthCheckExtension
             .AddDbContextCheck<ApplicationDbContext>(tags: new[] { "db context" })
             .AddRedis("localhost:6379", tags: new[] { "redis" })
             .AddSqlServer(builder.Configuration
-                              .GetConnectionString("DefaultConnection") 
+                              .GetConnectionString("DefaultConnection")
                           ?? throw new InvalidOperationException(), tags: new[] { "database" });
 
         builder.Services

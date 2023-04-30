@@ -31,7 +31,7 @@ public class CourseController : ControllerBase
         ILogger<CourseController> logger,
         IMapper mapper,
         IValidator<Course> validator,
-        IRedisCacheService redisCacheService) 
+        IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 

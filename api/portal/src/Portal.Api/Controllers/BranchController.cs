@@ -25,11 +25,11 @@ public class BranchController : ControllerBase
     private readonly IRedisCacheService _redisCacheService;
 
     public BranchController(
-        IUnitOfWork unitOfWork, 
-        ITransactionService transactionService, 
-        ILogger<BranchController> logger, 
-        IMapper mapper, 
-        IValidator<Branch> validator, 
+        IUnitOfWork unitOfWork,
+        ITransactionService transactionService,
+        ILogger<BranchController> logger,
+        IMapper mapper,
+        IValidator<Branch> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -245,7 +245,7 @@ public class BranchController : ControllerBase
                 _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
             }
-            
+
             if (!_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return NotFound();
 

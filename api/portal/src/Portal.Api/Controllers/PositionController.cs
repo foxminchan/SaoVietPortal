@@ -31,7 +31,7 @@ public class PositionController : ControllerBase
         IMapper mapper,
         IValidator<Position> validator,
         IRedisCacheService redisCacheService)
-    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) = 
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
@@ -243,7 +243,7 @@ public class PositionController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
             }
 
-            if (position.Id.HasValue && 
+            if (position.Id.HasValue &&
                 !_unitOfWork.PositionRepository.TryGetPositionById(position.Id.Value, out _))
                 return NotFound();
 

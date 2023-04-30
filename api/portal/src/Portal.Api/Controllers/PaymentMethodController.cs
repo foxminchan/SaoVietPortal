@@ -31,7 +31,7 @@ public class PaymentMethodController : ControllerBase
         IMapper mapper,
         IValidator<PaymentMethod> validator,
         IRedisCacheService redisCacheService)
-    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) = 
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>

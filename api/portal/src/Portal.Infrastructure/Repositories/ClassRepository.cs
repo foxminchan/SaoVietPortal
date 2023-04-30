@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class ClassRepository : RepositoryBase<Class>, IClassRepository
 {
-    public ClassRepository(ApplicationDbContext context) : base(context) { }
+    public ClassRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddClass(Class @class) => Insert(@class);
 

@@ -1,6 +1,6 @@
-﻿using System.Net;
-using FluentValidation.Results;
+﻿using FluentValidation.Results;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace Portal.Domain.Primitives;
 

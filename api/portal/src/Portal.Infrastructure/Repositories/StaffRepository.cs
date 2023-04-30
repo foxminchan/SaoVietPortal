@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class StaffRepository : RepositoryBase<Staff>, IStaffRepository
 {
-    public StaffRepository(ApplicationDbContext context) : base(context) { }
+    public StaffRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddStaff(Staff staff) => Insert(staff);
 

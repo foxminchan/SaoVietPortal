@@ -30,8 +30,8 @@ Sao Viet Portal
 	- [🖥️ Frontend](#️-frontend)
 	- [📦 Optional tools](#-optional-tools)
 - [OpenAPI](#openapi)
-- [CI/CD Pipeline](#cicd-pipeline)
-- [Monitoring, Logging, Tracing and Health Check](#monitoring-logging-tracing-and-health-check)
+- [CI/CD](#cicd)
+- [External Services](#external-services)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -97,6 +97,7 @@ Sao Viet Portal utilizes various technologies to provide a robust and efficient 
 - [FastAPI](https://fastapi.tiangolo.com/) - A modern, fast, web framework for building APIs with Python 3.6+ based on standard Python type hints.
 - [Apache Lucene](https://lucene.apache.org/) - A high-performance, full-featured text search engine library written entirely in Java.
 - [Pytorch](https://pytorch.org/) - An open source machine learning framework that accelerates the path from research prototyping to production deployment.
+- [Duende](https://duendesoftware.com/products/identityserver) - A free, open source OpenID Connect and OAuth 2.0 framework for ASP.NET Core.
 
 And many more...
 
@@ -179,16 +180,18 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 - **[`Kubernetes`](https://kubernetes.io/)** / **[`AKS`](https://azure.microsoft.com/en-us/services/kubernetes-service/)** / **[`Nomad`](https://www.nomadproject.io/)** - The container orchestration system to deploy the application.
 - **[`helm`](https://helm.sh/)** - The package manager for Kubernetes to install the application.
 - **[`tye`](https://github.com/dotnet/tye)** - The tool to run the application locally.
+- **[`Postman`](https://www.postman.com/)** / **[`Insomnia`](https://insomnia.rest/)** / **[`REST Client`](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)** - The tool to test the application.
 
 ## 🛠️ Backend
 
 - **[`.NET Core 7.0`](https://dotnet.microsoft.com/download/dotnet/7.0)** - A free, cross-platform, open source developer platform for building many different types of applications.
-- **[`Duende IdentityServer 6`](https://duendesoftware.com/products/identityserver)** - A free, open source OpenID Connect and OAuth 2.0 framework for ASP.NET Core.
+- **[`Duende BFF`](https://duendesoftware.com/products/identityserver)** - A free, open source OpenID Connect and OAuth 2.0 framework for ASP.NET Core.
 - **[`EF Core`](https://docs.microsoft.com/en-us/ef/core/)** - A modern object-database mapper for .NET.
 - **[`OpenTelemetry`](https://opentelemetry.io/)** - A set of open source tools for monitoring and tracing applications.
 - **[`Serilog`](https://serilog.net/)** - A diagnostic logging library for .NET applications.
 - **[`FluentValidation`](https://fluentvalidation.net/)** - A popular .NET library for building strongly-typed validation rules.
 - **[`AutoMapper`](https://automapper.org/)** - A convention-based object-object mapper.
+- **[`Lucene.NET`](https://lucenenet.apache.org/)** - A high-performance, full-featured text search engine library.
 - **[`FastAPI`](https://fastapi.tiangolo.com/)** - A modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints.
 - **[`Pytorch`](https://pytorch.org/)** - An open source machine learning framework that accelerates the path from research prototyping to production deployment.
 - **[`Apache Kafka`](https://kafka.apache.org/)** - A distributed streaming platform.
@@ -213,11 +216,13 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 
 > TODO
 
+✅ **Info:** I have implemented ReDoc with the OpenAPI specification is a great way to generate documentation for your API quickly and easily.
+
 For details on how to use the API, see the [Docusaurus](https://foxminchan.github.io/SaoVietPortal/) documentation.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-# CI/CD Pipeline
+# CI/CD
 
 <p align="center">
   <img src="./resources/Assets/CiCd.png">
@@ -225,7 +230,7 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-# Monitoring, Logging, Tracing and Health Check
+# External Services
 
 > TODO
 
@@ -237,7 +242,6 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 - See documentation on how to use the API at [here](https://foxminchan.github.io/SaoVietPortal/)
 - See the wiki at [here](https://github.com/foxminchan/SaoVietPortal/wiki).
 - See code of conduct at [here](./CODE_OF_CONDUCT.md).
-- See contributing guidelines at [here](./.github/CONTRIBUTING.md).
 - See privacy policy at [here](./SECURITY.md).
 - See all articles about the project at [here](./resources/articles/).
 - See the support at [here](./.github/SUPPORT.md).
@@ -300,32 +304,38 @@ Wanna be here? [Contribute](./.github/CONTRIBUTING.md).
 
 # Sponsor
 
-I'm looking for sponsors to help me maintain and develop this project.
+I'm looking for sponsors to help me maintain and develop this project. By sponsoring my project, you can help to ensure that I have the resources and infrastructure needed to provide the best possible experience for users.
 
-If you are interested in sponsoring this project, please contact me at [here](mailto:nguyenxuannhan407@gmail.com) or use button `Sponsor` at the top of this page.
+Your support can help to cover the costs associated with hosting, maintenance, and development, as well as provide the resources needed to further improve and enhance my capabilities.
+
+If you are interested in sponsoring this project, please don't hesitate to reach out to me at [here](mailto:nguyenxuannhan407@gmail.com) or use button `Sponsor` at the top of this page.
+
+I would be more than happy to discuss the details of how your sponsorship can help to support my ongoing growth and development, and provide you with more information on the benefits and opportunities available to sponsors.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Contact
 
-If you have any questions, please contact me at [here](mailto:nguyenxuannhan407@gmail.com)
+If you have any questions or concerns regarding my services, please don't hesitate to contact me at [here](mailto:nguyenxuannhan407@gmail.com).
 
-For contact to my instructor, please contact him at [here](mailto:nd.and@hutech.edu.vn)
+If you need to get in touch with my instructor for any reason, please contact him at [here](mailto:nd.and@hutech.edu.vn)
+
+Whether you have a question about my functionality, need help troubleshooting an issue, or simply want to provide feedback on your experience using my services, I am always happy to hear from users and welcome your input.
+
+Thank you for your interest in my project, and I look forward to hearing from you soon.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # License
 
 <p style="text-align: justify">
-The Sao Viet Portal project is governed by two distinct licenses. The first license, the MIT License, applies to the codebase of the project. The MIT License permits the use, modification, and distribution of the codebase under certain conditions. The full terms of the MIT License can be found in the <a href="./LICENSE">MIT</a> file.
+The Sao Viet Portal project operates under two distinct licenses. The first license is the MIT License, which governs the project's codebase. This license permits the use, modification, and distribution of the codebase under certain conditions, as detailed in the <a href="./LICENSE">MIT file</a>.
 
-The second license, the Attribution 4.0 International License, applies to the documentation of the project. This license permits the use, reproduction, and distribution of the documentation provided that proper attribution is given to the original authors. The full terms of the Attribution 4.0 International License can be found in the <a href="./LICENSE-docs">LICENSE-docs</a> file.
+The second license is the Attribution 4.0 International License, which applies to the project's documentation. This license allows for the use, reproduction, and distribution of the documentation provided that proper attribution is given to the original authors. The terms of the Attribution 4.0 International License can be found in the <a href="./LICENSE-docs">LICENSE-docs file</a>.
 
-Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. All product are developed and copyrignt by <a href="https://github.com/foxminchan">Nguyen Xuan Nhan</a> and <a href="https://github.com/lycaphe8x">Nguyen Dinh Anh</a>.
+It is important to note that Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. The project's products are developed and copyrighted by Nguyen Xuan Nhan and Nguyen Dinh Anh, with the latter being a lecturer at Hutech University. The Faculty of Information Technology at Hutech University will act as the project evaluation and grading committee.
 
-<a href="mailto:nd.and@hutech.edu.vn">Nguyen Dinh Anh</a>, a lecturer at `Hutech University` is co-owner of this project. The Faculty of Information Technology at `Hutech University` will be will act as the project evaluation and grading committee.
-
-For more information about the project's copyright, please refer to the <a href="./COPYRIGHT.txt">COPYRIGHT</a> file. All rights reserved.
+For further information regarding the project's copyright, please refer to the <a href="./COPYRIGHT.txt">COPYRIGHT file</a>. All rights reserved.
 
 </p>
 
@@ -345,6 +355,6 @@ Some useful links:
 - [Azure DevOps](https://azure.microsoft.com/en-us/services/devops/)
 - [Terraform Language Documentation](https://www.terraform.io/docs/language/index.html)
 - [DevOps for ASP.NET Core Developers](https://docs.microsoft.com/en-us/dotnet/architecture/devops-for-aspnet-developers/)
-- [ASP.NET Core 6](https://www.pluralsight.com/paths/aspnet-core-6)
+- [ASP.NET Core Fundamentals](https://www.pluralsight.com/courses/aspnet-core-fundamentals)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

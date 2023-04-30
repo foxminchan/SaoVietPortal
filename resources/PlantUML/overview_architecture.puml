@@ -88,4 +88,4 @@ Rel(otelCollector, tracing, "Export tracing data", "async, Oltp", $tags="async")
 Rel(portal, email_system, "Send e-mail using", "sync, SMTP")
 Rel(email_system, User, "Send e-mail to")
 
-	@enduml
+@enduml

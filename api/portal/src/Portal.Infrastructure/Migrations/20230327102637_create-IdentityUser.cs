@@ -220,4 +220,3 @@ public partial class createIdentityUser : Migration
             name: "AspNetUsers");
     }
 }
-

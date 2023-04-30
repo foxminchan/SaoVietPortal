@@ -102,7 +102,7 @@ public class StaffController : ControllerBase
                         .GetStaff().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } staff => Ok(staff),
+                { } staff => Ok(_mapper.Map<Staff>(staff)),
                 _ => NotFound()
             };
         }
@@ -216,6 +216,8 @@ public class StaffController : ControllerBase
                 .Index(staffs
                     .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertStaff));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newStaff.Id}"), newStaff);
         }
         catch (Exception e)
@@ -261,6 +263,8 @@ public class StaffController : ControllerBase
             _luceneService
                 .Index(staffs
                     .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Delete));
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteStaff));
 
             return Ok();
         }
@@ -324,6 +328,8 @@ public class StaffController : ControllerBase
             _luceneService
                 .Index(staffs
                     .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateStaff));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateStaff.Id}"), updateStaff);
         }

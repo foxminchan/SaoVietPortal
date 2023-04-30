@@ -97,7 +97,7 @@ public class ClassController : ControllerBase
                         .GetAllClasses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } @class => Ok(@class),
+                { } @class => Ok(_mapper.Map<Class>(@class)),
                 _ => NotFound()
             };
         }
@@ -160,6 +160,8 @@ public class ClassController : ControllerBase
             if (classes.FirstOrDefault(s => s.Id == newClass.Id) is null)
                 classes.Add(_mapper.Map<Domain.Entities.Class>(newClass));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertClass));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newClass.Id}"), newClass);
         }
         catch (Exception e)
@@ -199,6 +201,8 @@ public class ClassController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
                         .GetAllClasses().ToList()) is { Count: > 0 } classes)
                 classes.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteClass));
 
             return Ok();
         }
@@ -256,6 +260,8 @@ public class ClassController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
                         .GetAllClasses().ToList()) is { Count: > 0 } classes)
                 classes[classes.FindIndex(s => s.Id == updateClass.Id)] = updateClass;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateClass));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateClass.Id}"), updateClass);
         }

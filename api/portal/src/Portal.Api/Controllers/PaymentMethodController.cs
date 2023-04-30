@@ -98,7 +98,7 @@ public class PaymentMethodController : ControllerBase
                         .GetAllPaymentMethods().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } paymentMethod => Ok(paymentMethod),
+                { } paymentMethod => Ok(_mapper.Map<PaymentMethod>(paymentMethod)),
                 _ => NotFound()
             };
         }
@@ -159,6 +159,8 @@ public class PaymentMethodController : ControllerBase
             if (paymentMethods.FirstOrDefault(s => s.Id == newPaymentMethod.Id) is null)
                 paymentMethods.Add(_mapper.Map<Domain.Entities.PaymentMethod>(newPaymentMethod));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertPaymentMethod));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newPaymentMethod.Id}"),
                 newPaymentMethod);
         }
@@ -199,6 +201,8 @@ public class PaymentMethodController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
                         .GetAllPaymentMethods().ToList()) is { Count: > 0 } paymentMethods)
                 paymentMethods.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeletePaymentMethod));
 
             return Ok();
         }
@@ -257,6 +261,8 @@ public class PaymentMethodController : ControllerBase
                         .GetAllPaymentMethods().ToList()) is { Count: > 0 } paymentMethods)
                 paymentMethods[paymentMethods
                     .FindIndex(s => s.Id == updatePaymentMethod.Id)] = updatePaymentMethod;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdatePaymentMethod));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updatePaymentMethod.Id}"),
                 updatePaymentMethod);

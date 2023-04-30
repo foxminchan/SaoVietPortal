@@ -9,6 +9,7 @@ namespace Portal.Application.Search;
 public class VietnameseAnalyzer : Analyzer
 {
     private readonly LuceneVersion _version;
+
     public VietnameseAnalyzer(LuceneVersion version) => _version = version;
 
     protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)

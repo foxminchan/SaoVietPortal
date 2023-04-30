@@ -98,7 +98,7 @@ public class CourseController : ControllerBase
                         .GetAllCourses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } course => Ok(course),
+                { } course => Ok(_mapper.Map<Course>(course)),
                 _ => NotFound()
             };
         }
@@ -160,6 +160,8 @@ public class CourseController : ControllerBase
             if (positions.FirstOrDefault(s => s.Id == newCourse.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertCourse));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newCourse.Id}"), newCourse);
         }
         catch (Exception e)
@@ -199,6 +201,8 @@ public class CourseController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
                         .GetAllCourses().ToList()) is { Count: > 0 } courses)
                 courses.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteCourse));
 
             return Ok();
         }
@@ -256,6 +260,8 @@ public class CourseController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
                         .GetAllCourses().ToList()) is { Count: > 0 } courses)
                 courses[courses.FindIndex(s => s.Id == updateCourse.Id)] = updateCourse;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateCourse));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateCourse.Id}"), updateCourse);
         }

@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using Newtonsoft.Json;
 using Portal.Domain.Interfaces.Common;
-using System.Reflection;
 using Portal.Domain.Specification;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Portal.Infrastructure.Repositories.Common;
 
@@ -55,25 +56,41 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 
         if (criteria.Filter is not null)
         {
-            query = query.Where(criteria.Filter);
+            _ = query.Where(criteria.Filter);
 
             var filterBody = criteria.Filter.Body.ToString();
 
             if (filterBody.Contains("()") || filterBody.Contains("new "))
-                throw new ArgumentException("Invalid filter expression.");
+                throw new ArgumentException($"Invalid filter expression: {nameof(criteria.Filter)}.");
         }
 
         if (criteria.IncludeProperties is not null)
-            query = criteria.IncludeProperties
-                .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            _ = criteria.IncludeProperties
+                .Aggregate(query, (current, includeProperty) => current
+                    .Include(includeProperty));
 
         if (criteria.OrderBy is not null)
-            query = criteria.OrderBy(query);
+            _ = criteria.OrderBy(query);
 
-        if (criteria.Skip != 0)
+        if (!string.IsNullOrEmpty(criteria.Cursor))
+        {
+            var cursor = JsonConvert.DeserializeObject<T>(criteria.Cursor);
+            var cursorValue = int
+                .Parse(cursor?
+                .GetType()
+                .GetProperties()
+                .FirstOrDefault(x => x.Name.Equals("Id"))?
+                .GetValue(cursor)?
+                .ToString() ?? "0");
+            _ = criteria.IsAscending
+                ? query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! > cursorValue)
+                : query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! < cursorValue);
+        }
+
+        if (criteria.Skip > 0)
             _ = query.Skip(criteria.Skip);
 
-        if (criteria.Take != 0)
+        if (criteria.Take > 0)
             _ = query.Take(criteria.Take);
 
         return string.IsNullOrEmpty(criteria.Fields)
@@ -83,12 +100,16 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 
     public IQueryable<T> GetField(Criteria<T> criteria, IQueryable<T> query)
     {
-        var propertyInfos = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        var propertyInfos = typeof(T)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        var selectedProperties = criteria.Fields.Split(',')
+        var selectedProperties = criteria.Fields
+            .Split(',')
             .Select(x => x.Trim())
             .Where(x => !string.IsNullOrEmpty(x))
-            .Select(x => propertyInfos.FirstOrDefault(p => p.Name.Equals(x, StringComparison.InvariantCultureIgnoreCase)))
+            .Select(x => propertyInfos
+                .FirstOrDefault(p => p.Name
+                    .Equals(x, StringComparison.InvariantCultureIgnoreCase)))
             .Where(x => x is not null);
 
         var parameter = Expression.Parameter(typeof(T), "x");

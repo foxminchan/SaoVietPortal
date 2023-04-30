@@ -6,8 +6,12 @@ namespace Portal.Domain.Interfaces;
 public interface IClassRepository : IRepository<Class>
 {
     public void AddClass(Class @class);
+
     public void UpdateClass(Class @class);
+
     public void DeleteClass(string id);
+
     public IEnumerable<Class> GetAllClasses();
+
     public bool TryGetClassById(string classId, out Class? @class);
 }

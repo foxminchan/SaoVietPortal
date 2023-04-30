@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class StudentRepository : RepositoryBase<Student>, IStudentRepository
 {
-    public StudentRepository(ApplicationDbContext context) : base(context) { }
+    public StudentRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddStudent(Student student) => Insert(student);
 

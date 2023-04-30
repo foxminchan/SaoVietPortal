@@ -2,12 +2,12 @@ using Hangfire;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
+using Portal.Api;
 using Portal.Api.Extensions;
+using Portal.Infrastructure;
 using Portal.Infrastructure.Auth;
 using Portal.Infrastructure.Middleware;
-using Portal.Infrastructure;
 using Serilog;
-using Portal.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 

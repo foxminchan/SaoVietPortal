@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class ReceiptsExpensesRepository : RepositoryBase<ReceiptsExpenses>, IReceiptsExpensesRepository
 {
-    public ReceiptsExpensesRepository(ApplicationDbContext context) : base(context) { }
+    public ReceiptsExpensesRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddReceiptsExpenses(ReceiptsExpenses receiptsExpenses) => Insert(receiptsExpenses);
 

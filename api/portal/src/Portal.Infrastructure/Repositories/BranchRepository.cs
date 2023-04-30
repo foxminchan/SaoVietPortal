@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class BranchRepository : RepositoryBase<Branch>, IBranchRepository
 {
-    public BranchRepository(ApplicationDbContext context) : base(context) { }
+    public BranchRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddBranch(Branch branch) => Insert(branch);
 

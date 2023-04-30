@@ -47,7 +47,7 @@ public static class RedisCacheExtension
         if (!string.IsNullOrEmpty(redisCacheOption.Password))
             configurationOptions.Password = redisCacheOption.Password;
 
-        var endpoints = redisCacheOption.Url.ToString().Split(':');
+        var endpoints = redisCacheOption.Url.Split(':');
         foreach (var endpoint in endpoints)
             configurationOptions.EndPoints.Add(endpoint);
 

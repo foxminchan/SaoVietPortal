@@ -99,7 +99,7 @@ public class CourseRegistrationController : ControllerBase
                             .GetAllCourseRegistrations().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } courseRegistration => Ok(courseRegistration),
+                { } courseRegistration => Ok(_mapper.Map<CourseRegistration>(courseRegistration)),
                 _ => NotFound()
             };
         }
@@ -171,6 +171,8 @@ public class CourseRegistrationController : ControllerBase
             if (courseRegistrations.FirstOrDefault(s => s.Id == newCourseRegistration.Id) is null)
                 courseRegistrations.Add(_mapper.Map<Domain.Entities.CourseRegistration>(newCourseRegistration));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertCourseRegistration));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newCourseRegistration.Id}"),
                 newCourseRegistration.Id);
         }
@@ -212,6 +214,8 @@ public class CourseRegistrationController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.CourseRegistrationRepository
                         .GetAllCourseRegistrations().ToList()) is { Count: > 0 } courseRegistrations)
                 courseRegistrations.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteCourseRegistration));
 
             return Ok();
         }
@@ -278,6 +282,8 @@ public class CourseRegistrationController : ControllerBase
                             .GetAllCourseRegistrations().ToList()) is { Count: > 0 } courseRegistrations)
                 courseRegistrations[courseRegistrations
                     .FindIndex(s => s.Id == updateCourseRegistration.Id)] = updateCourseRegistration;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateCourseRegistration));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateCourseRegistration.Id}"),
                 updateCourseRegistration.Id);

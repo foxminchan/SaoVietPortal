@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class PaymentMethodRepository : RepositoryBase<PaymentMethod>, IPaymentMethodRepository
 {
-    public PaymentMethodRepository(ApplicationDbContext context) : base(context) { }
+    public PaymentMethodRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddPaymentMethod(PaymentMethod paymentMethod) => Insert(paymentMethod);
 

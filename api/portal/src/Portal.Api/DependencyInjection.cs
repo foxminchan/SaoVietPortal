@@ -1,20 +1,20 @@
-﻿using System.IO.Compression;
-using FluentValidation;
-using Portal.Api.Validations;
-using Portal.Api.Models;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.ObjectPool;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Portal.Api.Filters;
+using Portal.Api.Models;
+using Portal.Api.Validations;
 using Portal.Application.Health;
 using Portal.Application.Search;
 using Portal.Application.Token;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Infrastructure.Repositories.Common;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
+using System.IO.Compression;
 
 namespace Portal.Api;
 

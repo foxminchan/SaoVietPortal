@@ -102,7 +102,7 @@ public class StudentController : ControllerBase
                         .GetAllStudents().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } student => Ok(student),
+                { } student => Ok(_mapper.Map<Student>(student)),
                 _ => NotFound()
             };
         }
@@ -217,6 +217,8 @@ public class StudentController : ControllerBase
                 .Index(students
                     .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertStudent));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{student.Id}"), student);
         }
         catch (Exception e)
@@ -262,6 +264,8 @@ public class StudentController : ControllerBase
             _luceneService
                 .Index(students
                     .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Delete));
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteStudent));
 
             return Ok();
         }
@@ -328,6 +332,8 @@ public class StudentController : ControllerBase
             _luceneService
                 .Index(students
                     .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateStudent));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{student.Id}"), student);
         }

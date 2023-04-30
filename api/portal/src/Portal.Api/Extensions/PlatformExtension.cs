@@ -1,9 +1,9 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using System.Runtime.InteropServices;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Portal.Domain.Primitives;
+using System.Net;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace Portal.Api.Extensions;
 

@@ -1,7 +1,7 @@
-﻿using System.Net.Mime;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
+using System.Net.Mime;
 
 namespace Portal.Api.Filters;
 

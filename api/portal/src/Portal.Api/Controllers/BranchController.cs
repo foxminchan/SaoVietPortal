@@ -32,7 +32,7 @@ public class BranchController : ControllerBase
         IValidator<Branch> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
-            (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all branches
@@ -160,6 +160,8 @@ public class BranchController : ControllerBase
             if (branches.FirstOrDefault(s => s.Id == newBranch.Id) is null)
                 branches.Add(_mapper.Map<Domain.Entities.Branch>(newBranch));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertBranch));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newBranch.Id}"), newBranch);
         }
         catch (Exception e)
@@ -199,6 +201,8 @@ public class BranchController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.BranchRepository
                         .GetAllBranches().ToList()) is { Count: > 0 } branches)
                 branches.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteBranch));
 
             return Ok();
         }
@@ -257,6 +261,8 @@ public class BranchController : ControllerBase
                         .GetAllBranches().ToList()) is
                 { Count: > 0 } branches)
                 branches[branches.FindIndex(s => s.Id == updateBranch.Id)] = updateBranch;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdatePosition));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateBranch.Id}"), updateBranch);
         }

@@ -97,7 +97,7 @@ public class PositionController : ControllerBase
                         .GetAllPositions().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } position => Ok(position),
+                { } position => Ok(_mapper.Map<Position>(position)),
                 _ => NotFound()
             };
         }
@@ -159,6 +159,8 @@ public class PositionController : ControllerBase
             if (positions.FirstOrDefault(s => s.Id == newPosition.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
+            _logger.LogInformation("Completed request {@RequestName}", nameof(InsertPosition));
+
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newPosition.Id}"), newPosition);
         }
         catch (Exception e)
@@ -198,6 +200,8 @@ public class PositionController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
                         .GetAllPositions().ToList()) is { Count: > 0 } positions)
                 positions.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeletePosition));
 
             return Ok();
         }
@@ -254,6 +258,8 @@ public class PositionController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
                         .GetAllPositions().ToList()) is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.Id == updatePosition.Id)] = updatePosition;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdatePosition));
 
             return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updatePosition.Id}"), updatePosition);
         }

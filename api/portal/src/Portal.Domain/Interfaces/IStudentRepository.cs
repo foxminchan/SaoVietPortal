@@ -6,8 +6,12 @@ namespace Portal.Domain.Interfaces;
 public interface IStudentRepository : IRepository<Student>
 {
     public void AddStudent(Student student);
+
     public void UpdateStudent(Student student);
+
     public void DeleteStudent(string id);
+
     public IEnumerable<Student> GetAllStudents();
+
     public bool TryGetStudentById(string id, out Student? student);
 }

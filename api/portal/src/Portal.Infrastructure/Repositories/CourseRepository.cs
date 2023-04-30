@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class CourseRepository : RepositoryBase<Course>, ICourseRepository
 {
-    public CourseRepository(ApplicationDbContext context) : base(context) { }
+    public CourseRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddCourse(Course course) => Insert(course);
 

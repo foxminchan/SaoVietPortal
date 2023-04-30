@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class StudentProgressRepository : RepositoryBase<StudentProgress>, IStudentProgressRepository
 {
-    public StudentProgressRepository(ApplicationDbContext context) : base(context) { }
+    public StudentProgressRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddStudentProgress(StudentProgress studentProgress) => Insert(studentProgress);
 

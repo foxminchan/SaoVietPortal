@@ -6,7 +6,9 @@ namespace Portal.Infrastructure.Repositories;
 
 public class PositionRepository : RepositoryBase<Position>, IPositionRepository
 {
-    public PositionRepository(ApplicationDbContext context) : base(context) { }
+    public PositionRepository(ApplicationDbContext context) : base(context)
+    {
+    }
 
     public void AddPosition(Position position) => Insert(position);
 

@@ -35,17 +35,9 @@ public class StaffController : ControllerBase
         IMapper mapper,
         IValidator<Staff> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService<Staff> luceneService
-    )
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-        _luceneService = luceneService;
-    }
+        ILuceneService<Staff> luceneService)
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) =
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService, luceneService);
 
     /// <summary>
     /// Get all staffs
@@ -68,8 +60,9 @@ public class StaffController : ControllerBase
     {
         try
         {
-            return _redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.StaffRepository.GetStaff().ToList()) switch
+            return _redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                        .GetStaff().ToList()) switch
             {
                 { Count: > 0 } staffs => Ok(_mapper.Map<List<Staff>>(staffs)),
                 _ => NotFound()
@@ -105,7 +98,8 @@ public class StaffController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                        .GetStaff().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
                 { } staff => Ok(staff),
@@ -141,7 +135,8 @@ public class StaffController : ControllerBase
         try
         {
             var staffs = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList())
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                    .GetStaff().ToList())
                 .Select(_mapper.Map<Staff>).ToList();
 
             if (!staffs.Any()) return NotFound();
@@ -198,7 +193,10 @@ public class StaffController : ControllerBase
             var validationResult = _validator.Validate(staff);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return Conflict();
@@ -207,14 +205,18 @@ public class StaffController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.AddStaff(newStaff));
 
-            var staffs =
-                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+            var staffs = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                    .GetStaff().ToList());
+
             if (staffs.FirstOrDefault(s => s.Id == newStaff.Id) is null)
                 staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
 
-            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
+            _luceneService
+                .Index(staffs
+                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
 
-            return Created($"/api/v1/Staff/{newStaff.Id}", newStaff);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newStaff.Id}"), newStaff);
         }
         catch (Exception e)
         {
@@ -250,12 +252,15 @@ public class StaffController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.DeleteStaff(id));
 
             var staffs = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                    .GetStaff().ToList());
 
             if (staffs.FirstOrDefault(s => s.Id == id) is { } staff)
                 staffs.Remove(staff);
 
-            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Delete));
+            _luceneService
+                .Index(staffs
+                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Delete));
 
             return Ok();
         }
@@ -310,13 +315,17 @@ public class StaffController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.UpdateStaff(updateStaff));
 
             var staffs = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository.GetStaff().ToList());
+                .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
+                    .GetStaff().ToList());
+
             if (staffs.FirstOrDefault(s => s.Id == updateStaff.Id) is { } data)
                 staffs[staffs.IndexOf(data)] = updateStaff;
 
-            _luceneService.Index(staffs.Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
+            _luceneService
+                .Index(staffs
+                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
 
-            return Created($"/api/v1/Staff/{updateStaff.Id}", updateStaff);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateStaff.Id}"), updateStaff);
         }
         catch (Exception e)
         {

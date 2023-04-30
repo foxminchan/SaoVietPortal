@@ -30,16 +30,9 @@ public class ClassController : ControllerBase
         ILogger<ClassController> logger,
         IMapper mapper,
         IValidator<Class> validator,
-        IRedisCacheService redisCacheService
-    )
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-    }
+        IRedisCacheService redisCacheService)
+        => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
+            (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all classes
@@ -63,7 +56,8 @@ public class ClassController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList()) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
+                        .GetAllClasses().ToList()) switch
             {
                 { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
                 _ => NotFound()
@@ -99,7 +93,8 @@ public class ClassController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
+                        .GetAllClasses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
                 { } @class => Ok(@class),
@@ -147,7 +142,10 @@ public class ClassController : ControllerBase
             var validationResult = _validator.Validate(@class);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return Conflict();
@@ -156,11 +154,13 @@ public class ClassController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.AddClass(newClass));
 
             var classes =
-                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList());
+                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
+                    .GetAllClasses().ToList());
+
             if (classes.FirstOrDefault(s => s.Id == newClass.Id) is null)
                 classes.Add(_mapper.Map<Domain.Entities.Class>(newClass));
 
-            return Created($"/api/v1/Class/{newClass.Id}", newClass);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newClass.Id}"), newClass);
         }
         catch (Exception e)
         {
@@ -196,8 +196,8 @@ public class ClassController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.DeleteClass(id));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
-                is { Count: > 0 } classes)
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
+                        .GetAllClasses().ToList()) is { Count: > 0 } classes)
                 classes.RemoveAll(s => s.Id == id);
 
             return Ok();
@@ -241,7 +241,10 @@ public class ClassController : ControllerBase
         {
             var validationResult = _validator.Validate(@class);
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (!_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return NotFound();
@@ -250,11 +253,11 @@ public class ClassController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.UpdateClass(updateClass));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository.GetAllClasses().ToList())
-                is { Count: > 0 } classes)
+                    .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
+                        .GetAllClasses().ToList()) is { Count: > 0 } classes)
                 classes[classes.FindIndex(s => s.Id == updateClass.Id)] = updateClass;
 
-            return Created($"/api/v1/Class/{updateClass.Id}", updateClass);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateClass.Id}"), updateClass);
         }
         catch (Exception e)
         {

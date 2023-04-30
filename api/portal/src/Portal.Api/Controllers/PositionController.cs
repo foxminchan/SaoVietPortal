@@ -31,14 +31,8 @@ public class PositionController : ControllerBase
         IMapper mapper,
         IValidator<Position> validator,
         IRedisCacheService redisCacheService)
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-    }
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) = 
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all positions
@@ -62,7 +56,8 @@ public class PositionController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList()) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
+                        .GetAllPositions().ToList()) switch
             {
                 { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
                 _ => NotFound()
@@ -98,7 +93,8 @@ public class PositionController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
+                        .GetAllPositions().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
                 { } position => Ok(position),
@@ -138,23 +134,32 @@ public class PositionController : ControllerBase
         try
         {
             if (position.Id.HasValue)
+            {
+                _logger.LogError("Position with id {Id} is not permitted to add",
+                    position.Id);
                 return BadRequest("Position id is auto generated");
+            }
 
             var validationResult = _validator.Validate(position);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             var newPosition = _mapper.Map<Domain.Entities.Position>(position);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.AddPosition(newPosition));
 
-            var positions =
-                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList());
+            var positions = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
+                    .GetAllPositions().ToList());
+
             if (positions.FirstOrDefault(s => s.Id == newPosition.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
 
-            return Created($"/api/v1/Position/{newPosition.Id}", newPosition);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newPosition.Id}"), newPosition);
         }
         catch (Exception e)
         {
@@ -190,8 +195,8 @@ public class PositionController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.DeletePosition(id));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
-                is { Count: > 0 } positions)
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
+                        .GetAllPositions().ToList()) is { Count: > 0 } positions)
                 positions.RemoveAll(s => s.Id == id);
 
             return Ok();
@@ -233,20 +238,24 @@ public class PositionController : ControllerBase
             var validationResult = _validator.Validate(position);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
-            if (position.Id.HasValue && !_unitOfWork.PositionRepository.TryGetPositionById(position.Id.Value, out _))
+            if (position.Id.HasValue && 
+                !_unitOfWork.PositionRepository.TryGetPositionById(position.Id.Value, out _))
                 return NotFound();
 
             var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
             _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.UpdatePosition(updatePosition));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository.GetAllPositions().ToList())
-                is { Count: > 0 } positions)
+                    .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
+                        .GetAllPositions().ToList()) is { Count: > 0 } positions)
                 positions[positions.FindIndex(s => s.Id == updatePosition.Id)] = updatePosition;
 
-            return Created($"/api/v1/Position/{updatePosition.Id}", updatePosition);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updatePosition.Id}"), updatePosition);
         }
         catch (Exception e)
         {

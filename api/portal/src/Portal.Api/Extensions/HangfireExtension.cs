@@ -12,8 +12,8 @@ public static class HangfireExtension
                    .UseColouredConsoleLogProvider()
                    .UseSimpleAssemblyNameTypeSerializer()
                    .UseRecommendedSerializerSettings()
-                   .UseSQLiteStorage(builder.Configuration.GetConnectionString("SQLite")
-                                     ?? throw new InvalidOperationException()));
+                   .UseSQLiteStorage(builder.Configuration
+                                         .GetConnectionString("SQLite") ?? throw new InvalidOperationException()));
         builder.Services.AddHangfireServer();
     }
 }

@@ -35,17 +35,9 @@ public class StudentController : ControllerBase
         IMapper mapper,
         IValidator<Student> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService<Student> luceneService
-    )
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-        _luceneService = luceneService;
-    }
+        ILuceneService<Student> luceneService)
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) = 
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService, luceneService);
 
     /// <summary>
     /// Get all students
@@ -69,7 +61,8 @@ public class StudentController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList()) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                        .GetAllStudents().ToList()) switch
             {
                 { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
                 _ => NotFound()
@@ -105,7 +98,8 @@ public class StudentController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                        .GetAllStudents().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
                 { } student => Ok(student),
@@ -142,7 +136,8 @@ public class StudentController : ControllerBase
         try
         {
             var students = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList())
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                    .GetAllStudents().ToList())
                 .Select(_mapper.Map<Student>).ToList();
 
             if (!students.Any()) return NotFound();
@@ -199,7 +194,10 @@ public class StudentController : ControllerBase
             var validationResult = _validator.Validate(student);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return Conflict();
@@ -208,13 +206,18 @@ public class StudentController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.AddStudent(newStudent));
 
-            var students = _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+            var students = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                    .GetAllStudents().ToList());
+
             if (students.FirstOrDefault(s => s.Id == newStudent.Id) is null)
                 students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
 
-            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
+            _luceneService
+                .Index(students
+                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
 
-            return Created($"api/v1/Student/{newStudent.Id}", newStudent);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{student.Id}"), student);
         }
         catch (Exception e)
         {
@@ -250,12 +253,15 @@ public class StudentController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.DeleteStudent(id));
 
             var students = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                    .GetAllStudents().ToList());
 
             if (students.FirstOrDefault(s => s.Id == id) is { } student)
                 students.Remove(student);
 
-            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Delete));
+            _luceneService
+                .Index(students
+                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Delete));
 
             return Ok();
         }
@@ -301,7 +307,10 @@ public class StudentController : ControllerBase
             var validationResult = _validator.Validate(student);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (!_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return NotFound();
@@ -310,13 +319,17 @@ public class StudentController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.UpdateStudent(updateStudent));
 
             var students = _redisCacheService
-                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository.GetAllStudents().ToList());
+                .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
+                    .GetAllStudents().ToList());
+
             if (students.FirstOrDefault(s => s.Id == updateStudent.Id) is { } data)
                 students[students.IndexOf(data)] = updateStudent;
 
-            _luceneService.Index(students.Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
+            _luceneService
+                .Index(students
+                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
 
-            return Created($"api/v1/Student/{updateStudent.Id}", updateStudent);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{student.Id}"), student);
         }
         catch (Exception e)
         {

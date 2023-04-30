@@ -10,7 +10,11 @@ public static class OpenTelemetryExtension
 {
     public static void AddOpenTelemetry(this WebApplicationBuilder builder)
     {
-        var resourceBuilder = ResourceBuilder.CreateDefault().AddService(builder.Configuration.GetValue<string>("Otlp:ServiceName")!);
+        var resourceBuilder = ResourceBuilder
+            .CreateDefault()
+            .AddService(builder.Configuration
+                .GetValue<string>("Otlp:ServiceName") ?? string.Empty);
+
         var otlpEndpoint = builder.Configuration.GetValue<string>("Otlp:Endpoint");
 
         if (!string.IsNullOrWhiteSpace(otlpEndpoint))

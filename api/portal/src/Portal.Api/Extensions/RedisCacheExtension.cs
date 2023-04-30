@@ -11,8 +11,7 @@ public static class RedisCacheExtension
         IConfiguration config,
         Action<RedisCache>? setupAction = null)
     {
-        if (services is null)
-            throw new ArgumentNullException(nameof(services));
+        ArgumentNullException.ThrowIfNull(services, nameof(services));
 
         if (services.Contains(ServiceDescriptor.Singleton<IRedisCacheService, RedisCacheService>())) return;
 

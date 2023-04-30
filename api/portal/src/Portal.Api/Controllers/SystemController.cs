@@ -24,13 +24,8 @@ public class SystemController : ControllerBase
         ILogger<SystemController> logger,
         IRedisCacheService redisCacheService,
         ILuceneService<string> luceneService)
-    {
-        _config = config;
-        _env = env;
-        _logger = logger;
-        _redisCacheService = redisCacheService;
-        _luceneService = luceneService;
-    }
+    => (_config, _env, _logger, _redisCacheService, _luceneService) =
+        (config, env, logger, redisCacheService, luceneService);
 
     /// <summary>
     /// Get platform information
@@ -50,8 +45,7 @@ public class SystemController : ControllerBase
     {
         try
         {
-            var platform = _config.GetPlatform(_env);
-            return Ok(platform);
+            return Ok(_config.GetPlatform(_env));
         }
         catch (Exception e)
         {

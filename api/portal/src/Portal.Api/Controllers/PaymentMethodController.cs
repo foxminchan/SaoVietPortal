@@ -31,14 +31,8 @@ public class PaymentMethodController : ControllerBase
         IMapper mapper,
         IValidator<PaymentMethod> validator,
         IRedisCacheService redisCacheService)
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-    }
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) = 
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all payment methods
@@ -63,7 +57,8 @@ public class PaymentMethodController : ControllerBase
         {
             return _redisCacheService
                     .GetOrSet(CacheKey,
-                        () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList()) switch
+                        () => _unitOfWork.PaymentMethodRepository
+                            .GetAllPaymentMethods().ToList()) switch
             {
                 { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
                 _ => NotFound()
@@ -138,24 +133,34 @@ public class PaymentMethodController : ControllerBase
         try
         {
             if (paymentMethod.Id.HasValue)
+            {
+                _logger.LogError("Payment method with id {Id} is not permitted to add",
+                    paymentMethod.Id);
                 return BadRequest("Payment method id is auto generated");
+            }
 
             var validationResult = _validator.Validate(paymentMethod);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             var newPaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
 
-            _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository.AddPaymentMethod(newPaymentMethod));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository
+                .AddPaymentMethod(newPaymentMethod));
 
-            var paymentMethods =
-                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
+            var paymentMethods = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
                     .GetAllPaymentMethods().ToList());
+
             if (paymentMethods.FirstOrDefault(s => s.Id == newPaymentMethod.Id) is null)
                 paymentMethods.Add(_mapper.Map<Domain.Entities.PaymentMethod>(newPaymentMethod));
 
-            return Created($"/api/v1/PaymentMethod/{newPaymentMethod.Id}", newPaymentMethod);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newPaymentMethod.Id}"),
+                newPaymentMethod);
         }
         catch (Exception e)
         {
@@ -191,8 +196,8 @@ public class PaymentMethodController : ControllerBase
             _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository.DeletePaymentMethod(id));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())
-                is { Count: > 0 } paymentMethods)
+                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
+                        .GetAllPaymentMethods().ToList()) is { Count: > 0 } paymentMethods)
                 paymentMethods.RemoveAll(s => s.Id == id);
 
             return Ok();
@@ -234,9 +239,13 @@ public class PaymentMethodController : ControllerBase
             var validationResult = _validator.Validate(paymentMethod);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
-            if (paymentMethod.Id.HasValue && !_unitOfWork.PaymentMethodRepository.TryGetPaymentMethod(paymentMethod.Id.Value, out _))
+            if (paymentMethod.Id.HasValue && !_unitOfWork.PaymentMethodRepository
+                    .TryGetPaymentMethod(paymentMethod.Id.Value, out _))
                 return NotFound();
 
             var updatePaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
@@ -244,11 +253,13 @@ public class PaymentMethodController : ControllerBase
                 .UpdatePaymentMethod(updatePaymentMethod));
 
             if (_redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository.GetAllPaymentMethods().ToList())
-                is { Count: > 0 } paymentMethods)
-                paymentMethods[paymentMethods.FindIndex(s => s.Id == updatePaymentMethod.Id)] = updatePaymentMethod;
+                    .GetOrSet(CacheKey, () => _unitOfWork.PaymentMethodRepository
+                        .GetAllPaymentMethods().ToList()) is { Count: > 0 } paymentMethods)
+                paymentMethods[paymentMethods
+                    .FindIndex(s => s.Id == updatePaymentMethod.Id)] = updatePaymentMethod;
 
-            return Created($"/api/v1/PaymentMethod/{updatePaymentMethod.Id}", updatePaymentMethod);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updatePaymentMethod.Id}"),
+                updatePaymentMethod);
         }
         catch (Exception e)
         {

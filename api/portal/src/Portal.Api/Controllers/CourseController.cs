@@ -8,6 +8,7 @@ using Portal.Application.Cache;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Primitives;
+
 namespace Portal.Api.Controllers;
 
 [Route("api/v1/[controller]")]
@@ -30,16 +31,9 @@ public class CourseController : ControllerBase
         ILogger<CourseController> logger,
         IMapper mapper,
         IValidator<Course> validator,
-        IRedisCacheService redisCacheService
-    )
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-    }
+        IRedisCacheService redisCacheService) 
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
+            (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all courses
@@ -63,7 +57,8 @@ public class CourseController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
+                        .GetAllCourses().ToList()) switch
             {
                 { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
                 _ => NotFound()
@@ -99,7 +94,8 @@ public class CourseController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList())
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
+                        .GetAllCourses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
                 { } course => Ok(course),
@@ -145,7 +141,10 @@ public class CourseController : ControllerBase
             var validationResult = _validator.Validate(course);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (!course.Id.IsNullOrEmpty() && _unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return Conflict();
@@ -154,14 +153,14 @@ public class CourseController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.AddCourse(newCourse));
 
-            var positions =
-                _redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList());
+            var positions = _redisCacheService
+                .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
+                    .GetAllCourses().ToList());
 
             if (positions.FirstOrDefault(s => s.Id == newCourse.Id) is null)
                 positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
 
-            return Created($"/api/v1/Course/{newCourse.Id}", newCourse);
-
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newCourse.Id}"), newCourse);
         }
         catch (Exception e)
         {
@@ -196,8 +195,9 @@ public class CourseController : ControllerBase
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.DeleteCourse(id));
 
-            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) is
-                { Count: > 0 } courses)
+            if (_redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
+                        .GetAllCourses().ToList()) is { Count: > 0 } courses)
                 courses.RemoveAll(s => s.Id == id);
 
             return Ok();
@@ -240,19 +240,24 @@ public class CourseController : ControllerBase
             var validationResult = _validator.Validate(course);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
-            if (!course.Id.IsNullOrEmpty() && !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
+            if (!course.Id.IsNullOrEmpty() &&
+                !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return NotFound();
 
             var updateCourse = _mapper.Map<Domain.Entities.Course>(course);
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.UpdateCourse(updateCourse));
 
-            if (_redisCacheService.GetOrSet(CacheKey, () => _unitOfWork.CourseRepository.GetAllCourses().ToList()) is
-                { Count: > 0 } courses)
+            if (_redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
+                        .GetAllCourses().ToList()) is { Count: > 0 } courses)
                 courses[courses.FindIndex(s => s.Id == updateCourse.Id)] = updateCourse;
 
-            return Created($"/api/v1/Course/{updateCourse.Id}", updateCourse);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateCourse.Id}"), updateCourse);
         }
         catch (Exception e)
         {

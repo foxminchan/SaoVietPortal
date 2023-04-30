@@ -30,15 +30,9 @@ public class CourseRegistrationController : ControllerBase
         ILogger<CourseRegistrationController> logger,
         IMapper mapper,
         IValidator<CourseRegistration> validator,
-        IRedisCacheService redisCacheService)
-    {
-        _unitOfWork = unitOfWork;
-        _transactionService = transactionService;
-        _logger = logger;
-        _mapper = mapper;
-        _validator = validator;
-        _redisCacheService = redisCacheService;
-    }
+        IRedisCacheService redisCacheService) 
+    => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
+        (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
     /// <summary>
     /// Get all course registrations
@@ -62,8 +56,8 @@ public class CourseRegistrationController : ControllerBase
         try
         {
             return _redisCacheService
-                    .GetOrSet(CacheKey,
-                    () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList()) switch
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRegistrationRepository
+                        .GetAllCourseRegistrations().ToList()) switch
             {
                 { Count: > 0 } courseRegistrations
                     => Ok(_mapper.Map<List<CourseRegistration>>(courseRegistrations)),
@@ -150,25 +144,35 @@ public class CourseRegistrationController : ControllerBase
         try
         {
             if (courseRegistration.Id != Guid.Empty)
+            {
+                _logger.LogError("Course registration with id {Id} is not permitted to add", 
+                    courseRegistration.Id);
                 return BadRequest("Course registration id is auto generated");
+            }
 
             var validationResult = _validator.Validate(courseRegistration);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             var newCourseRegistration = _mapper.Map<Domain.Entities.CourseRegistration>(courseRegistration);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRegistrationRepository
                 .AddCourseRegistration(newCourseRegistration));
 
-            var courseRegistrations =
-                _redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList());
+            var courseRegistrations = _redisCacheService
+                .GetOrSet(CacheKey,
+                    () => _unitOfWork.CourseRegistrationRepository
+                        .GetAllCourseRegistrations().ToList());
+
             if (courseRegistrations.FirstOrDefault(s => s.Id == newCourseRegistration.Id) is null)
                 courseRegistrations.Add(_mapper.Map<Domain.Entities.CourseRegistration>(newCourseRegistration));
 
-            return Created($"/api/v1/CourseRegistration/{newCourseRegistration.Id}", newCourseRegistration);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{newCourseRegistration.Id}"),
+                newCourseRegistration.Id);
         }
         catch (Exception e)
         {
@@ -201,12 +205,12 @@ public class CourseRegistrationController : ControllerBase
             if (_unitOfWork.CourseRegistrationRepository.TryGetCourseRegistrationById(id, out _))
                 return NotFound();
 
-            _transactionService.ExecuteTransaction(
-                () => _unitOfWork.CourseRegistrationRepository.DeleteCourseRegistration(id));
+            _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRegistrationRepository
+                .DeleteCourseRegistration(id));
 
-            if (_redisCacheService.GetOrSet(CacheKey,
-                    () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList()) is
-                { Count: > 0 } courseRegistrations)
+            if (_redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.CourseRegistrationRepository
+                        .GetAllCourseRegistrations().ToList()) is { Count: > 0 } courseRegistrations)
                 courseRegistrations.RemoveAll(s => s.Id == id);
 
             return Ok();
@@ -255,22 +259,28 @@ public class CourseRegistrationController : ControllerBase
             var validationResult = _validator.Validate(courseRegistration);
 
             if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
                 return BadRequest(new ValidationError(validationResult));
+            }
 
             if (!_unitOfWork.CourseRegistrationRepository.TryGetCourseRegistrationById(courseRegistration.Id, out _))
                 return NotFound();
 
             var updateCourseRegistration = _mapper.Map<Domain.Entities.CourseRegistration>(courseRegistration);
             _transactionService.ExecuteTransaction(
-                () => _unitOfWork.CourseRegistrationRepository.UpdateCourseRegistration(updateCourseRegistration));
+                () => _unitOfWork.CourseRegistrationRepository
+                    .UpdateCourseRegistration(updateCourseRegistration));
 
             if (_redisCacheService
                     .GetOrSet(CacheKey,
-                        () => _unitOfWork.CourseRegistrationRepository.GetAllCourseRegistrations().ToList()) is
-                { Count: > 0 } courseRegistrations)
-                courseRegistrations[courseRegistrations.FindIndex(s => s.Id == updateCourseRegistration.Id)] = updateCourseRegistration;
+                        () => _unitOfWork.CourseRegistrationRepository
+                            .GetAllCourseRegistrations().ToList()) is { Count: > 0 } courseRegistrations)
+                courseRegistrations[courseRegistrations
+                    .FindIndex(s => s.Id == updateCourseRegistration.Id)] = updateCourseRegistration;
 
-            return Created($"/api/v1/CourseRegistration/{updateCourseRegistration.Id}", updateCourseRegistration);
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateCourseRegistration.Id}"),
+                updateCourseRegistration.Id);
         }
         catch (Exception e)
         {

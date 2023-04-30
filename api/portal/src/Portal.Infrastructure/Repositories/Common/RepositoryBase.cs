@@ -17,7 +17,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         _dbSet = _context.Set<T>();
     }
 
-    public virtual IEnumerable<T> GetAll() => _dbSet;
+    public virtual IEnumerable<T> GetAll() => _dbSet.AsNoTracking();
 
     public virtual void Insert(T entity) => _dbSet.Add(entity);
 
@@ -76,7 +76,9 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         if (criteria.Take != 0)
             _ = query.Take(criteria.Take);
 
-        return string.IsNullOrEmpty(criteria.Fields) ? query.AsNoTracking() : GetField(criteria, query);
+        return string.IsNullOrEmpty(criteria.Fields) 
+            ? query.AsNoTracking() 
+            : GetField(criteria, query);
     }
 
     public IQueryable<T> GetField(Criteria<T> criteria, IQueryable<T> query)
@@ -91,8 +93,10 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 
         var parameter = Expression.Parameter(typeof(T), "x");
 
-        var memberBindings = selectedProperties.Select(property => Expression
-            .Bind(property ?? throw new ArgumentNullException(nameof(property)), Expression.Property(parameter, property)));
+        var memberBindings = selectedProperties
+            .Select(property => Expression
+            .Bind(property ?? throw new ArgumentNullException(nameof(property)), 
+                Expression.Property(parameter, property)));
 
         var memberInit = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
 

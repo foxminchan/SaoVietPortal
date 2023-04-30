@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using Portal.Api.Filters;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 namespace Portal.Api.Extensions;
@@ -104,6 +105,7 @@ public static class OpenApiExtension
         });
 
         builder.Services.AddSwaggerGenNewtonsoftSupport();
+        builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
     }
 
     public static void UseOpenApi(this IApplicationBuilder app)
@@ -113,8 +115,7 @@ public static class OpenApiExtension
             c.RouteTemplate = "swagger/{documentName}/swagger.json";
             c.PreSerializeFilters.Add((swagger, httpReq) =>
             {
-                if (httpReq is null)
-                    throw new ArgumentNullException(nameof(httpReq));
+                ArgumentNullException.ThrowIfNull(httpReq, nameof(httpReq));
 
                 swagger.ExternalDocs = new OpenApiExternalDocs
                 {

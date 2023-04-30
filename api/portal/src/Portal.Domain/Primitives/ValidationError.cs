@@ -15,9 +15,10 @@ public sealed class ValidationError
     public ValidationError(ValidationResult? validationResult = null)
     {
         Errors = validationResult!.Errors
-            .Select(error => new Dictionary<string, object> {
-                { error.PropertyName, new
-                    { message = error.ErrorMessage }
+            .Select(error => new Dictionary<string, object> 
+            {
+                { 
+                    error.PropertyName, new { message = error.ErrorMessage }
                 }
             })
             .ToList();

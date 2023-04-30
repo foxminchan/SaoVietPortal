@@ -56,7 +56,9 @@ public class ErrorProblemDetailsResult : IResult
         problemDetails.Extensions.Add("exception", _ex.GetType().FullName);
         problemDetails.Extensions.Add("stack", _ex.StackTrace);
         problemDetails.Extensions.Add("headers",
-            httpContext.Request.Headers.ToDictionary(kvp => kvp.Key, kvp => (string)kvp.Value!));
+            httpContext.Request.Headers
+                .ToDictionary(kvp 
+                    => kvp.Key, kvp => (string)kvp.Value!));
         problemDetails.Extensions.Add("routeValues", httpContext.GetRouteData().Values);
         problemDetails.Extensions.Add("query", httpContext.Request.Query);
         var endpoint = httpContext.GetEndpoint();

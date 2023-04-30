@@ -30,7 +30,7 @@ public class CourseRegistrationController : ControllerBase
         ILogger<CourseRegistrationController> logger,
         IMapper mapper,
         IValidator<CourseRegistration> validator,
-        IRedisCacheService redisCacheService) 
+        IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
 
@@ -145,7 +145,7 @@ public class CourseRegistrationController : ControllerBase
         {
             if (courseRegistration.Id != Guid.Empty)
             {
-                _logger.LogError("Course registration with id {Id} is not permitted to add", 
+                _logger.LogError("Course registration with id {Id} is not permitted to add",
                     courseRegistration.Id);
                 return BadRequest("Course registration id is auto generated");
             }

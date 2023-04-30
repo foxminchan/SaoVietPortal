@@ -51,7 +51,7 @@ public static class DependencyInjection
             });
         });
 
-        services.Configure<GzipCompressionProviderOptions>(options 
+        services.Configure<GzipCompressionProviderOptions>(options
             => options.Level = CompressionLevel.Optimal);
 
         services.AddResponseCaching(options =>

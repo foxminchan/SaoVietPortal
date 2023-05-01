@@ -5,8 +5,7 @@ namespace Portal.Api.Mapping;
 public class CourseRegistrationProfile : Profile
 {
     public CourseRegistrationProfile()
-    {
-        CreateMap<Domain.Entities.CourseRegistration, Models.CourseRegistration>()
+        => CreateMap<Domain.Entities.CourseRegistration, Models.CourseRegistration>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.RegisterDate, opt => opt.MapFrom(src => src.RegisterDate))
@@ -16,5 +15,4 @@ public class CourseRegistrationProfile : Profile
             .ForMember(dest => dest.PaymentMethodId, opt => opt.MapFrom(src => src.PaymentMethodId))
             .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
             .ForMember(dest => dest.ClassId, opt => opt.MapFrom(src => src.ClassId));
-    }
 }

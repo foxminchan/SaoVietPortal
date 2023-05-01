@@ -7,7 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
-using Portal.Domain.Primitives;
+using Portal.Domain.Options;
 
 namespace Portal.Api.Controllers;
 

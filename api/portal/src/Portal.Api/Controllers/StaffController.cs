@@ -9,7 +9,7 @@ using Portal.Application.Search;
 using Portal.Application.Transaction;
 using Portal.Domain.Enum;
 using Portal.Domain.Interfaces.Common;
-using Portal.Domain.Primitives;
+using Portal.Domain.Options;
 
 namespace Portal.Api.Controllers;
 

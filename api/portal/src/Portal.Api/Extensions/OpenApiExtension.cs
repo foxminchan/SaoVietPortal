@@ -24,7 +24,14 @@ public static class OpenApiExtension
                     Title = "Sao Viet Portal",
                     Version = "v1",
                     Description =
-                        "API for managing students of Sao Viet. For any questions, please contact `nguyenxuannhan407@gmail.com` or `nd.anh@hutech.edu.vn`. \n\nSome useful links:\n- [Sao Viet Portal repository](https://github.com/foxminchan/SaoVietPortal)\n- [Author Facebook profile](https://www.facebook.com/foxminchan)\n- [Author Github profile](https://github.com/foxminchan)",
+                        """
+                        Sao Viet Portal is an open source platform designed to manage and organize student information for the Sao Viet school. With this portal, students, teachers, and staff can easily access and update student records, such as attendance, grades, and personal information.
+
+                        Some useful links:
+                        - [Sao Viet Portal repository](https://github.com/foxminchan/SaoVietPortal)
+                        - [Author Facebook profile](https://www.facebook.com/foxminchan)
+                        - [Author Github profile](https://github.com/foxminchan)
+                        """,
                     Contact = new OpenApiContact
                     {
                         Name = "Nguyen Xuan Nhan",
@@ -59,23 +66,6 @@ public static class OpenApiExtension
                 Scheme = JwtBearerDefaults.AuthenticationScheme
             });
 
-            c.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    Implicit = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri("/auth-server/connect/authorize", UriKind.RelativeOrAbsolute),
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { "readAccess", "Access read operations" },
-                            { "writeAccess", "Access write operations" }
-                        }
-                    }
-                }
-            });
-
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
@@ -90,13 +80,6 @@ public static class OpenApiExtension
                         }
                     },
                     new List<string>()
-                },
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
-                    },
-                    new[] { "readAccess", "writeAccess" }
                 }
             });
 
@@ -126,7 +109,7 @@ public static class OpenApiExtension
                 {
                     new()
                     {
-                        Url = $"{httpReq.Scheme}://{httpReq.Host.Value}"
+                        Url = $"{httpReq.Protocol}"
                     }
                 };
                 swagger.Tags = new List<OpenApiTag>
@@ -189,6 +172,26 @@ public static class OpenApiExtension
                         {
                             Description = "More details",
                             Url = new Uri("/api-docs/index.html#tag/CourseRegistration", UriKind.RelativeOrAbsolute)
+                        }
+                    },
+                    new()
+                    {
+                        Name = "StudentProgress",
+                        Description = "Management of student progress",
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/StudentProgress", UriKind.RelativeOrAbsolute)
+                        }
+                    },
+                    new()
+                    {
+                        Name = "ReceiptsExpenses",
+                        Description = "Management of receipts and expenses",
+                        ExternalDocs = new OpenApiExternalDocs
+                        {
+                            Description = "More details",
+                            Url = new Uri("/api-docs/index.html#tag/ReceiptsExpenses", UriKind.RelativeOrAbsolute)
                         }
                     },
                     new()

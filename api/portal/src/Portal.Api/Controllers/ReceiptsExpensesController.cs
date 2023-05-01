@@ -6,7 +6,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
-using Portal.Domain.Primitives;
+using Portal.Domain.Options;
 
 namespace Portal.Api.Controllers;
 
@@ -171,6 +171,113 @@ public class ReceiptsExpensesController : ControllerBase
         catch (Exception e)
         {
             _logger.LogError(e, "Error while adding receipts/expenses");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Delete receipts/expenses by id
+    /// </summary>
+    /// <param name="id">Receipts/expenses id</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     DELETE /api/v1/ReceiptsExpenses/{id}
+    /// </remarks>
+    /// <response code="200">Delete receipts/expenses successfully</response>
+    /// <response code="404">If no receipts/expenses found</response>
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public IActionResult DeleteReceiptsExpenses([FromRoute] Guid id)
+    {
+        try
+        {
+            if (_unitOfWork.ReceiptsExpensesRepository.TryGetReceiptsExpenses(id, out _))
+                return NotFound();
+
+            _transactionService.ExecuteTransaction(
+                () => _unitOfWork.ReceiptsExpensesRepository.DeleteReceiptsExpenses(id));
+
+            if (_redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.ReceiptsExpensesRepository
+                        .GetReceiptsExpenses().ToList()) is { Count: > 0 } receiptsExpenses)
+                receiptsExpenses.RemoveAll(s => s.Id == id);
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteReceiptsExpenses));
+
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while deleting receipts/expenses");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
+    /// Update receipts/expenses
+    /// </summary>
+    /// <param name="receiptsExpenses">Receipts/expenses object</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /api/v1/ReceiptsExpenses
+    ///     {
+    ///         "Id": "Guid",
+    ///         "Type": bool,
+    ///         "Date": "string",
+    ///         "Amount": float,
+    ///         "Note": "string",
+    ///         "BranchId": "string"
+    ///     }
+    /// </remarks>
+    /// <response code="200">Update receipts/expenses successfully</response>
+    /// <response code="400">The input is invalid</response>
+    /// <response code="404">If no receipts/expenses found</response>
+    [HttpPut]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(201)]
+    [ProducesResponseType(400, Type = typeof(ValidationError))]
+    [ProducesResponseType(404)]
+    [ProducesResponseType(500)]
+    public IActionResult UpdateReceiptsExpenses([FromBody] ReceiptsExpenses receiptsExpenses)
+    {
+        try
+        {
+            var validationResult = _validator.Validate(receiptsExpenses);
+
+            if (!validationResult.IsValid)
+            {
+                _logger.LogError("Validation errors: {@Errors}", validationResult.Errors);
+                return BadRequest(new ValidationError(validationResult));
+            }
+
+            if (!_unitOfWork.ReceiptsExpensesRepository.TryGetReceiptsExpenses(receiptsExpenses.Id, out _))
+                return NotFound();
+
+            var updateReceiptsExpenses = _mapper.Map<Domain.Entities.ReceiptsExpenses>(receiptsExpenses);
+            _transactionService.ExecuteTransaction(
+                () => _unitOfWork.ReceiptsExpensesRepository.UpdateReceiptsExpenses(updateReceiptsExpenses));
+
+            if (_redisCacheService
+                    .GetOrSet(CacheKey, () => _unitOfWork.ReceiptsExpensesRepository
+                        .GetReceiptsExpenses().ToList()) is
+                { Count: > 0 } receiptsExpense)
+                receiptsExpense[receiptsExpense
+                        .FindIndex(s => s.Id == updateReceiptsExpenses.Id)] = updateReceiptsExpenses;
+
+            _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateReceiptsExpenses));
+
+            return Created(new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}/{updateReceiptsExpenses.Id}"), updateReceiptsExpenses);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while updating receipts/expenses");
             return StatusCode(500);
         }
     }

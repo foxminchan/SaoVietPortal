@@ -1,5 +1,5 @@
 ﻿using Portal.Application.Cache;
-using Portal.Domain.Primitives;
+using Portal.Domain.Options;
 using StackExchange.Redis;
 
 namespace Portal.Api.Extensions;

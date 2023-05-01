@@ -9,6 +9,8 @@ public interface IRepository<T> where T : class
 
     public void Update(T entity);
 
+    public void Update(T entity, params Expression<Func<T, object>>[] properties);
+
     public void Delete(T entity);
 
     public void Delete(Expression<Func<T, bool>> where);

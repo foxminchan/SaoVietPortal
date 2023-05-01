@@ -28,6 +28,13 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         _context.Entry(entity).State = EntityState.Modified;
     }
 
+    public virtual void Update(T entity, params Expression<Func<T, object>>[] properties)
+    {
+        _dbSet.Attach(entity);
+        foreach (var property in properties)
+            _context.Entry(entity).Property(property).IsModified = true;
+    }
+
     public virtual void Delete(T entity)
     {
         if (_context.Entry(entity).State == EntityState.Detached)
@@ -75,13 +82,19 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         if (!string.IsNullOrEmpty(criteria.Cursor))
         {
             var cursor = JsonConvert.DeserializeObject<T>(criteria.Cursor);
-            var cursorValue = int
-                .Parse(cursor?
-                .GetType()
-                .GetProperties()
-                .FirstOrDefault(x => x.Name.Equals("Id"))?
-                .GetValue(cursor)?
-                .ToString() ?? "0");
+
+            var conversionSuccessful = int.TryParse(
+                cursor?
+                    .GetType()
+                    .GetProperties()
+                    .FirstOrDefault(x => x.Name.Equals("Id"))?
+                    .GetValue(cursor)?
+                    .ToString(),
+                out var cursorValue);
+
+            if (!conversionSuccessful)
+                cursorValue = 0;
+
             _ = criteria.IsAscending
                 ? query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! > cursorValue)
                 : query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! < cursorValue);
@@ -103,7 +116,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
         var propertyInfos = typeof(T)
             .GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
-        var selectedProperties = criteria.Fields
+        var selectedProperties = criteria.Fields?
             .Split(',')
             .Select(x => x.Trim())
             .Where(x => !string.IsNullOrEmpty(x))
@@ -114,10 +127,12 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
 
         var parameter = Expression.Parameter(typeof(T), "x");
 
-        var memberBindings = selectedProperties
+        var memberBindings = selectedProperties?
             .Select(property => Expression
             .Bind(property ?? throw new ArgumentNullException(nameof(property)),
                 Expression.Property(parameter, property)));
+
+        ArgumentNullException.ThrowIfNull(memberBindings, nameof(memberBindings));
 
         var memberInit = Expression.MemberInit(Expression.New(typeof(T)), memberBindings);
 

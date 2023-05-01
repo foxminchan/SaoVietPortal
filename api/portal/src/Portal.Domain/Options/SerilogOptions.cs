@@ -1,4 +1,4 @@
-﻿namespace Portal.Domain.Primitives;
+﻿namespace Portal.Domain.Options;
 
 public sealed class SerilogOptions
 {

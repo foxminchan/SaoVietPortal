@@ -1,8 +1,8 @@
-﻿using FluentValidation.Results;
+﻿using System.Net;
+using FluentValidation.Results;
 using Newtonsoft.Json;
-using System.Net;
 
-namespace Portal.Domain.Primitives;
+namespace Portal.Domain.Options;
 
 [Serializable]
 public sealed class ValidationError

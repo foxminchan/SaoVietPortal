@@ -5,8 +5,7 @@ namespace Portal.Api.Mapping;
 public class StudentProgressProfile : Profile
 {
     public StudentProgressProfile()
-    {
-        CreateMap<Domain.Entities.StudentProgress, Models.StudentProgress>()
+        => CreateMap<Domain.Entities.StudentProgress, Models.StudentProgress>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.LessonName, opt => opt.MapFrom(src => src.LessonName))
             .ForMember(dest => dest.LessonContent, opt => opt.MapFrom(src => src.LessonContent))
@@ -17,5 +16,4 @@ public class StudentProgressProfile : Profile
             .ForMember(dest => dest.StudentId, opt => opt.MapFrom(src => src.StudentId))
             .ForMember(dest => dest.ClassId, opt => opt.MapFrom(src => src.ClassId))
             .ReverseMap();
-    }
 }

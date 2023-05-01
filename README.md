@@ -214,7 +214,9 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 
 # OpenAPI
 
-> TODO
+<p align="center">
+  <img src="./resources/Assets/Swagger.png">
+</p>
 
 ✅ **Info:** I have implemented ReDoc with the OpenAPI specification is a great way to generate documentation for your API quickly and easily.
 
@@ -232,7 +234,23 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 
 # External Services
 
-> TODO
+For the API health check, I have used the `ASP.NET Core Health Checks` library to monitor the health of the application. The health check endpoint is exposed at `/hc` or `/hc-ui` and can be accessed via HTTP GET.
+
+<p align="center">
+	<img src="./resources/Assets/HealthCheck.png">
+</p>
+
+I set up the `Elasticsearch`, `Kibana` and `Logstash` services to collect and analyze logs. I also used the `Seq` service to collect and analyze logs.
+
+> TODO: Add image
+
+For the monitoring service, I have used the `Prometheus` and `Grafana` services to collect and analyze metrics.
+
+> TODO: Add image
+
+For the tracing service, I have used the `Jaeger` service to collect and analyze traces. I also used the `Zipkin` service to collect and analyze traces.
+
+> TODO: Add image
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

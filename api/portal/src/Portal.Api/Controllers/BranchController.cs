@@ -6,7 +6,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
-using Portal.Domain.Primitives;
+using Portal.Domain.Options;
 
 namespace Portal.Api.Controllers;
 
@@ -229,7 +229,7 @@ public class BranchController : ControllerBase
     ///         "Phone": "string"
     ///     }
     /// </remarks>
-    /// <response code="200">update branch successfully</response>
+    /// <response code="200">Update branch successfully</response>
     /// <response code="400">The input is invalid</response>
     /// <response code="404">If no branch found</response>
     [HttpPut]

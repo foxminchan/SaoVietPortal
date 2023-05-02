@@ -8,12 +8,11 @@ using Portal.Application.Transaction;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
-namespace Portal.Api.Controllers;
+namespace Portal.Api.Controllers.v1;
 
 [Route("api/v1/[controller]")]
 [ApiController]
 [ApiVersion("1.0")]
-[ApiConventionType(typeof(DefaultApiConventions))]
 public class BranchController : ControllerBase
 {
     private const string CacheKey = "BranchData";

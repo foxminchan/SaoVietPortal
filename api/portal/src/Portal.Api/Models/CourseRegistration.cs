@@ -1,57 +1,15 @@
 ﻿namespace Portal.Api.Models;
 
-/// <summary>
-/// Course registration information
-/// </summary>
-public class CourseRegistration
+public record CourseRegistration(
+    Guid Id,
+    string Status,
+    string RegisterDate,
+    string AppointmentDate,
+    float Fee,
+    float DiscountAmount,
+    int? PaymentMethodId,
+    string StudentId,
+    string ClassId)
 {
-    /// <summary>
-    /// Course registration ID
-    /// </summary>
-    public Guid Id { get; set; } = Guid.NewGuid();
-
-    /// <summary>
-    /// Registration status
-    /// </summary>
-    /// <example>Chốt</example>
-    public string Status { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Date of registration
-    /// </summary>
-    /// <example>03/03/2023</example>
-    public string RegisterDate { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Appointment date
-    /// </summary>
-    /// <example>05/03/2023</example>
-    public string AppointmentDate { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Registration fee
-    /// </summary>
-    /// <example>350000</example>
-    public float Fee { get; set; }
-
-    /// <summary>
-    /// Percentage of discount
-    /// </summary>
-    /// <example>20</example>
-    public float DiscountAmount { get; set; }
-
-    /// <summary>
-    /// Payment method ID
-    /// </summary>
-    public int? PaymentMethodId { get; set; }
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    public string StudentId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Class ID
-    /// </summary>
-    public string ClassId { get; set; } = string.Empty;
+    public CourseRegistration() : this(Guid.NewGuid(), string.Empty, string.Empty, string.Empty, 0, 0, null, string.Empty, string.Empty) { }
 }

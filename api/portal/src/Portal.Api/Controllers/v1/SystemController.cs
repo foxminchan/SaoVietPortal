@@ -4,7 +4,7 @@ using Portal.Api.Extensions;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 
-namespace Portal.Api.Controllers;
+namespace Portal.Api.Controllers.v1;
 
 [Route("api/v1/[controller]")]
 [ApiController]

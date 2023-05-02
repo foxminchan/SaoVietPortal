@@ -1,18 +1,6 @@
 ﻿namespace Portal.Api.Models;
 
-/// <summary>
-/// Position information
-/// </summary>
-public class Position
+public record Position(int? Id, string Name)
 {
-    /// <summary>
-    /// Position ID
-    /// </summary>
-    public int? Id { get; set; }
-
-    /// <summary>
-    /// Position name
-    /// </summary>
-    /// <example>Giáo viên</example>
-    public string Name { get; set; } = string.Empty;
+    public Position() : this(null, string.Empty) { }
 }

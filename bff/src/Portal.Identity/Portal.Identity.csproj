@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<Product>SaoVietPortal</Product>
+		<Authors>Nguyen Xuan Nhan</Authors>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/foxminchan/SaoVietPortal.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/foxminchan/SaoVietPortal</PackageProjectUrl>
+		<PackageLicense>https://github.com/foxminchan/SaoVietPortal/blob/main/LICENSE</PackageLicense>
+		<Copyright>Copyright (c) FoxMinChan - 2023</Copyright>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Duende.IdentityServer" Version="6.2.0" />
+
+		<PackageReference Include="Serilog.AspNetCore" Version="6.0.0" />
+	</ItemGroup>
+</Project>

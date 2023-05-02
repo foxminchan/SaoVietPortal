@@ -54,7 +54,6 @@ builder.AddOpenApi();
 builder.AddOpenTelemetry();
 builder.AddSerilog();
 builder.AddHealthCheck();
-builder.AddHangfire();
 
 var app = builder.Build();
 

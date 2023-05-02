@@ -6,28 +6,56 @@ Authorization: Bearer {{bearer_token}}
 
 ###
 
+# Find student by id
 @id=NXN0020802
 GET {{base_url}}/{{controller}}/{{id}}
 Authorization: Bearer {{bearer_token}}
 
 ###
 
+# Find student by name
+@student_name=Nhan
+GET {{base_url}}/{{controller}}?name=student_name
+ Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new student
 POST {{base_url}}/{{controller}}
 Authorization: Bearer {{bearer_token}}
 Content-Type: application/json
 
 {
-  "studentId": "NDA00160189",
-  "fullname": "Nguyễn Đình Ánh",
-  "gender": true,
-  "address": "Biên Hòa, Đồng Nai",
-  "dob": "16/01/1989",
-  "pod": "Hà Tĩnh",
-  "occupation": "Giảng viên Đại học",
-  "socialNetwork": "",
+  "Id": "NDA00160189",
+  "FullName": "Nguyễn Đình Ánh",
+  "Gender": true,
+  "Address": "Biên Hòa, Đồng Nai",
+  "Dob": "16/01/1989",
+  "Pod": "Hà Tĩnh",
+  "Occupation": "Giảng viên Đại học",
+  "SocialNetwork": "",
 }
 
 ###
 
+# Delete student by id
 DELETE {{base_url}}/{{controller}}/{{id}}
 Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update student
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+  "Id": "NDA00160189",
+  "Fullname": "Nguyễn Đình Ánh",
+  "Gender": true,
+  "Address": "Biên Hòa, Đồng Nai",
+  "Dob": "16/01/1989",
+  "Pod": "Hà Tĩnh",
+  "Occupation": "Giám đốc công ty",
+  "SocialNetwork": "",
+}

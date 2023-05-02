@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Portal.Api.Models;
+using Portal.Domain.Entities;
 
 namespace Portal.Api.Mapping;
 
 public class ReceiptsExpensesProfile : Profile
 {
     public ReceiptsExpensesProfile()
-        => CreateMap<Domain.Entities.ReceiptsExpenses, Models.ReceiptsExpenses>()
+        => CreateMap<ReceiptsExpenses, ReceiptsExpensesResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
             .ForMember(dest => dest.Amount,

@@ -7,6 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Enum;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
@@ -24,18 +25,18 @@ public class StudentController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<StudentController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Student> _validator;
+    private readonly IValidator<StudentResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
-    private readonly ILuceneService<Student> _luceneService;
+    private readonly ILuceneService<StudentResponse> _luceneService;
 
     public StudentController(
         IUnitOfWork unitOfWork,
         ITransactionService transactionService,
         ILogger<StudentController> logger,
         IMapper mapper,
-        IValidator<Student> validator,
+        IValidator<StudentResponse> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService<Student> luceneService)
+        ILuceneService<StudentResponse> luceneService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService, luceneService);
 
@@ -52,7 +53,7 @@ public class StudentController : ControllerBase
     /// <response code="404">If no students are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<Student>))]
+    [ProducesResponseType(200, Type = typeof(List<StudentResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -64,7 +65,7 @@ public class StudentController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
                         .GetAllStudents().ToList()) switch
             {
-                { Count: > 0 } students => Ok(_mapper.Map<List<Student>>(students)),
+                { Count: > 0 } students => Ok(_mapper.Map<List<StudentResponse>>(students)),
                 _ => NotFound()
             };
         }
@@ -89,7 +90,7 @@ public class StudentController : ControllerBase
     /// <response code="404">If no student is found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Student))]
+    [ProducesResponseType(200, Type = typeof(StudentResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -102,7 +103,7 @@ public class StudentController : ControllerBase
                         .GetAllStudents().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } student => Ok(_mapper.Map<Student>(student)),
+                { } student => Ok(_mapper.Map<StudentResponse>(student)),
                 _ => NotFound()
             };
         }
@@ -127,7 +128,7 @@ public class StudentController : ControllerBase
     /// <response code="404">If no students are found</response>
     [HttpGet("search")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Student))]
+    [ProducesResponseType(200, Type = typeof(StudentResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -138,7 +139,7 @@ public class StudentController : ControllerBase
             var students = _redisCacheService
                 .GetOrSet(CacheKey, () => _unitOfWork.StudentRepository
                     .GetAllStudents().ToList())
-                .Select(_mapper.Map<Student>).ToList();
+                .Select(_mapper.Map<StudentResponse>).ToList();
 
             if (!students.Any()) return NotFound();
 
@@ -187,7 +188,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertStudent([FromBody] Student student)
+    public IActionResult InsertStudent([FromBody] StudentResponse student)
     {
         try
         {
@@ -202,7 +203,7 @@ public class StudentController : ControllerBase
             if (_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return Conflict();
 
-            var newStudent = _mapper.Map<Domain.Entities.Student>(student);
+            var newStudent = _mapper.Map<Student>(student);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.AddStudent(newStudent));
 
@@ -211,11 +212,11 @@ public class StudentController : ControllerBase
                     .GetAllStudents().ToList());
 
             if (students.FirstOrDefault(s => s.Id == newStudent.Id) is null)
-                students.Add(_mapper.Map<Domain.Entities.Student>(newStudent));
+                students.Add(_mapper.Map<Student>(newStudent));
 
             _luceneService
                 .Index(students
-                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Create));
+                    .Select(_mapper.Map<StudentResponse>).ToList(), nameof(LuceneOptions.Create));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertStudent));
 
@@ -263,7 +264,7 @@ public class StudentController : ControllerBase
 
             _luceneService
                 .Index(students
-                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Delete));
+                    .Select(_mapper.Map<StudentResponse>).ToList(), nameof(LuceneOptions.Delete));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteStudent));
 
@@ -304,7 +305,7 @@ public class StudentController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateStudent([FromBody] Student student)
+    public IActionResult UpdateStudent([FromBody] StudentResponse student)
     {
         try
         {
@@ -319,7 +320,7 @@ public class StudentController : ControllerBase
             if (!_unitOfWork.StudentRepository.TryGetStudentById(student.Id, out _))
                 return NotFound();
 
-            var updateStudent = _mapper.Map<Domain.Entities.Student>(student);
+            var updateStudent = _mapper.Map<Student>(student);
             _transactionService.ExecuteTransaction(() => _unitOfWork.StudentRepository.UpdateStudent(updateStudent));
 
             var students = _redisCacheService
@@ -331,7 +332,7 @@ public class StudentController : ControllerBase
 
             _luceneService
                 .Index(students
-                    .Select(_mapper.Map<Student>).ToList(), nameof(LuceneOptions.Update));
+                    .Select(_mapper.Map<StudentResponse>).ToList(), nameof(LuceneOptions.Update));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateStudent));
 

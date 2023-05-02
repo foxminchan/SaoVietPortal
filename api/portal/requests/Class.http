@@ -1,0 +1,50 @@
+@controller=Class
+
+# Get all branches
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find branch by id
+@id=THVP000001
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new branch
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "THVPTM0001",
+  "StartDate": "03/04/2023",
+  "EndDate": "06/07/2023",
+  "Fee": "350000",
+  "CourseId": "THVP000001",
+  "BranchId": "TBBH0001"
+}
+
+###
+
+# Delete branch by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update branch
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "THVPTM0001",
+  "StartDate": "04/04/2023",
+  "EndDate": "06/07/2023",
+  "Fee": "210000",
+  "CourseId": "THVP000001",
+  "BranchId": "TBBH0001"
+}

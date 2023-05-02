@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Portal.Api.Validations;
 
-public class StudentValidator : AbstractValidator<Student>
+public class StudentValidator : AbstractValidator<StudentResponse>
 {
     public StudentValidator()
     {

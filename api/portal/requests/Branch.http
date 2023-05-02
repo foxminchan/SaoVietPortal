@@ -1,0 +1,46 @@
+@controller=Branch
+
+# Get all branches
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find branch by id
+@id=TMBN0001
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new branch
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "TBBH0001",
+  "Name": "Tân Mai",
+  "Address": "Số 46B/3, KP 2, Phường Tân Mai, Tp Biên Hòa, Đồng Nai",
+  "Phone": "0931144858"
+}
+
+###
+
+# Delete branch by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update branch
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "TBBH0001",
+  "Name": "Tân Mai Biên Hoà",
+  "Address": "Số 46B/3, KP 2, Phường Tân Mai, Tp Biên Hòa, Đồng Nai",
+  "Phone": "0931144858"
+}

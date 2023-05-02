@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Portal.Api.Models;
+using Portal.Domain.Entities;
 
 namespace Portal.Api.Mapping;
 
 public class StaffProfile : Profile
 {
     public StaffProfile()
-        => CreateMap<Domain.Entities.Staff, Models.Staff>()
+        => CreateMap<Staff, StaffResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Fullname, opt => opt.MapFrom(src => src.Fullname))
             .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))

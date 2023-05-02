@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Portal.Api.Models;
+using Portal.Domain.Entities;
 
 namespace Portal.Api.Mapping;
 
 public class StudentProgressProfile : Profile
 {
     public StudentProgressProfile()
-        => CreateMap<Domain.Entities.StudentProgress, Models.StudentProgress>()
+        => CreateMap<StudentProgress, StudentProgressResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.LessonName, opt => opt.MapFrom(src => src.LessonName))
             .ForMember(dest => dest.LessonContent, opt => opt.MapFrom(src => src.LessonContent))

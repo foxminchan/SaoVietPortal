@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
+using Portal.Api.Models;
+using Portal.Domain.Entities;
 
 namespace Portal.Api.Mapping;
 
 public class ClassProfile : Profile
 {
     public ClassProfile()
-        => CreateMap<Domain.Entities.Class, Models.Class>()
+        => CreateMap<Class, ClassResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.StartDate))
             .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))

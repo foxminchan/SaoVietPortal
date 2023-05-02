@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class StudentProgressController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<StudentProgressController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<StudentProgress> _validator;
+    private readonly IValidator<StudentProgressResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public StudentProgressController(
@@ -29,7 +30,7 @@ public class StudentProgressController : ControllerBase
         ITransactionService transactionService,
         ILogger<StudentProgressController> logger,
         IMapper mapper,
-        IValidator<StudentProgress> validator,
+        IValidator<StudentProgressResponse> validator,
         IRedisCacheService redisCacheService)
         => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class StudentProgressController : ControllerBase
     /// <response code="404">If no student progress found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<StudentProgress>))]
+    [ProducesResponseType(200, Type = typeof(List<StudentProgressResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -60,7 +61,7 @@ public class StudentProgressController : ControllerBase
                         .GetStudentProgresses().ToList()) switch
             {
                 { Count: > 0 } studentProgresses => Ok(_mapper
-                    .Map<List<ReceiptsExpenses>>(studentProgresses)),
+                    .Map<List<ReceiptsExpensesResponse>>(studentProgresses)),
                 _ => NotFound()
             };
         }
@@ -85,7 +86,7 @@ public class StudentProgressController : ControllerBase
     /// <response code="404">If no student progress found</response>
     [HttpGet("{id:guid}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(StudentProgress))]
+    [ProducesResponseType(200, Type = typeof(StudentProgressResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -98,7 +99,7 @@ public class StudentProgressController : ControllerBase
                         .GetStudentProgresses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } studentProgress => Ok(_mapper.Map<StudentProgress>(studentProgress)),
+                { } studentProgress => Ok(_mapper.Map<StudentProgressResponse>(studentProgress)),
                 _ => NotFound()
             };
         }
@@ -119,10 +120,9 @@ public class StudentProgressController : ControllerBase
     ///
     ///     POST /api/v1/StudentProgress
     ///     {
-    ///         "Id": "Guid",
     ///         "LessonName": "string",
     ///         "LessonContent": "string",
-    ///         "LessonDate": "string",
+    ///         "LessonDate": "dd/MM/yyyy",
     ///         "Status": "string",
     ///         "LessonRating": int,
     ///         "StaffId": "string",
@@ -140,7 +140,7 @@ public class StudentProgressController : ControllerBase
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     [ProducesDefaultResponseType]
-    public IActionResult InsertStudentProgress([FromBody] StudentProgress studentProgress)
+    public IActionResult InsertStudentProgress([FromBody] StudentProgressResponse studentProgress)
     {
         try
         {
@@ -155,7 +155,7 @@ public class StudentProgressController : ControllerBase
             if (_unitOfWork.StudentProgressRepository.TryGetStudentProgressById(studentProgress.Id, out _))
                 return Conflict();
 
-            var newStudentProgress = _mapper.Map<Domain.Entities.StudentProgress>(studentProgress);
+            var newStudentProgress = _mapper.Map<StudentProgress>(studentProgress);
 
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.StudentProgressRepository.AddStudentProgress(newStudentProgress));
@@ -165,7 +165,7 @@ public class StudentProgressController : ControllerBase
                     () => _unitOfWork.StudentProgressRepository.GetStudentProgresses().ToList());
 
             if (studentProgresses.FirstOrDefault(s => s.Id == newStudentProgress.Id) is null)
-                studentProgresses.Add(_mapper.Map<Domain.Entities.StudentProgress>(newStudentProgress));
+                studentProgresses.Add(_mapper.Map<StudentProgress>(newStudentProgress));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertStudentProgress));
 
@@ -234,7 +234,7 @@ public class StudentProgressController : ControllerBase
     ///         "Id": "Guid",
     ///         "LessonName": "string",
     ///         "LessonContent": "string",
-    ///         "LessonDate": "string",
+    ///         "LessonDate": "dd/MM/yyyy",
     ///         "Status": "string",
     ///         "LessonRating": int,
     ///         "StaffId": "string",
@@ -251,7 +251,7 @@ public class StudentProgressController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateStudentProgress([FromBody] StudentProgress studentProgress)
+    public IActionResult UpdateStudentProgress([FromBody] StudentProgressResponse studentProgress)
     {
         try
         {
@@ -266,7 +266,7 @@ public class StudentProgressController : ControllerBase
             if (!_unitOfWork.StudentProgressRepository.TryGetStudentProgressById(studentProgress.Id, out _))
                 return NotFound();
 
-            var updateStudentProgress = _mapper.Map<Domain.Entities.StudentProgress>(studentProgress);
+            var updateStudentProgress = _mapper.Map<StudentProgress>(studentProgress);
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.StudentProgressRepository.UpdateStudentProgress(updateStudentProgress));
 

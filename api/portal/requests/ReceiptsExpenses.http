@@ -1,0 +1,48 @@
+@controller=ReceiptsExpenses
+
+# Get all receipts expenses
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find receipt expense by id
+@id=75b39b96-8449-4325-b436-5fc18ab0103f
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new receipt expense
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Type": true,
+  "Date": "02/02/2020",
+  "Amount": 360000,
+  "Note": "Đóng tiền internet tháng 2",
+  "receipt expenseId": "TMBH0001"
+}
+
+###
+
+# Delete receipt expense by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update receipt expense
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Type": true,
+  "Date": "02/02/2020",
+  "Amount": 356000,
+  "Note": "Đóng tiền internet tháng 2",
+  "receipt expenseId": "TMBH0001"
+}

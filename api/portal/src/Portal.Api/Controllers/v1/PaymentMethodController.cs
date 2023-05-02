@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class PaymentMethodController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<PaymentMethodController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<PaymentMethod> _validator;
+    private readonly IValidator<PaymentMethodResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public PaymentMethodController(
@@ -29,7 +30,7 @@ public class PaymentMethodController : ControllerBase
         ITransactionService transactionService,
         ILogger<PaymentMethodController> logger,
         IMapper mapper,
-        IValidator<PaymentMethod> validator,
+        IValidator<PaymentMethodResponse> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class PaymentMethodController : ControllerBase
     /// <response code="404">If no payment methods are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<PaymentMethod>))]
+    [ProducesResponseType(200, Type = typeof(List<PaymentMethodResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -60,7 +61,7 @@ public class PaymentMethodController : ControllerBase
                         () => _unitOfWork.PaymentMethodRepository
                             .GetAllPaymentMethods().ToList()) switch
             {
-                { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethod>>(paymentMethods)),
+                { Count: > 0 } paymentMethods => Ok(_mapper.Map<List<PaymentMethodResponse>>(paymentMethods)),
                 _ => NotFound()
             };
         }
@@ -85,7 +86,7 @@ public class PaymentMethodController : ControllerBase
     /// <response code="404">If no payment method is found</response>
     [HttpGet("{id:int}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(PaymentMethod))]
+    [ProducesResponseType(200, Type = typeof(PaymentMethodResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -98,7 +99,7 @@ public class PaymentMethodController : ControllerBase
                         .GetAllPaymentMethods().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } paymentMethod => Ok(_mapper.Map<PaymentMethod>(paymentMethod)),
+                { } paymentMethod => Ok(_mapper.Map<PaymentMethodResponse>(paymentMethod)),
                 _ => NotFound()
             };
         }
@@ -128,7 +129,7 @@ public class PaymentMethodController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertPaymentMethod([FromBody] PaymentMethod paymentMethod)
+    public IActionResult InsertPaymentMethod([FromBody] PaymentMethodResponse paymentMethod)
     {
         try
         {
@@ -147,7 +148,7 @@ public class PaymentMethodController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
             }
 
-            var newPaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
+            var newPaymentMethod = _mapper.Map<PaymentMethod>(paymentMethod);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository
                 .AddPaymentMethod(newPaymentMethod));
@@ -157,7 +158,7 @@ public class PaymentMethodController : ControllerBase
                     .GetAllPaymentMethods().ToList());
 
             if (paymentMethods.FirstOrDefault(s => s.Id == newPaymentMethod.Id) is null)
-                paymentMethods.Add(_mapper.Map<Domain.Entities.PaymentMethod>(newPaymentMethod));
+                paymentMethods.Add(_mapper.Map<PaymentMethod>(newPaymentMethod));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertPaymentMethod));
 
@@ -236,7 +237,7 @@ public class PaymentMethodController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdatePaymentMethod([FromBody] PaymentMethod paymentMethod)
+    public IActionResult UpdatePaymentMethod([FromBody] PaymentMethodResponse paymentMethod)
     {
         try
         {
@@ -252,7 +253,7 @@ public class PaymentMethodController : ControllerBase
                     .TryGetPaymentMethod(paymentMethod.Id.Value, out _))
                 return NotFound();
 
-            var updatePaymentMethod = _mapper.Map<Domain.Entities.PaymentMethod>(paymentMethod);
+            var updatePaymentMethod = _mapper.Map<PaymentMethod>(paymentMethod);
             _transactionService.ExecuteTransaction(() => _unitOfWork.PaymentMethodRepository
                 .UpdatePaymentMethod(updatePaymentMethod));
 

@@ -3,7 +3,7 @@ using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
-public class PositionValidator : AbstractValidator<Position>
+public class PositionValidator : AbstractValidator<PositionResponse>
 {
     public PositionValidator()
         => RuleFor(x => x.Name)

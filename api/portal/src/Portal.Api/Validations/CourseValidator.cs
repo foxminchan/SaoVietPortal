@@ -3,7 +3,7 @@ using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
-public class CourseValidator : AbstractValidator<Course>
+public class CourseValidator : AbstractValidator<CourseResponse>
 {
     public CourseValidator()
     {

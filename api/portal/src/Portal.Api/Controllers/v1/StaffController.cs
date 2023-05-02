@@ -7,6 +7,7 @@ using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Search;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Enum;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
@@ -24,18 +25,18 @@ public class StaffController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<StaffController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Staff> _validator;
+    private readonly IValidator<StaffResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
-    private readonly ILuceneService<Staff> _luceneService;
+    private readonly ILuceneService<StaffResponse> _luceneService;
 
     public StaffController(
         IUnitOfWork unitOfWork,
         ITransactionService transactionService,
         ILogger<StaffController> logger,
         IMapper mapper,
-        IValidator<Staff> validator,
+        IValidator<StaffResponse> validator,
         IRedisCacheService redisCacheService,
-        ILuceneService<Staff> luceneService)
+        ILuceneService<StaffResponse> luceneService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService, _luceneService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService, luceneService);
 
@@ -52,7 +53,7 @@ public class StaffController : ControllerBase
     /// <response code="404">If no staffs found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(typeof(List<Staff>), 200)]
+    [ProducesResponseType(typeof(List<StaffResponse>), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -64,7 +65,7 @@ public class StaffController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
                         .GetStaff().ToList()) switch
             {
-                { Count: > 0 } staffs => Ok(_mapper.Map<List<Staff>>(staffs)),
+                { Count: > 0 } staffs => Ok(_mapper.Map<List<StaffResponse>>(staffs)),
                 _ => NotFound()
             };
         }
@@ -89,7 +90,7 @@ public class StaffController : ControllerBase
     /// <response code="404">If no staff is found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Staff))]
+    [ProducesResponseType(200, Type = typeof(StaffResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -102,7 +103,7 @@ public class StaffController : ControllerBase
                         .GetStaff().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } staff => Ok(_mapper.Map<Staff>(staff)),
+                { } staff => Ok(_mapper.Map<StaffResponse>(staff)),
                 _ => NotFound()
             };
         }
@@ -126,7 +127,7 @@ public class StaffController : ControllerBase
     /// <response code="200">Response the list of staffs</response>
     /// <response code="404">If no staffs are found</response>
     [HttpGet("search")]
-    [ProducesResponseType(200, Type = typeof(Staff))]
+    [ProducesResponseType(200, Type = typeof(StaffResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -137,7 +138,7 @@ public class StaffController : ControllerBase
             var staffs = _redisCacheService
                 .GetOrSet(CacheKey, () => _unitOfWork.StaffRepository
                     .GetStaff().ToList())
-                .Select(_mapper.Map<Staff>).ToList();
+                .Select(_mapper.Map<StaffResponse>).ToList();
 
             if (!staffs.Any()) return NotFound();
 
@@ -186,7 +187,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertStaff([FromBody] Staff staff)
+    public IActionResult InsertStaff([FromBody] StaffResponse staff)
     {
         try
         {
@@ -201,7 +202,7 @@ public class StaffController : ControllerBase
             if (_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return Conflict();
 
-            var newStaff = _mapper.Map<Domain.Entities.Staff>(staff);
+            var newStaff = _mapper.Map<Staff>(staff);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.AddStaff(newStaff));
 
@@ -210,11 +211,11 @@ public class StaffController : ControllerBase
                     .GetStaff().ToList());
 
             if (staffs.FirstOrDefault(s => s.Id == newStaff.Id) is null)
-                staffs.Add(_mapper.Map<Domain.Entities.Staff>(newStaff));
+                staffs.Add(_mapper.Map<Staff>(newStaff));
 
             _luceneService
                 .Index(staffs
-                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Create));
+                    .Select(_mapper.Map<StaffResponse>).ToList(), nameof(LuceneOptions.Create));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertStaff));
 
@@ -262,7 +263,7 @@ public class StaffController : ControllerBase
 
             _luceneService
                 .Index(staffs
-                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Delete));
+                    .Select(_mapper.Map<StaffResponse>).ToList(), nameof(LuceneOptions.Delete));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(DeleteStaff));
 
@@ -303,7 +304,7 @@ public class StaffController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateStaff([FromBody] Staff staff)
+    public IActionResult UpdateStaff([FromBody] StaffResponse staff)
     {
         try
         {
@@ -315,7 +316,7 @@ public class StaffController : ControllerBase
             if (!_unitOfWork.StaffRepository.TryGetStaffById(staff.Id, out _))
                 return NotFound();
 
-            var updateStaff = _mapper.Map<Domain.Entities.Staff>(staff);
+            var updateStaff = _mapper.Map<Staff>(staff);
             _transactionService.ExecuteTransaction(() => _unitOfWork.StaffRepository.UpdateStaff(updateStaff));
 
             var staffs = _redisCacheService
@@ -327,7 +328,7 @@ public class StaffController : ControllerBase
 
             _luceneService
                 .Index(staffs
-                    .Select(_mapper.Map<Staff>).ToList(), nameof(LuceneOptions.Update));
+                    .Select(_mapper.Map<StaffResponse>).ToList(), nameof(LuceneOptions.Update));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(UpdateStaff));
 

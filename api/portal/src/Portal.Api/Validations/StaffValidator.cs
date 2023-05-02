@@ -5,7 +5,7 @@ using System.Globalization;
 
 namespace Portal.Api.Validations;
 
-public class StaffValidator : AbstractValidator<Staff>
+public class StaffValidator : AbstractValidator<StaffResponse>
 {
     public StaffValidator(IUnitOfWork unitOfWork)
     {

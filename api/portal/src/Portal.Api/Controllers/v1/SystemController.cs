@@ -55,6 +55,33 @@ public class SystemController : ControllerBase
     }
 
     /// <summary>
+    /// Get server status
+    /// </summary>
+    /// <returns></returns>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     GET /api/v1/System/status
+    /// </remarks>
+    /// <response code="200">Get server status is successful</response>
+    [HttpGet("status")]
+    [Authorize(Policy = "Developer")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(500)]
+    public IActionResult GetServerStatus()
+    {
+        try
+        {
+            return Ok(PlatformExtension.GetPlatformStatus(_env));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error while getting server status");
+            return StatusCode(500);
+        }
+    }
+
+    /// <summary>
     /// Clear cache data
     /// </summary>
     /// <returns></returns>

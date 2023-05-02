@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Portal.Api.Validations;
 
-public class ReceiptsExpensesValidator : AbstractValidator<ReceiptsExpenses>
+public class ReceiptsExpensesValidator : AbstractValidator<ReceiptsExpensesResponse>
 {
     public ReceiptsExpensesValidator()
     {

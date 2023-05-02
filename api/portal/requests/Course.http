@@ -1,0 +1,44 @@
+@controller=Course
+
+# Get all courses
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find course by id
+@id=THVP000001
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new course
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "THVP000001",
+  "Name": "Tin học văn phòng",
+  "Description": "Học tin học văn phòng",
+}
+
+###
+
+# Delete course by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update course
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "THVP000001",
+  "Name": "Tin học văn phòng",
+  "Description": "Làm quen với các phần mềm văn phòng",
+}

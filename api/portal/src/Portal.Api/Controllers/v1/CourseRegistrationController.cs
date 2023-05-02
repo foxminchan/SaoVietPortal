@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class CourseRegistrationController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<CourseRegistrationController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<CourseRegistration> _validator;
+    private readonly IValidator<CourseRegistrationResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public CourseRegistrationController(
@@ -29,7 +30,7 @@ public class CourseRegistrationController : ControllerBase
         ITransactionService transactionService,
         ILogger<CourseRegistrationController> logger,
         IMapper mapper,
-        IValidator<CourseRegistration> validator,
+        IValidator<CourseRegistrationResponse> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class CourseRegistrationController : ControllerBase
     /// <response code="404">If no course registrations are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<CourseRegistration>))]
+    [ProducesResponseType(200, Type = typeof(List<CourseRegistrationResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -60,7 +61,7 @@ public class CourseRegistrationController : ControllerBase
                         .GetAllCourseRegistrations().ToList()) switch
             {
                 { Count: > 0 } courseRegistrations
-                    => Ok(_mapper.Map<List<CourseRegistration>>(courseRegistrations)),
+                    => Ok(_mapper.Map<List<CourseRegistrationResponse>>(courseRegistrations)),
                 _ => NotFound()
             };
         }
@@ -85,7 +86,7 @@ public class CourseRegistrationController : ControllerBase
     /// <response code="404">If no course registration is found</response>
     [HttpGet("{id:guid}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(CourseRegistration))]
+    [ProducesResponseType(200, Type = typeof(CourseRegistrationResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -99,7 +100,7 @@ public class CourseRegistrationController : ControllerBase
                             .GetAllCourseRegistrations().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } courseRegistration => Ok(_mapper.Map<CourseRegistration>(courseRegistration)),
+                { } courseRegistration => Ok(_mapper.Map<CourseRegistrationResponse>(courseRegistration)),
                 _ => NotFound()
             };
         }
@@ -139,7 +140,7 @@ public class CourseRegistrationController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertCourseRegistration([FromBody] CourseRegistration courseRegistration)
+    public IActionResult InsertCourseRegistration([FromBody] CourseRegistrationResponse courseRegistration)
     {
         try
         {
@@ -158,7 +159,7 @@ public class CourseRegistrationController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
             }
 
-            var newCourseRegistration = _mapper.Map<Domain.Entities.CourseRegistration>(courseRegistration);
+            var newCourseRegistration = _mapper.Map<CourseRegistration>(courseRegistration);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRegistrationRepository
                 .AddCourseRegistration(newCourseRegistration));
@@ -169,7 +170,7 @@ public class CourseRegistrationController : ControllerBase
                         .GetAllCourseRegistrations().ToList());
 
             if (courseRegistrations.FirstOrDefault(s => s.Id == newCourseRegistration.Id) is null)
-                courseRegistrations.Add(_mapper.Map<Domain.Entities.CourseRegistration>(newCourseRegistration));
+                courseRegistrations.Add(_mapper.Map<CourseRegistration>(newCourseRegistration));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertCourseRegistration));
 
@@ -256,7 +257,7 @@ public class CourseRegistrationController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateCourseRegistration([FromBody] CourseRegistration courseRegistration)
+    public IActionResult UpdateCourseRegistration([FromBody] CourseRegistrationResponse courseRegistration)
     {
         try
         {
@@ -271,7 +272,7 @@ public class CourseRegistrationController : ControllerBase
             if (!_unitOfWork.CourseRegistrationRepository.TryGetCourseRegistrationById(courseRegistration.Id, out _))
                 return NotFound();
 
-            var updateCourseRegistration = _mapper.Map<Domain.Entities.CourseRegistration>(courseRegistration);
+            var updateCourseRegistration = _mapper.Map<CourseRegistration>(courseRegistration);
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.CourseRegistrationRepository
                     .UpdateCourseRegistration(updateCourseRegistration));

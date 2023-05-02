@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -20,7 +21,7 @@ public class BranchController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<BranchController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Branch> _validator;
+    private readonly IValidator<BranchResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public BranchController(
@@ -28,7 +29,7 @@ public class BranchController : ControllerBase
         ITransactionService transactionService,
         ILogger<BranchController> logger,
         IMapper mapper,
-        IValidator<Branch> validator,
+        IValidator<BranchResponse> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -46,7 +47,7 @@ public class BranchController : ControllerBase
     /// <response code="404">If no branches found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<Branch>))]
+    [ProducesResponseType(200, Type = typeof(List<BranchResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -58,7 +59,7 @@ public class BranchController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.BranchRepository
                         .GetAllBranches().ToList()) switch
             {
-                { Count: > 0 } branches => Ok(_mapper.Map<List<Branch>>(branches)),
+                { Count: > 0 } branches => Ok(_mapper.Map<List<BranchResponse>>(branches)),
                 _ => NotFound()
             };
         }
@@ -83,7 +84,7 @@ public class BranchController : ControllerBase
     /// <response code="404">If no branch found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Branch))]
+    [ProducesResponseType(200, Type = typeof(BranchResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -133,7 +134,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     [ProducesDefaultResponseType]
-    public IActionResult InsertBranch([FromBody] Branch branch)
+    public IActionResult InsertBranch([FromBody] BranchResponse branch)
     {
         try
         {
@@ -148,7 +149,7 @@ public class BranchController : ControllerBase
             if (_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return Conflict();
 
-            var newBranch = _mapper.Map<Domain.Entities.Branch>(branch);
+            var newBranch = _mapper.Map<Branch>(branch);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.BranchRepository.AddBranch(newBranch));
 
@@ -157,7 +158,7 @@ public class BranchController : ControllerBase
                     .GetAllBranches().ToList());
 
             if (branches.FirstOrDefault(s => s.Id == newBranch.Id) is null)
-                branches.Add(_mapper.Map<Domain.Entities.Branch>(newBranch));
+                branches.Add(_mapper.Map<Branch>(newBranch));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertBranch));
 
@@ -237,7 +238,7 @@ public class BranchController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdatePosition([FromBody] Branch branch)
+    public IActionResult UpdatePosition([FromBody] BranchResponse branch)
     {
         try
         {
@@ -252,7 +253,7 @@ public class BranchController : ControllerBase
             if (!_unitOfWork.BranchRepository.TryGetBranchById(branch.Id, out _))
                 return NotFound();
 
-            var updateBranch = _mapper.Map<Domain.Entities.Branch>(branch);
+            var updateBranch = _mapper.Map<Branch>(branch);
             _transactionService.ExecuteTransaction(() => _unitOfWork.BranchRepository.UpdateBranch(updateBranch));
 
             if (_redisCacheService

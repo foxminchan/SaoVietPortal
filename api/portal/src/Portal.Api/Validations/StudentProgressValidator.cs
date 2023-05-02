@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Portal.Api.Validations;
 
-public class StudentProgressValidator : AbstractValidator<StudentProgress>
+public class StudentProgressValidator : AbstractValidator<StudentProgressResponse>
 {
     public StudentProgressValidator()
     {

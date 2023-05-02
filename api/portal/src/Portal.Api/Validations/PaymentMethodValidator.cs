@@ -3,7 +3,7 @@ using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
-public class PaymentMethodValidator : AbstractValidator<PaymentMethod>
+public class PaymentMethodValidator : AbstractValidator<PaymentMethodResponse>
 {
     public PaymentMethodValidator()
         => RuleFor(x => x.Name)

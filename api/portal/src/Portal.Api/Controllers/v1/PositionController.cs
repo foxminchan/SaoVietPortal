@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class PositionController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<PositionController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Position> _validator;
+    private readonly IValidator<PositionResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public PositionController(
@@ -29,7 +30,7 @@ public class PositionController : ControllerBase
         ITransactionService transactionService,
         ILogger<PositionController> logger,
         IMapper mapper,
-        IValidator<Position> validator,
+        IValidator<PositionResponse> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
         (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class PositionController : ControllerBase
     /// <response code="404">If no positions are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<Position>))]
+    [ProducesResponseType(200, Type = typeof(List<PositionResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -59,7 +60,7 @@ public class PositionController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.PositionRepository
                         .GetAllPositions().ToList()) switch
             {
-                { Count: > 0 } positions => Ok(_mapper.Map<List<Position>>(positions)),
+                { Count: > 0 } positions => Ok(_mapper.Map<List<PositionResponse>>(positions)),
                 _ => NotFound()
             };
         }
@@ -84,7 +85,7 @@ public class PositionController : ControllerBase
     /// <response code="404">If no position is found</response>
     [HttpGet("{id:int}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Position))]
+    [ProducesResponseType(200, Type = typeof(PositionResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -97,7 +98,7 @@ public class PositionController : ControllerBase
                         .GetAllPositions().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } position => Ok(_mapper.Map<Position>(position)),
+                { } position => Ok(_mapper.Map<PositionResponse>(position)),
                 _ => NotFound()
             };
         }
@@ -129,7 +130,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertPosition([FromBody] Position position)
+    public IActionResult InsertPosition([FromBody] PositionResponse position)
     {
         try
         {
@@ -148,7 +149,7 @@ public class PositionController : ControllerBase
                 return BadRequest(new ValidationError(validationResult));
             }
 
-            var newPosition = _mapper.Map<Domain.Entities.Position>(position);
+            var newPosition = _mapper.Map<Position>(position);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.AddPosition(newPosition));
 
@@ -157,7 +158,7 @@ public class PositionController : ControllerBase
                     .GetAllPositions().ToList());
 
             if (positions.FirstOrDefault(s => s.Id == newPosition.Id) is null)
-                positions.Add(_mapper.Map<Domain.Entities.Position>(newPosition));
+                positions.Add(_mapper.Map<Position>(newPosition));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertPosition));
 
@@ -235,7 +236,7 @@ public class PositionController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdatePosition([FromBody] Position position)
+    public IActionResult UpdatePosition([FromBody] PositionResponse position)
     {
         try
         {
@@ -251,7 +252,7 @@ public class PositionController : ControllerBase
                 !_unitOfWork.PositionRepository.TryGetPositionById(position.Id.Value, out _))
                 return NotFound();
 
-            var updatePosition = _mapper.Map<Domain.Entities.Position>(position);
+            var updatePosition = _mapper.Map<Position>(position);
             _transactionService.ExecuteTransaction(() => _unitOfWork.PositionRepository.UpdatePosition(updatePosition));
 
             if (_redisCacheService

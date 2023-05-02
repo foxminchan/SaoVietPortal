@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class ClassController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<ClassController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Class> _validator;
+    private readonly IValidator<ClassResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public ClassController(
@@ -29,7 +30,7 @@ public class ClassController : ControllerBase
         ITransactionService transactionService,
         ILogger<ClassController> logger,
         IMapper mapper,
-        IValidator<Class> validator,
+        IValidator<ClassResponse> validator,
         IRedisCacheService redisCacheService)
         => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class ClassController : ControllerBase
     /// <response code="404">If no classes found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(typeof(List<Class>), 200)]
+    [ProducesResponseType(typeof(List<ClassResponse>), 200)]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -59,7 +60,7 @@ public class ClassController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.ClassRepository
                         .GetAllClasses().ToList()) switch
             {
-                { Count: > 0 } classes => Ok(_mapper.Map<List<Class>>(classes)),
+                { Count: > 0 } classes => Ok(_mapper.Map<List<ClassResponse>>(classes)),
                 _ => NotFound()
             };
         }
@@ -84,7 +85,7 @@ public class ClassController : ControllerBase
     /// <response code="404">If no class is found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Class))]
+    [ProducesResponseType(200, Type = typeof(ClassResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -97,7 +98,7 @@ public class ClassController : ControllerBase
                         .GetAllClasses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } @class => Ok(_mapper.Map<Class>(@class)),
+                { } @class => Ok(_mapper.Map<ClassResponse>(@class)),
                 _ => NotFound()
             };
         }
@@ -135,7 +136,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
-    public IActionResult InsertClass([FromBody] Class @class)
+    public IActionResult InsertClass([FromBody] ClassResponse @class)
     {
         try
         {
@@ -150,7 +151,7 @@ public class ClassController : ControllerBase
             if (_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return Conflict();
 
-            var newClass = _mapper.Map<Domain.Entities.Class>(@class);
+            var newClass = _mapper.Map<Class>(@class);
             _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.AddClass(newClass));
 
             var classes =
@@ -158,7 +159,7 @@ public class ClassController : ControllerBase
                     .GetAllClasses().ToList());
 
             if (classes.FirstOrDefault(s => s.Id == newClass.Id) is null)
-                classes.Add(_mapper.Map<Domain.Entities.Class>(newClass));
+                classes.Add(_mapper.Map<Class>(newClass));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertClass));
 
@@ -239,7 +240,7 @@ public class ClassController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateClass([FromBody] Class @class)
+    public IActionResult UpdateClass([FromBody] ClassResponse @class)
     {
         try
         {
@@ -253,7 +254,7 @@ public class ClassController : ControllerBase
             if (!_unitOfWork.ClassRepository.TryGetClassById(@class.Id, out _))
                 return NotFound();
 
-            var updateClass = _mapper.Map<Domain.Entities.Class>(@class);
+            var updateClass = _mapper.Map<Class>(@class);
             _transactionService.ExecuteTransaction(() => _unitOfWork.ClassRepository.UpdateClass(updateClass));
 
             if (_redisCacheService

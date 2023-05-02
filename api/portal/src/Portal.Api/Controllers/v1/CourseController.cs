@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -22,7 +23,7 @@ public class CourseController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<CourseController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<Course> _validator;
+    private readonly IValidator<CourseResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public CourseController(
@@ -30,7 +31,7 @@ public class CourseController : ControllerBase
         ITransactionService transactionService,
         ILogger<CourseController> logger,
         IMapper mapper,
-        IValidator<Course> validator,
+        IValidator<CourseResponse> validator,
         IRedisCacheService redisCacheService)
     => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -48,7 +49,7 @@ public class CourseController : ControllerBase
     /// <response code="404">If no courses are found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<Course>))]
+    [ProducesResponseType(200, Type = typeof(List<CourseResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -60,7 +61,7 @@ public class CourseController : ControllerBase
                     .GetOrSet(CacheKey, () => _unitOfWork.CourseRepository
                         .GetAllCourses().ToList()) switch
             {
-                { Count: > 0 } courses => Ok(_mapper.Map<List<Course>>(courses)),
+                { Count: > 0 } courses => Ok(_mapper.Map<List<CourseResponse>>(courses)),
                 _ => NotFound()
             };
         }
@@ -85,7 +86,7 @@ public class CourseController : ControllerBase
     /// <response code="404">No course found</response>
     [HttpGet("{id}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(Course))]
+    [ProducesResponseType(200, Type = typeof(CourseResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -98,7 +99,7 @@ public class CourseController : ControllerBase
                         .GetAllCourses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } course => Ok(_mapper.Map<Course>(course)),
+                { } course => Ok(_mapper.Map<CourseResponse>(course)),
                 _ => NotFound()
             };
         }
@@ -134,7 +135,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
-    public IActionResult InsertCourse([FromBody] Course course)
+    public IActionResult InsertCourse([FromBody] CourseResponse course)
     {
         try
         {
@@ -149,7 +150,7 @@ public class CourseController : ControllerBase
             if (!course.Id.IsNullOrEmpty() && _unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return Conflict();
 
-            var newCourse = _mapper.Map<Domain.Entities.Course>(course);
+            var newCourse = _mapper.Map<Course>(course);
 
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.AddCourse(newCourse));
 
@@ -158,7 +159,7 @@ public class CourseController : ControllerBase
                     .GetAllCourses().ToList());
 
             if (positions.FirstOrDefault(s => s.Id == newCourse.Id) is null)
-                positions.Add(_mapper.Map<Domain.Entities.Course>(newCourse));
+                positions.Add(_mapper.Map<Course>(newCourse));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertCourse));
 
@@ -237,7 +238,7 @@ public class CourseController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateCourse([FromBody] Course course)
+    public IActionResult UpdateCourse([FromBody] CourseResponse course)
     {
         try
         {
@@ -253,7 +254,7 @@ public class CourseController : ControllerBase
                 !_unitOfWork.CourseRepository.TryGetCourseById(course.Id, out _))
                 return NotFound();
 
-            var updateCourse = _mapper.Map<Domain.Entities.Course>(course);
+            var updateCourse = _mapper.Map<Course>(course);
             _transactionService.ExecuteTransaction(() => _unitOfWork.CourseRepository.UpdateCourse(updateCourse));
 
             if (_redisCacheService

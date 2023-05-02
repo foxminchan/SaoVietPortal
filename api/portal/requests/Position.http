@@ -1,0 +1,41 @@
+@controller=Position
+
+# Get all positions
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find position by id
+@id=1
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new position
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Name": "Giáo viên"
+}
+
+###
+
+# Delete position by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update position
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": 1,
+	"Name": "Giám đốc"
+}

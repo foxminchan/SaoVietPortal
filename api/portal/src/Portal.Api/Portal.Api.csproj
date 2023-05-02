@@ -102,6 +102,7 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.6" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore.ReDoc" Version="6.5.0" />
+		<PackageReference Include="System.Diagnostics.PerformanceCounter" Version="5.0.0" />
 		<PackageReference Include="Unchase.Swashbuckle.AspNetCore.Extensions" Version="2.7.1" />
 	</ItemGroup>
 

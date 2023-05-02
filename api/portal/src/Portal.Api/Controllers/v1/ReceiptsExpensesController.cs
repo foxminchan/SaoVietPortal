@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Portal.Api.Models;
 using Portal.Application.Cache;
 using Portal.Application.Transaction;
+using Portal.Domain.Entities;
 using Portal.Domain.Interfaces.Common;
 using Portal.Domain.Options;
 
@@ -21,7 +22,7 @@ public class ReceiptsExpensesController : ControllerBase
     private readonly ITransactionService _transactionService;
     private readonly ILogger<ReceiptsExpensesController> _logger;
     private readonly IMapper _mapper;
-    private readonly IValidator<ReceiptsExpenses> _validator;
+    private readonly IValidator<ReceiptsExpensesResponse> _validator;
     private readonly IRedisCacheService _redisCacheService;
 
     public ReceiptsExpensesController(
@@ -29,7 +30,7 @@ public class ReceiptsExpensesController : ControllerBase
         ITransactionService transactionService,
         ILogger<ReceiptsExpensesController> logger,
         IMapper mapper,
-        IValidator<ReceiptsExpenses> validator,
+        IValidator<ReceiptsExpensesResponse> validator,
         IRedisCacheService redisCacheService)
         => (_unitOfWork, _transactionService, _logger, _mapper, _validator, _redisCacheService) =
             (unitOfWork, transactionService, logger, mapper, validator, redisCacheService);
@@ -47,7 +48,7 @@ public class ReceiptsExpensesController : ControllerBase
     /// <response code="404">If no receipts and expenses found</response>
     [HttpGet]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(List<ReceiptsExpenses>))]
+    [ProducesResponseType(200, Type = typeof(List<ReceiptsExpensesResponse>))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -60,7 +61,7 @@ public class ReceiptsExpensesController : ControllerBase
                         .GetReceiptsExpenses().ToList()) switch
             {
                 { Count: > 0 } receiptsExpenses => Ok(_mapper
-                    .Map<List<ReceiptsExpenses>>(receiptsExpenses)),
+                    .Map<List<ReceiptsExpensesResponse>>(receiptsExpenses)),
                 _ => NotFound()
             };
         }
@@ -85,7 +86,7 @@ public class ReceiptsExpensesController : ControllerBase
     /// <response code="404">If no receipts/expenses found</response>
     [HttpGet("{id:guid}")]
     [Authorize(Policy = "Developer")]
-    [ProducesResponseType(200, Type = typeof(ReceiptsExpenses))]
+    [ProducesResponseType(200, Type = typeof(ReceiptsExpensesResponse))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
     [ResponseCache(Duration = 15)]
@@ -98,7 +99,7 @@ public class ReceiptsExpensesController : ControllerBase
                         .GetReceiptsExpenses().ToList())
                     .FirstOrDefault(s => s.Id == id) switch
             {
-                { } receiptsExpenses => Ok(_mapper.Map<ReceiptsExpenses>(receiptsExpenses)),
+                { } receiptsExpenses => Ok(_mapper.Map<ReceiptsExpensesResponse>(receiptsExpenses)),
                 _ => NotFound()
             };
         }
@@ -119,9 +120,8 @@ public class ReceiptsExpensesController : ControllerBase
     ///
     ///     POST /api/v1/ReceiptsExpenses
     ///     {
-    ///         "Id": "Guid",
     ///         "Type": bool,
-    ///         "Date": "string",
+    ///         "Date": "dd/MM/yyyy",
     ///         "Amount": float,
     ///         "Note": "string",
     ///         "BranchId": "string"
@@ -137,7 +137,7 @@ public class ReceiptsExpensesController : ControllerBase
     [ProducesResponseType(409)]
     [ProducesResponseType(500)]
     [ProducesDefaultResponseType]
-    public IActionResult InsertReceiptsExpenses([FromBody] ReceiptsExpenses receiptsExpenses)
+    public IActionResult InsertReceiptsExpenses([FromBody] ReceiptsExpensesResponse receiptsExpenses)
     {
         try
         {
@@ -152,7 +152,7 @@ public class ReceiptsExpensesController : ControllerBase
             if (_unitOfWork.ReceiptsExpensesRepository.TryGetReceiptsExpenses(receiptsExpenses.Id, out _))
                 return Conflict();
 
-            var newReceiptsExpenses = _mapper.Map<Domain.Entities.ReceiptsExpenses>(receiptsExpenses);
+            var newReceiptsExpenses = _mapper.Map<ReceiptsExpenses>(receiptsExpenses);
 
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.ReceiptsExpensesRepository.AddReceiptsExpenses(newReceiptsExpenses));
@@ -162,7 +162,7 @@ public class ReceiptsExpensesController : ControllerBase
                     () => _unitOfWork.ReceiptsExpensesRepository.GetReceiptsExpenses().ToList());
 
             if (receiptsExpense.FirstOrDefault(s => s.Id == newReceiptsExpenses.Id) is null)
-                receiptsExpense.Add(_mapper.Map<Domain.Entities.ReceiptsExpenses>(newReceiptsExpenses));
+                receiptsExpense.Add(_mapper.Map<ReceiptsExpenses>(newReceiptsExpenses));
 
             _logger.LogInformation("Completed request {@RequestName}", nameof(InsertReceiptsExpenses));
 
@@ -230,7 +230,7 @@ public class ReceiptsExpensesController : ControllerBase
     ///     {
     ///         "Id": "Guid",
     ///         "Type": bool,
-    ///         "Date": "string",
+    ///         "Date": "dd/MM/yyyy",
     ///         "Amount": float,
     ///         "Note": "string",
     ///         "BranchId": "string"
@@ -245,7 +245,7 @@ public class ReceiptsExpensesController : ControllerBase
     [ProducesResponseType(400, Type = typeof(ValidationError))]
     [ProducesResponseType(404)]
     [ProducesResponseType(500)]
-    public IActionResult UpdateReceiptsExpenses([FromBody] ReceiptsExpenses receiptsExpenses)
+    public IActionResult UpdateReceiptsExpenses([FromBody] ReceiptsExpensesResponse receiptsExpenses)
     {
         try
         {
@@ -260,7 +260,7 @@ public class ReceiptsExpensesController : ControllerBase
             if (!_unitOfWork.ReceiptsExpensesRepository.TryGetReceiptsExpenses(receiptsExpenses.Id, out _))
                 return NotFound();
 
-            var updateReceiptsExpenses = _mapper.Map<Domain.Entities.ReceiptsExpenses>(receiptsExpenses);
+            var updateReceiptsExpenses = _mapper.Map<ReceiptsExpenses>(receiptsExpenses);
             _transactionService.ExecuteTransaction(
                 () => _unitOfWork.ReceiptsExpensesRepository.UpdateReceiptsExpenses(updateReceiptsExpenses));
 

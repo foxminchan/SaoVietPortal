@@ -1,0 +1,54 @@
+@controller=StudentProgress
+
+# Get all student progresses
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find student progress by id
+@id=cdf87b6d-d3bd-495b-a2d9-f565e168c42e
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new student progress
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"LessonName": "Làm quen với máy tính",
+  "LessonContent": "Tìm hiểu về máy tính",
+  "LessonDate": "03/04/2023",
+  "Status": "Đã hoàn thành",
+  "LessonRating": 7.5,
+  "StaffId": "NDA0160189",
+  "StudentId": "NXN002082002",
+  "ClassId": "THVPTM0001"
+}
+
+###
+
+# Delete student progress by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update student progress
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"LessonName": "Làm quen với máy tính",
+  "LessonContent": "Tìm hiểu về máy tính",
+  "LessonDate": "03/04/2023",
+  "Status": "Đã hoàn thành",
+  "LessonRating": 9,
+  "StaffId": "NDA0160189",
+  "StudentId": "NXN002082002",
+  "ClassId": "THVPTM0001"
+}

@@ -3,7 +3,7 @@ using Portal.Api.Models;
 
 namespace Portal.Api.Validations;
 
-public class BranchValidator : AbstractValidator<Branch>
+public class BranchValidator : AbstractValidator<BranchResponse>
 {
     public BranchValidator()
     {

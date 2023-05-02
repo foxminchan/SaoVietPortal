@@ -1,0 +1,61 @@
+@controller=Staff
+
+# Get all staffs
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find staff by id
+@id=NXN0020802
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find staff by name
+@staff_name=Nhan
+GET {{base_url}}/{{controller}}?name=staff_name
+ Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new staff
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "NDA0160189",
+	"Fullname": "Nguyễn Đình Ánh"
+	"Dob": "16/01/1989",
+	"Address": "Biên Hòa, Đồng Nai",
+	"Dsw": "01/01/2016",
+	"PositionId": 1,
+	"BranchId": "TMBH0001",
+	"ManagerId": ""
+}
+
+###
+
+# Delete staff by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update staff
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Id": "NDA0160189",
+	"Fullname": "Nguyễn Đình Ánh"
+	"Dob": "16/01/1989",
+	"Address": "Tân Phong, Biên Hòa, Đồng Nai",
+	"Dsw": "01/01/2016",
+	"PositionId": 1,
+	"BranchId": "TMBH0001",
+	"ManagerId": ""
+}

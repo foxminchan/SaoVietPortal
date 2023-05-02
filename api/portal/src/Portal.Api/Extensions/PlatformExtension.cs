@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -11,6 +12,9 @@ public static class PlatformExtension
 {
     public static JObject GetPlatform(this IConfiguration config, IWebHostEnvironment env)
         => JObject.Parse(JsonConvert.SerializeObject(config.PlatformModel(env)));
+
+    public static JObject GetPlatformStatus(IWebHostEnvironment env)
+        => JObject.Parse(JsonConvert.SerializeObject(ServerModel(env)));
 
     private static Platform PlatformModel(this IConfiguration config, IHostEnvironment env)
         => new()
@@ -49,4 +53,98 @@ public static class PlatformExtension
                 .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
                 .Aggregate(" ", (a, b) => $"{a} {b}")
         };
+
+    private static Server ServerModel(IHostEnvironment env)
+        => new()
+        {
+            Name = env.EnvironmentName,
+            Time = DateTime.Now,
+            UpTime = DateTime.Now - Process.GetCurrentProcess().StartTime,
+            CpuUsage = GetCpuUsage(),
+            MemoryUsage = GetMemoryUsage(),
+            DiskUsage = GetDiskUsage()
+        };
+
+    private static object GetCpuUsage()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+            cpuCounter.NextValue();
+            Thread.Sleep(1000);
+            return $"{cpuCounter.NextValue()}%";
+        }
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return "Not supported";
+
+        var cpuUsage = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \"top -bn2 | grep 'Cpu(s)'|tail -n 1 | awk '{print $2 + $4}'\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+
+        cpuUsage.Start();
+
+        return $"{cpuUsage.StandardOutput.ReadToEnd()}%";
+    }
+
+    private static object GetMemoryUsage()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var memoryCounter = new PerformanceCounter("Memory", "Available MBytes");
+            memoryCounter.NextValue();
+            Thread.Sleep(1000);
+            return $"{memoryCounter.NextValue()}MB";
+        }
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return "Not supported";
+        var memoryUsage = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \"free -m | awk 'NR==2{printf \"%.2f\", $3*100/$2 }'\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+        memoryUsage.Start();
+        return $"{memoryUsage.StandardOutput.ReadToEnd()}%";
+    }
+
+    private static object GetDiskUsage()
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            var drive = new DriveInfo(Directory.GetCurrentDirectory());
+            var totalSize = drive.TotalSize;
+            var totalFreeSpace = drive.TotalFreeSpace;
+            var usedSpace = totalSize - totalFreeSpace;
+            return $"{usedSpace} bytes ({(double)usedSpace / totalSize * 100}%)";
+        }
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return "Not supported";
+        var diskUsage = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "/bin/bash",
+                Arguments = "-c \"df -h | awk '$NF==\"/\"{printf \"%s\", $5}'\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            }
+        };
+        diskUsage.Start();
+        return $"{diskUsage.StandardOutput.ReadToEnd()}";
+    }
 }

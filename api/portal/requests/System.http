@@ -1,0 +1,28 @@
+@controller=System
+
+# Get server infomation
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Get server status
+GET {{base_url}}/{{controller}}/status
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Clear cache
+GET {{base_url}}/{{controller}}/clearCache
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Clear Lucene index
+GET {{base_url}}/{{controller}}/clearIndex
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Clear log files
+GET {{base_url}}/{{controller}}/clearLogsFile

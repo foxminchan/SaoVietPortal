@@ -4,7 +4,7 @@ using Portal.Domain.Interfaces.Common;
 
 namespace Portal.Api.Validations;
 
-public class UserValidator : AbstractValidator<User>
+public class UserValidator : AbstractValidator<UserResponse>
 {
     public UserValidator(IUnitOfWork unitOfWork)
     {

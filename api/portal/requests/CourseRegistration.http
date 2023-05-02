@@ -1,0 +1,54 @@
+@controller=CourseRegistration
+
+# Get all course registrations
+GET {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Find course registration by id
+@id=8bc77ca1-102c-45b6-98ee-d3cd02bda904
+GET {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Add new course registration
+POST {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Status": "Chốt",
+  "RegisterDate": "06/04/2023",
+  "AppointmentDate": "08/04/2023",
+  "Fee": "450000",
+  "DiscountAmount": "10",
+  "PaymentMethodId": "1",
+  "StudentId": "NXN0020802",
+  "ClassId": "THVPTM0001"
+}
+
+###
+
+# Delete course registration by id
+DELETE {{base_url}}/{{controller}}/{{id}}
+Authorization: Bearer {{bearer_token}}
+
+###
+
+# Update course registration
+PUT {{base_url}}/{{controller}}
+Authorization: Bearer {{bearer_token}}
+Content-Type: application/json
+
+{
+	"Status": "Chốt",
+  "RegisterDate": "06/04/2023",
+  "AppointmentDate": "10/04/2023",
+  "Fee": "400000",
+  "DiscountAmount": "5",
+  "PaymentMethodId": "1",
+  "StudentId": "NXN0020802",
+  "ClassId": "THVPTM0001"
+}

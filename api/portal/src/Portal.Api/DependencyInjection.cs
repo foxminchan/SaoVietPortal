@@ -71,16 +71,16 @@ public static class DependencyInjection
         //    .AddEntityFrameworkStores<ApplicationDbContext>()
         //    .AddDefaultTokenProviders();
 
-        services.AddScoped<IValidator<Branch>, BranchValidator>();
-        services.AddScoped<IValidator<Class>, ClassValidator>();
-        services.AddScoped<IValidator<Course>, CourseValidator>();
-        services.AddScoped<IValidator<CourseRegistration>, CourseRegistrationValidator>();
-        services.AddScoped<IValidator<PaymentMethod>, PaymentMethodValidator>();
-        services.AddScoped<IValidator<Position>, PositionValidator>();
-        services.AddScoped<IValidator<ReceiptsExpenses>, ReceiptsExpensesValidator>();
-        services.AddScoped<IValidator<Staff>, StaffValidator>();
-        services.AddScoped<IValidator<Student>, StudentValidator>();
-        services.AddScoped<IValidator<StudentProgress>, StudentProgressValidator>();
+        services.AddScoped<IValidator<BranchResponse>, BranchValidator>();
+        services.AddScoped<IValidator<ClassResponse>, ClassValidator>();
+        services.AddScoped<IValidator<CourseResponse>, CourseValidator>();
+        services.AddScoped<IValidator<CourseRegistrationResponse>, CourseRegistrationValidator>();
+        services.AddScoped<IValidator<PaymentMethodResponse>, PaymentMethodValidator>();
+        services.AddScoped<IValidator<PositionResponse>, PositionValidator>();
+        services.AddScoped<IValidator<ReceiptsExpensesResponse>, ReceiptsExpensesValidator>();
+        services.AddScoped<IValidator<StaffResponse>, StaffValidator>();
+        services.AddScoped<IValidator<StudentResponse>, StudentValidator>();
+        services.AddScoped<IValidator<StudentProgressResponse>, StudentProgressValidator>();
 
         services.AddTransient<ITokenService, TokenService>();
         services.AddTransient<ITokenService, TokenService>();

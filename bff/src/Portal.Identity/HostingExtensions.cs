@@ -1,46 +1,119 @@
+using Duende.IdentityServer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Portal.Identity.Data;
+using Portal.Identity.Models;
 using Serilog;
+using System.IdentityModel.Tokens.Jwt;
 
-namespace Portal.Identity
+namespace Portal.Identity;
+
+public static class HostingExtensions
 {
-    internal static class HostingExtensions
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
-        {
-            // uncomment if you want to add a UI
-            builder.Services.AddRazorPages();
+        builder.Services.AddRazorPages();
 
-            builder.Services.AddIdentityServer(options =>
+        builder.Services.AddDbContextPool<ApplicationDbContext>(options =>
+        {
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                sqlServerOptionsAction: sqlOptions =>
                 {
-                    // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
-                    options.EmitStaticAudienceClaim = true;
-                })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients);
-
-            return builder.Build();
-        }
-
-        public static WebApplication ConfigurePipeline(this WebApplication app)
-        {
-            app.UseSerilogRequestLogging();
-
-            if (app.Environment.IsDevelopment())
+                    sqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+                    sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null);
+                });
+            options.UseLoggerFactory(LoggerFactory.Create(log =>
             {
-                app.UseDeveloperExceptionPage();
-            }
+                log.AddConsole();
+                log.AddSerilog(dispose: true);
+            }));
+            options.EnableDetailedErrors();
+            options.EnableSensitiveDataLogging();
+        });
 
-            // uncomment if you want to add a UI
-            app.UseStaticFiles();
-            app.UseRouting();
+        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
-            app.UseIdentityServer();
+        builder.Services
+            .AddIdentityServer(options =>
+            {
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+                options.EmitStaticAudienceClaim = true;
+            })
+            .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryClients(Config.Clients)
+            .AddAspNetIdentity<ApplicationUser>();
 
-            // uncomment if you want to add a UI
-            app.UseAuthorization();
-            app.MapRazorPages().RequireAuthorization();
+        builder.Services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = "copy client ID from Google here";
+                options.ClientSecret = "copy client secret from Google here";
+            })
+            .AddCookie("cookie", options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.Name = "__Host-bff";
+                options.Cookie.SameSite = SameSiteMode.Strict;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Events.OnRedirectToLogin = context =>
+                {
+                    context.Response.StatusCode = 401;
+                    return Task.CompletedTask;
+                };
+            }).AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.ForwardDefaultSelector = context => context.Request.Headers["X-Auth-Scheme"];
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateIssuerSigningKey = false,
+                    SignatureValidator = (token, _) => new JwtSecurityToken(token),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
 
-            return app;
+        builder.Services.AddCors(options => options.AddPolicy("api", policy
+                => policy
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()));
+
+        return builder.Build();
+    }
+
+    public static WebApplication ConfigurePipeline(this WebApplication app)
+    {
+        app.UseSerilogRequestLogging();
+
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseHsts();
         }
+
+        app.UseStaticFiles();
+        app.UseRouting();
+        app.UseIdentityServer();
+        app.UseAuthorization();
+
+        app.MapRazorPages()
+            .RequireAuthorization();
+
+        return app;
     }
 }

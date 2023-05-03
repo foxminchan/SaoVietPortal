@@ -6,9 +6,9 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Student management portal Sao Viet',
+  title: 'Sao Viet Portal',
   tagline:
-    'Empowering Students with Seamless Management: Discover Sao Viet Portal',
+    'A portal for Sao Viet company to manage their business and employees',
   favicon: 'img/favicon.png',
 
   // Set the production url of your site here
@@ -73,15 +73,20 @@ const config = {
             type: 'docSidebar',
             sidebarId: 'tutorialSidebar',
             position: 'left',
-            label: 'Portal Docs',
+            label: 'Docs',
+          },
+          { to: 'docs/guides/guides', label: 'Guides', position: 'left' },
+          {
+            href: 'https://blogdaytinhoc.com/',
+            label: 'Website',
+            position: 'left',
+            target: '_self'
           },
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Chatbot Docs',
+            href: '/',
+            label: 'Home',
+            position: 'right',
           },
-          { to: '/blog', label: 'Blog', position: 'left' },
           {
             href: 'https://github.com/foxminchan/SaoVietPortal',
             label: 'GitHub',
@@ -93,12 +98,20 @@ const config = {
         style: 'dark',
         links: [
           {
-            title: 'Docs',
+            title: 'Legal & Privacy',
             items: [
               {
-                label: 'Tutorial',
-                to: '/docs/intro',
+                label: 'Terms of Use',
+                to: 'https://blogdaytinhoc.com/chinh-sach-chung-va-dieu-khoan-trung-tam-tin-hoc-sao-viet-222',
               },
+              {
+                label: 'Privacy Policy',
+                to: 'https://blogdaytinhoc.com/chinh-sach-bao-mat-thong-tin-trung-tam-tin-hoc-sao-viet-220',
+              },
+              {
+                label: 'Complaints',
+                to: 'https://blogdaytinhoc.com/quy-trinh-giai-quyet-khieu-nai-trung-tam-tin-hoc-sao-viet-221',
+              }
             ],
           },
           {
@@ -126,8 +139,12 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
+                label: 'Contact us',
+                to: 'mailto:trungtamtinhocsaoviet@gmail.com',
+              },
+              {
+                label: 'Fanpage',
+                to: 'https://www.facebook.com/trungtamtinhocvanphongsaoviet/',
               },
               {
                 label: 'Company',
@@ -136,7 +153,19 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Sao Viet Portal Project, Inc.`,
+
+        copyright: `
+        <p>
+          Made with 💖 by open source contributors using
+          <a href="https://docusaurus.io" target="_blank" rel="noreferrer noopener">
+            <span aria-label="Docusaurus">🦖</span>
+          </a>
+        </p>
+        <p>
+          Copyright © ${new Date().getFullYear()} 
+          <a href="https://blogdaytinhoc.com/" target="_blank">Sao Viet Portal</a>, Inc.
+        </p>`,
+
       },
       prism: {
         theme: lightCodeTheme,

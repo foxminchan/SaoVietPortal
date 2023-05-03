@@ -75,8 +75,9 @@ This project is currently in development. The following is the timeline of the p
 - [x] 2023-03-13: Project started.
 - [x] 2023-03-14: Getting business requirements.
 - [x] 2023-03-22: Designing the architecture and database.
-- [ ] 2023-03-26: Developing the portal api.
-- [ ] (TBD): Writing the api documentation.
+- [x] 2023-03-26: Developing the portal api.
+- [ ] 2023-05-06: Developing the backend for frontend.
+- [ ] 2023-05-08: Writing the api documentation.
 - [ ] (TBD): Developing the portal web app.
 - [ ] (TBD): Developing the portal application.
 - [ ] (TBD): Researching and implementing chatbot.
@@ -110,7 +111,7 @@ The architecture of the application is designed to be highly scalable and flexib
 </p>
 
 <p align="center">
-  <img src="./resources/Assets/SaoVietArchitecture.png">
+  <img src="./resources/Assets/overview_architechture.png">
 </p>
 
 <table align="center">
@@ -200,7 +201,7 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 
 - **[`Blazor`](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)** - A free, open source framework for building client web apps with .NET.
 - **[`.NET MAUI`](https://dotnet.microsoft.com/en-us/apps/maui)** - Build native, cross-platform desktop and mobile apps all in one framework.
-- **[`Docusuarus`](https://docusaurus.io/)** - Build optimized websites quickly, focus on your content.
+- **[`Docusaurus`](https://docusaurus.io/)** - Build optimized websites quickly, focus on your content.
 
 ## 📦 Optional tools
 

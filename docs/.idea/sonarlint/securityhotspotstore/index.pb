@@ -7,9 +7,3 @@ J
 src/pages/index.module.css,6\5\65d6f5fad14b040fa3c11667162d8b22d4ace350
 B
 src/pages/index.js,c\1\c16ef34da304c300e7b6c91b3a47fea77c278c7a
-D
-docusaurus.config.js,d\7\d7dad56a7ec58537fe76e249a44cd471cb7f300d
-=
-docs/intro.md,7\a\7a9bff1921a37ba195b27a5996feb261291f024f
-S
-#docs/bussiness/business_modeling.md,6\2\626dc808d154046c98a2c4465f43a60b35b749b9

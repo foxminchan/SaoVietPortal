@@ -10,6 +10,8 @@ namespace Portal.Api.Extensions;
 
 public static class PlatformExtension
 {
+    private const string UnsupportedOs = "This OS is not supported";
+
     public static JObject GetPlatform(this IConfiguration config, IWebHostEnvironment env)
         => JObject.Parse(JsonConvert.SerializeObject(config.PlatformModel(env)));
 
@@ -76,7 +78,7 @@ public static class PlatformExtension
         }
 
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return "Not supported";
+            return UnsupportedOs;
 
         var cpuUsage = new Process
         {
@@ -105,7 +107,7 @@ public static class PlatformExtension
             return $"{memoryCounter.NextValue()}MB";
         }
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return "Not supported";
+            return UnsupportedOs;
         var memoryUsage = new Process
         {
             StartInfo = new ProcessStartInfo
@@ -131,8 +133,10 @@ public static class PlatformExtension
             var usedSpace = totalSize - totalFreeSpace;
             return $"{usedSpace} bytes ({(double)usedSpace / totalSize * 100}%)";
         }
+
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux) && !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-            return "Not supported";
+            return UnsupportedOs;
+
         var diskUsage = new Process
         {
             StartInfo = new ProcessStartInfo

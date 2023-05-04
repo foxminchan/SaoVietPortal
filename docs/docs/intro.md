@@ -99,7 +99,8 @@ We welcome contributions from the community. If you would like to contribute to 
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key))
 
-<table class="center">
+<div align="center">
+<table>
   <tbody>
     <tr>
       <td align="center">
@@ -134,6 +135,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
   </tbody>
 </table>
+</div>
 
 ## Architecture model
 

@@ -25,7 +25,7 @@ public static class OpenApiExtension
                     Version = "v1",
                     Description =
                         """
-                        Sao Viet Portal is an open source platform designed to manage and organize student information for the Sao Viet school.With this portal, students, teachers, and staff can easily access and update student records, such as attendance, grades, and personal information.
+                        Sao Viet Portal is an open source platform designed to manage and organize student information for the Sao Viet. With this portal, students, teachers, and staff can easily access and update student records, such as attendance, grades, and personal information.
 
                         Some useful links:
                         - [Sao Viet Portal repository](https://github.com/foxminchan/SaoVietPortal)
@@ -57,16 +57,16 @@ public static class OpenApiExtension
                     }
                 });
 
-        c.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
-        {
-            Name = "Authorization",
-            Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-            In = ParameterLocation.Header,
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = JwtBearerDefaults.AuthenticationScheme
-        });
+            c.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = JwtBearerDefaults.AuthenticationScheme
+            });
 
-        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -83,37 +83,37 @@ public static class OpenApiExtension
                 }
             });
 
-        c.SchemaFilter<SocialSchemeFilter>();
-        c.ResolveConflictingActions(apiDescription => apiDescription.First());
-    });
+            c.SchemaFilter<SocialSchemeFilter>();
+            c.ResolveConflictingActions(apiDescription => apiDescription.First());
+        });
 
         builder.Services.AddSwaggerGenNewtonsoftSupport();
         builder.Services.Configure<SwaggerGeneratorOptions>(o => o.InferSecuritySchemes = true);
     }
 
-public static void UseOpenApi(this IApplicationBuilder app)
-{
-    app.UseSwagger(c =>
+    public static void UseOpenApi(this IApplicationBuilder app)
     {
-        c.RouteTemplate = "swagger/{documentName}/swagger.json";
-        c.PreSerializeFilters.Add((swagger, httpReq) =>
+        app.UseSwagger(c =>
         {
-            ArgumentNullException.ThrowIfNull(httpReq, nameof(httpReq));
+            c.RouteTemplate = "swagger/{documentName}/swagger.json";
+            c.PreSerializeFilters.Add((swagger, httpReq) =>
+            {
+                ArgumentNullException.ThrowIfNull(httpReq, nameof(httpReq));
 
-            swagger.ExternalDocs = new OpenApiExternalDocs
-            {
-                Description = "About Sao Viet",
-                Url = new Uri("https://blogdaytinhoc.com/"),
-            };
-            swagger.Servers = new List<OpenApiServer>
-            {
+                swagger.ExternalDocs = new OpenApiExternalDocs
+                {
+                    Description = "About Sao Viet",
+                    Url = new Uri("https://blogdaytinhoc.com/"),
+                };
+                swagger.Servers = new List<OpenApiServer>
+                {
                     new()
                     {
-                        Url = $"{httpReq.Protocol}"
+                        Url = $"{httpReq.Scheme}://{httpReq.Host.Value}"
                     }
-            };
-            swagger.Tags = new List<OpenApiTag>
-            {
+                };
+                swagger.Tags = new List<OpenApiTag>
+                {
                     new()
                     {
                         Name = "Student",
@@ -224,14 +224,14 @@ public static void UseOpenApi(this IApplicationBuilder app)
                             Url = new Uri("/api-docs/index.html#tag/System", UriKind.RelativeOrAbsolute)
                         }
                     }
-            };
+                };
+            });
         });
-    });
 
-    app.UseSwaggerUI(c =>
-    {
-        c.DocumentTitle = "Sao Viet API";
-        c.HeadContent = @"
+        app.UseSwaggerUI(c =>
+        {
+            c.DocumentTitle = "Sao Viet API";
+            c.HeadContent = @"
                 <link rel='stylesheet' type='text/css' href='/css/swagger-ui.css' />
                 <script>
                     var defaultFavicon = document.querySelector('link[rel=""icon""]');
@@ -240,29 +240,29 @@ public static void UseOpenApi(this IApplicationBuilder app)
                     }
                 </script>
                 <link rel='icon' type='image/png' href='/img/favicon.png' sizes='16x16' />";
-        foreach (var description in app.ApplicationServices
-                     .GetRequiredService<IApiVersionDescriptionProvider>()
-                     .ApiVersionDescriptions)
-        {
-            c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
-                description.GroupName.ToUpperInvariant());
-        }
-        c.DisplayRequestDuration();
-        c.EnableValidator();
-    });
+            foreach (var description in app.ApplicationServices
+                         .GetRequiredService<IApiVersionDescriptionProvider>()
+                         .ApiVersionDescriptions)
+            {
+                c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName.ToUpperInvariant());
+            }
+            c.DisplayRequestDuration();
+            c.EnableValidator();
+        });
 
-    app.UseReDoc(options =>
-    {
-        options.DocumentTitle = "Sao Viet API";
-        options.HeadContent = @"<link rel='icon' type='image/png' href='/img/favicon.png' sizes='16x16' />
-                <link rel='stylesheet' type='text/css' href='/css/redoc-ui.css' />";
-        foreach (var description in app.ApplicationServices
-                     .GetRequiredService<IApiVersionDescriptionProvider>()
-                     .ApiVersionDescriptions)
+        app.UseReDoc(options =>
         {
-            options.SpecUrl($"/swagger/{description.GroupName}/swagger.json");
-        }
-        options.EnableUntrustedSpec();
-    });
-}
+            options.DocumentTitle = "Sao Viet API";
+            options.HeadContent = @"<link rel='icon' type='image/png' href='/img/favicon.png' sizes='16x16' />
+                <link rel='stylesheet' type='text/css' href='/css/redoc-ui.css' />";
+            foreach (var description in app.ApplicationServices
+                         .GetRequiredService<IApiVersionDescriptionProvider>()
+                         .ApiVersionDescriptions)
+            {
+                options.SpecUrl($"/swagger/{description.GroupName}/swagger.json");
+            }
+            options.EnableUntrustedSpec();
+        });
+    }
 }

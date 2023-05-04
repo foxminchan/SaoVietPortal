@@ -1,4 +1,3 @@
-using Hangfire;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
@@ -72,7 +71,6 @@ else
 
 app.UseCors();
 app.UseExceptionHandler();
-app.UseHangfireDashboard();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseRateLimiter();

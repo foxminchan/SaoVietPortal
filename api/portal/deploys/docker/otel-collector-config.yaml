@@ -5,8 +5,6 @@ receivers:
         endpoint: 0.0.0.0:55678
       http:
         endpoint: 0.0.0.0:4317
-  redis:
-    endpoint: redis:6379
 
 exporters:
   prometheus:
@@ -18,7 +16,7 @@ exporters:
 
   zipkin:
     endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
-    format: proto
+    format: json
 
   jaeger:
     endpoint: jaeger-all-in-one:14250
@@ -27,7 +25,7 @@ exporters:
 
   elasticsearch:
     endpoints:
-      - "http://elk:9200"
+      - "http://elasticsearch:9200"
 
 processors:
   batch:

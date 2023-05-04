@@ -12,7 +12,7 @@ public class PositionConfiguration : IEntityTypeConfiguration<Position>
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-            .HasColumnName("Id")
+            .HasColumnName("StudentId")
             .HasColumnType("int")
             .ValueGeneratedOnAdd();
 

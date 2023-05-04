@@ -22,7 +22,6 @@ HIDE_STEREOTYPE()
 SHOW_PERSON_PORTRAIT()
 
 skinparam shadowing true
-skinparam handwritten false
 skinparam defaultTextAlignment center
 skinparam lineStyle polyline
 
@@ -32,23 +31,23 @@ AddRelTag("firewall", $textColor="$ARROW_FONT_COLOR", $lineColor="$ARROW_COLOR",
 	Person(User, "User", "An individual who has a personal account on Sao Viet", $sprite="users")
 
 System_Boundary(client, "Client") {
-	Container(application, "Application", "C#, .NET MAUI", "Integrate with portal service", $sprite="csharp")
-	Container(mobile, "Mobile", "C#, .NET MAUI", "Integrate with portal service and chatbot service", $sprite="csharp")
-	Container(website, "Website", "C#, Blazor Server", "Provide all the Sao Viet functions", $sprite="csharp")
+	Container(application, "Application", "C#, .NET MAUI", "Integrate with portal service", $sprite="img:https://i.imgur.com/yLqOhIa.png{scale=0.04}")
+	Container(mobile, "Mobile", "C#, .NET MAUI", "Integrate with portal service and chatbot service", $sprite="img:https://i.imgur.com/yLqOhIa.png{scale=0.04}")
+	Container(website, "Website", "C#, Blazor Server", "Provide all the Sao Viet functions", $sprite="img:https://i.imgur.com/1mfix2F.png{scale=0.06}")
 }
 
 System_Boundary(bff, "Backend for frontend") {
-	Container(bffMobile, "Bff for Mobile", ".NET Core, Duende", "Backend service optimized for mobile platform")
-	Container(bffApplication, "Bff for Application", ".NET Core, Duende", "Backend service optimized for application platform")
-	Container(bffWebsite, "Bff for Website", ".NET Core, Duende", "Backend service optimized for website platform")
+	Container(bffMobile, "Bff for Mobile", ".NET Core, Duende", "Backend service optimized for mobile platform", $sprite="img:https://i.imgur.com/ochI9J3.png{scale=0.6}")
+	Container(bffApplication, "Bff for Application", ".NET Core, Duende", "Backend service optimized for application platform", $sprite="img:https://i.imgur.com/ochI9J3.png{scale=0.6}")
+	Container(bffWebsite, "Bff for Website", ".NET Core, Duende", "Backend service optimized for website platform",$sprite="img:https://i.imgur.com/ochI9J3.png{scale=0.6}")
 }
 
 ContainerDb(sdb, "Database", "Redis", "Stored user session", $sprite="redis")
 
 System_Boundary(server, "Server") {
 	Container(portal, "Portal service", "C#, ASP.NET Core", "Provide all the Sao Viet functions", $sprite="dotnetcore")
-	Container(chatbot, "Chatbot service", "Python, FastAPI", "Natural language processing and conversation management", $sprite="python")
-	ContainerDb(database, "Relational database", "SQL Server 2022", "Hold Sao Viet data", $sprite="msql_server")
+	Container(chatbot, "Chatbot service", "Python, FastAPI", "Natural language processing and conversation management", $sprite="img:https://i.imgur.com/BhfSEOw.png{scale=0.6}")
+	ContainerDb(database, "Relational database", "SQL Server 2022", "Hold Sao Viet data", $sprite="msql_server{scale=1.5}")
 	Container(model, "NLP Model", "Python, PyTorch", "Natural language processing model", $sprite="python")
 	ContainerQueue(Kafka, "Message queue", "Kafka", "Message queue for asynchronous communication", $sprite="img:https://svn.apache.org/repos/asf/kafka/site/logos/originals/png/ICON%20-%20White%20on%20Transparent.png{scale=0.15}")
 }

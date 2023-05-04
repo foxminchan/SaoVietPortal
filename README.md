@@ -221,7 +221,7 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
 </p>
 
 <p align="justify">
-✅ **Info:** I have implemented ReDoc with the OpenAPI specification is a great way to generate documentation for your API quickly and easily.
+✅ <b>Info:</b> I have implemented ReDoc with the OpenAPI specification is a great way to generate documentation for your API quickly and easily.
 </p>
 
 For details on how to use the API, see the [Docusaurus](https://foxminchan.github.io/SaoVietPortal/) documentation.
@@ -247,19 +247,31 @@ For the API health check, I have used the <b>ASP.NET Core Health Checks</b> libr
 </p>
 
 <p align="justify">
-I set up the <b>Elasticsearch</b>, <b>Kibana</b> and <b>Logstash</b> services to collect and analyze logs. I also used the <b>Seq</b> service to collect and analyze logs.
+I set up the <b>Elasticsearch</b>, <b>Kibana</b> and <b>Logstash</b> services to collect and analyze logs.
 </p>
 
-> TODO: Add image
+<p align="center">
+	<img src="./resources/Assets/ELK.png">
+</p>
+
+<p align="justify">
+I also used the <b>Seq</b> service to collect and analyze logs.
+</p>
+
+<p align="center">
+	<img src="./resources/Assets/Seq.png">
+</p>
 
 <p align="justify">
 For the monitoring service, I have used the <b>Prometheus</b> and <b>Grafana</b> services to collect and analyze metrics.
 </p>
 
-> TODO: Add image
+<p align="center">
+	<img src="./resources/Assets/Prometheus.png">
+</p>
 
 <p align="justify">
-For the tracing service, I have used the <b>Jaeger</b> service to collect and analyze traces. I also used the , <b>Zipkin</b> service to collect and analyze traces.
+For the tracing service, I have used the <b>Jaeger</b> service to collect and analyze traces. I also used the, <b>Zipkin</b> service to collect and analyze traces.
 </p>
 
 > TODO: Add image

@@ -12,7 +12,7 @@ public class PaymentMethodConfiguration : IEntityTypeConfiguration<PaymentMethod
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-            .HasColumnName("Id")
+            .HasColumnName("StudentId")
             .HasColumnType("tinyint")
             .ValueGeneratedOnAdd();
 

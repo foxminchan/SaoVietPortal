@@ -146,7 +146,7 @@ public class CourseRegistrationController : ControllerBase
         {
             if (courseRegistration.Id != Guid.Empty)
             {
-                _logger.LogError("Course registration with id {Id} is not permitted to add",
+                _logger.LogError("Course registration with id {StudentId} is not permitted to add",
                     courseRegistration.Id);
                 return BadRequest("Course registration id is auto generated");
             }
@@ -237,7 +237,7 @@ public class CourseRegistrationController : ControllerBase
     ///
     ///     POST /api/v1/CourseRegistration
     ///     {
-    ///         "Id": "guid",
+    ///         "StudentId": "guid",
     ///         "Status": "string",
     ///         "RegisterDate": "dd/MM/yyyy",
     ///         "AppointmentDate": "dd/MM/yyyy",

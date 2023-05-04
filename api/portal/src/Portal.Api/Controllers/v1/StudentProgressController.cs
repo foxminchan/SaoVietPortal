@@ -231,7 +231,7 @@ public class StudentProgressController : ControllerBase
     ///
     ///     PUT /api/v1/StudentProgress
     ///     {
-    ///         "Id": "Guid",
+    ///         "StudentId": "Guid",
     ///         "LessonName": "string",
     ///         "LessonContent": "string",
     ///         "LessonDate": "dd/MM/yyyy",

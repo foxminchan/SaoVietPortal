@@ -1,3 +1,31 @@
 @startuml SaoVietOverviewUseCase
 
+left to right direction
+skinparam packageStyle rect
+skinparam shadowing true
+
+actor "Staff" as staff
+actor "Student" as student
+actor "Branch Manager" as branchManager
+actor "Accountant" as accountant
+actor "Teacher" as teacher
+actor "Marketing Staff" as marketingStaff
+actor "Director" as director
+
+rectangle Overview {
+    staff -- (Manage human resource)
+    staff -- (Manage business)
+    staff -- (Manage basic object)
+    staff -- (Searching)
+    staff -- (Statistic)
+    student -u-> (Manage human resource)
+    student -u-> (Searching)
+}
+
+staff <|-u- branchManager
+staff <|-u- accountant
+staff <|-u- teacher
+staff <|-u- director
+staff <|-u- marketingStaff
+
 @enduml

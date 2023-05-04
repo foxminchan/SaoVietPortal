@@ -13,7 +13,7 @@ public class StudentProgressConfiguration : IEntityTypeConfiguration<StudentProg
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-            .HasColumnName("Id")
+            .HasColumnName("StudentId")
             .HasColumnType("Uniqueidentifier")
             .HasDefaultValueSql("newid()");
 

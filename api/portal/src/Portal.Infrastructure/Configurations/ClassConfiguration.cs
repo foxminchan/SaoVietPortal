@@ -14,7 +14,7 @@ public class ClassConfiguration : IEntityTypeConfiguration<Class>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .HasColumnName("Id")
+            .HasColumnName("StudentId")
             .HasColumnType("char(10)");
 
         builder.Property(e => e.StartDate)

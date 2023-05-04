@@ -13,7 +13,7 @@ public class BranchConfiguration : IEntityTypeConfiguration<Branch>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .HasColumnName("Id")
+            .HasColumnName("StudentId")
             .HasColumnType("char(8)");
 
         builder.Property(e => e.Name)

@@ -2,7 +2,7 @@
 
 public class CourseEnrollment
 {
-    public string Id { get; set; } = string.Empty;
+    public string StudentId { get; set; } = string.Empty;
     public Student? Student { get; set; }
     public string ClassId { get; set; } = string.Empty;
     public Class? Class { get; set; }

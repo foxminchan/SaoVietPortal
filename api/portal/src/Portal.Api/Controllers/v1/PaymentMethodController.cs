@@ -135,7 +135,7 @@ public class PaymentMethodController : ControllerBase
         {
             if (paymentMethod.Id.HasValue)
             {
-                _logger.LogError("Payment method with id {Id} is not permitted to add",
+                _logger.LogError("Payment method with id {StudentId} is not permitted to add",
                     paymentMethod.Id);
                 return BadRequest("Payment method id is auto generated");
             }
@@ -224,7 +224,7 @@ public class PaymentMethodController : ControllerBase
     ///
     ///     PUT /api/v1/PaymentMethod
     ///     {
-    ///         "Id": "int",
+    ///         "StudentId": "int",
     ///         "Name": "string"
     ///     }
     /// </remarks>

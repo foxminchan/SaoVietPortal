@@ -43,11 +43,12 @@ Sao Viet Portal
 
 ## Introduction
 
-<p style="text-align: justify">
+<p align="justify">
 The SaoViet Portal is a web and app-based platform designed for managers and administrators to efficiently manage student-related data and activities. The platform is intuitive, user-friendly, and accessible from anywhere, at any time. It features advanced security measures, customization options, and is designed to reduce paperwork, save time, and minimize errors.
+</p>
 
+<p align="justify">
 <b>⚠️Note:</b> This project is currently in development. The project is a university graduation project, and is not intended to be used in production or for commercial purposes. The project is not affiliated with Sao Viet. HUTECH University is not responsible for any damage caused by the use of this project.
-
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -88,7 +89,7 @@ This project is currently in development. The following is the timeline of the p
 
 # Technologies
 
-<p style="text-align: justify">
+<p align="justify">
 Sao Viet Portal utilizes various technologies to provide a robust and efficient platform for its users. The following are the technologies used in the application:
 </P>
 
@@ -106,7 +107,7 @@ And many more...
 
 # Architecture
 
-<p style="text-align: justify">
+<p align="justify">
 The architecture of the application is designed to be highly scalable and flexible, which means that it can handle a large number of users and can easily adapt to changing needs and requirements. The following diagram shows the high-level components of the architecture:
 </p>
 
@@ -128,32 +129,32 @@ The architecture of the application is designed to be highly scalable and flexib
 		</tr>
 		<tr>
 			<td><b>Client</b></td>
-			<td>A client is a user who uses the application with a web browser or mobile app and desktop app to access the application.</td>
+			<td align="justify">A client is a user who uses the application with a web browser or mobile app and desktop app to access the application.</td>
 			<td>Blazor Server, .NET MAUI</td>
 		</tr>
 		<tr>
 			<td><b>Back end for Front end</b></td>
-			<td>A back end for front end is a server that is used by the client to access the application. It is responsible for handling requests from the client and returning responses to the client.</td>
+			<td align="justify">A back end for front end is a server that is used by the client to access the application. It is responsible for handling requests from the client and returning responses to the client.</td>
 			<td>ASP.NET Core, Duende IdentityServer 4</td>
 		</tr>
 		<tr>
 				<td><b>Server</b></td>
-				<td>A server is a computer that is used to host the application. It is responsible for handling requests from the client and returning responses to the client. It is also responsible for storing data in a database.</td>
+				<td align="justify">A server is a computer that is used to host the application. It is responsible for handling requests from the client and returning responses to the client. It is also responsible for storing data in a database.</td>
 				<td>ASP.NET Core, FastAPI, Kafka, etc.</td>
 		</tr>
 		<tr>
 				<td><b>Database</b></td>
-				<td>A database is a collection of data that is stored in a computer. It is used to store data in a structured way so that it can be easily accessed and manipulated.</td>
+				<td align="justify">A database is a collection of data that is stored in a computer. It is used to store data in a structured way so that it can be easily accessed and manipulated.</td>
 				<td>SQL Server 2022, Apache Lucene, Redis</td>
 		</tr>
 		<tr>
 				<td><b>Opentelemetry</b></td>
-				<td>Opentelemetry is a set of open source tools that are used to monitor and trace applications. It is used to collect metrics and traces from the application and send them to a monitoring system.</td>
+				<td align="justify">Opentelemetry is a set of open source tools that are used to monitor and trace applications. It is used to collect metrics and traces from the application and send them to a monitoring system.</td>
 				<td>Zipkin, Jaeger, Prometheus, Grafana, ELK Stack, Seq</td>
 		</tr>
 		<tr>
 				<td><b>Email System</b></td>
-				<td>An email system is a system that is used to send emails. It is used to send emails to users.</td>
+				<td align="justify">An email system is a system that is used to send emails. It is used to send emails to users.</td>
 				<td>Microsoft exchange server</td>
 		</tr>
 	</tbody>
@@ -219,7 +220,9 @@ Learn more about the Clean Architecture [here](https://docs.microsoft.com/en-us/
   <img src="./resources/Assets/Swagger.png">
 </p>
 
+<p align="justify">
 ✅ **Info:** I have implemented ReDoc with the OpenAPI specification is a great way to generate documentation for your API quickly and easily.
+</p>
 
 For details on how to use the API, see the [Docusaurus](https://foxminchan.github.io/SaoVietPortal/) documentation.
 
@@ -235,21 +238,29 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 
 # External Services
 
-For the API health check, I have used the `ASP.NET Core Health Checks` library to monitor the health of the application. The health check endpoint is exposed at `/hc` or `/hc-ui` and can be accessed via HTTP GET.
+<p align="justify">
+For the API health check, I have used the <b>ASP.NET Core Health Checks</b> library to monitor the health of the application. The health check endpoint is exposed at <b>/hc</b> or <b>/hc-ui</b> and can be accessed via HTTP GET.
+</p>
 
 <p align="center">
 	<img src="./resources/Assets/HealthCheck.png">
 </p>
 
-I set up the `Elasticsearch`, `Kibana` and `Logstash` services to collect and analyze logs. I also used the `Seq` service to collect and analyze logs.
+<p align="justify">
+I set up the <b>Elasticsearch</b>, <b>Kibana</b> and <b>Logstash</b> services to collect and analyze logs. I also used the <b>Seq</b> service to collect and analyze logs.
+</p>
 
 > TODO: Add image
 
-For the monitoring service, I have used the `Prometheus` and `Grafana` services to collect and analyze metrics.
+<p align="justify">
+For the monitoring service, I have used the <b>Prometheus</b> and <b>Grafana</b> services to collect and analyze metrics.
+</p>
 
 > TODO: Add image
 
-For the tracing service, I have used the `Jaeger` service to collect and analyze traces. I also used the `Zipkin` service to collect and analyze traces.
+<p align="justify">
+For the tracing service, I have used the <b>Jaeger</b> service to collect and analyze traces. I also used the , <b>Zipkin</b> service to collect and analyze traces.
+</p>
 
 > TODO: Add image
 
@@ -269,7 +280,7 @@ For the tracing service, I have used the `Jaeger` service to collect and analyze
 
 # Contributing
 
-<p style="text-align: justify">
+<p align="justify">
 We welcome contributions from the community. If you would like to contribute to this project, please read our <a href="./.github/CONTRIBUTING.md">contributing guidelines</a> for more information.
 </p>
 
@@ -323,39 +334,60 @@ Wanna be here? [Contribute](./.github/CONTRIBUTING.md).
 
 # Sponsor
 
+<p align="justify">
 I'm looking for sponsors to help me maintain and develop this project. By sponsoring my project, you can help to ensure that I have the resources and infrastructure needed to provide the best possible experience for users.
+</p>
 
+<p align="justify">
 Your support can help to cover the costs associated with hosting, maintenance, and development, as well as provide the resources needed to further improve and enhance my capabilities.
+</p>
 
-If you are interested in sponsoring this project, please don't hesitate to reach out to me at [here](mailto:nguyenxuannhan407@gmail.com) or use button `Sponsor` at the top of this page.
+<p align="justify">
+If you are interested in sponsoring this project, please don't hesitate to reach out to me at <a href="mailto:nguyenxuannhan407@gmail.com">here</a>  or use button `Sponsor` at the top of this page.
+</p>
 
+<p align="justify">
 I would be more than happy to discuss the details of how your sponsorship can help to support my ongoing growth and development, and provide you with more information on the benefits and opportunities available to sponsors.
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # Contact
 
-If you have any questions or concerns regarding my services, please don't hesitate to contact me at [here](mailto:nguyenxuannhan407@gmail.com).
+<p align="justify">
+If you have any questions or concerns regarding my services, please don't hesitate to contact me at <a href="mailto:nguyenxuannhan407@gmail.com">here</a>.
+</p>
 
-If you need to get in touch with my instructor for any reason, please contact him at [here](mailto:nd.and@hutech.edu.vn)
+<p align="justify">
+If you need to get in touch with my instructor for any reason, please contact him at <a href="mailto:nd.and@hutech.edu.vn">here</a>.
+</p>
 
+<p align="justify">
 Whether you have a question about my functionality, need help troubleshooting an issue, or simply want to provide feedback on your experience using my services, I am always happy to hear from users and welcome your input.
+</p>
 
+<p align="justify">
 Thank you for your interest in my project, and I look forward to hearing from you soon.
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 # License
 
-<p style="text-align: justify">
+<p align="justify">
 The Sao Viet Portal project operates under two distinct licenses. The first license is the MIT License, which governs the project's codebase. This license permits the use, modification, and distribution of the codebase under certain conditions, as detailed in the <a href="./LICENSE">MIT file</a>.
+</p>
 
+<p align="justify">
 The second license is the Attribution 4.0 International License, which applies to the project's documentation. This license allows for the use, reproduction, and distribution of the documentation provided that proper attribution is given to the original authors. The terms of the Attribution 4.0 International License can be found in the <a href="./LICENSE-docs">LICENSE-docs file</a>.
+</p>
 
+<p align="justify">
 It is important to note that Sao Viet Portal is not affiliated with Microsoft, Azure, or any other Microsoft products. The project's products are developed and copyrighted by Nguyen Xuan Nhan and Nguyen Dinh Anh, with the latter being a lecturer at Hutech University. The Faculty of Information Technology at Hutech University will act as the project evaluation and grading committee.
+</p>
 
+<p align="justify">
 For further information regarding the project's copyright, please refer to the <a href="./COPYRIGHT.txt">COPYRIGHT file</a>. All rights reserved.
-
 </p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

@@ -136,7 +136,7 @@ public class PositionController : ControllerBase
         {
             if (position.Id.HasValue)
             {
-                _logger.LogError("Position with id {StudentId} is not permitted to add",
+                _logger.LogError("Position with id {Id} is not permitted to add",
                     position.Id);
                 return BadRequest("Position id is auto generated");
             }
@@ -223,7 +223,7 @@ public class PositionController : ControllerBase
     ///
     ///     PUT /api/v1/Position
     ///     {
-    ///         "StudentId": "int",
+    ///         "Id": "int",
     ///         "Name": "string"
     ///     }
     /// </remarks>

@@ -14,7 +14,7 @@ public class StaffConfiguration : IEntityTypeConfiguration<Staff>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .HasColumnName("StudentId")
+            .HasColumnName("Id")
             .HasColumnType("varchar(20)");
 
         builder.Property(e => e.Fullname)

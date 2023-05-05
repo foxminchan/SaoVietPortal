@@ -169,7 +169,7 @@ public class StudentController : ControllerBase
     ///
     ///     POST /api/v1/Student
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Fullname": "string",
     ///         "Gender": bool,
     ///         "Address": "string",
@@ -287,7 +287,7 @@ public class StudentController : ControllerBase
     ///
     ///     PUT /api/v1/Student
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Fullname": "string",
     ///         "Gender": bool,
     ///         "Address": "string",

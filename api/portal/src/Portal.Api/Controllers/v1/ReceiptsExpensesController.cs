@@ -228,7 +228,7 @@ public class ReceiptsExpensesController : ControllerBase
     ///
     ///     PUT /api/v1/ReceiptsExpenses
     ///     {
-    ///         "StudentId": "Guid",
+    ///         "Id": "Guid",
     ///         "Type": bool,
     ///         "Date": "dd/MM/yyyy",
     ///         "Amount": float,

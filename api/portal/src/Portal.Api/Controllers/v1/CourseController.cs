@@ -120,7 +120,7 @@ public class CourseController : ControllerBase
     ///
     ///     POST /api/v1/Course
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Name": "string",
     ///         "Description": "string"
     ///     }
@@ -224,7 +224,7 @@ public class CourseController : ControllerBase
     ///
     ///     PUT /api/v1/Course
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Name": "string",
     ///         "Description": "string"
     ///     }

@@ -9,8 +9,8 @@ public class StudentValidator : AbstractValidator<StudentResponse>
     public StudentValidator()
     {
         RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("StudentId is required")
-            .MaximumLength(10).WithMessage("StudentId must not exceed 10 characters");
+            .NotEmpty().WithMessage("Id is required")
+            .MaximumLength(10).WithMessage("Id must not exceed 10 characters");
         RuleFor(x => x.Fullname)
             .NotEmpty().WithMessage("Fullname is required")
             .MaximumLength(50).WithMessage("Fullname must not exceed 50 characters");

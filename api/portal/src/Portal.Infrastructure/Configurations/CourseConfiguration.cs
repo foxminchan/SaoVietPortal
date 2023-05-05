@@ -13,7 +13,7 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
         builder.HasKey(e => e.Id);
 
         builder.Property(e => e.Id)
-            .HasColumnName("StudentId")
+            .HasColumnName("Id")
             .HasColumnType("varchar(10)");
 
         builder.Property(e => e.Name)

@@ -13,7 +13,7 @@ public class ReceiptsExpensesConfiguration : IEntityTypeConfiguration<ReceiptsEx
 
         builder.HasKey(e => e.Id);
         builder.Property(e => e.Id)
-            .HasColumnName("StudentId")
+            .HasColumnName("Id")
             .HasColumnType("Uniqueidentifier")
             .HasDefaultValueSql("newid()");
 

@@ -2,9 +2,6 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:55678
-      http:
-        endpoint: 0.0.0.0:4317
 
 exporters:
   prometheus:
@@ -16,7 +13,7 @@ exporters:
 
   zipkin:
     endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
-    format: json
+    format: proto
 
   jaeger:
     endpoint: jaeger-all-in-one:14250

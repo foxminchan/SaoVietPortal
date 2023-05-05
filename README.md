@@ -32,6 +32,10 @@ Sao Viet Portal
 - [OpenAPI](#openapi)
 - [CI/CD](#cicd)
 - [External Services](#external-services)
+	- [🧑‍⚕️ Health Check](#️-health-check)
+	- [📝 Logging](#-logging)
+	- [📊 Monitoring](#-monitoring)
+	- [📈 Tracing](#-tracing)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
 - [Sponsor](#sponsor)
@@ -238,6 +242,8 @@ For details on how to use the API, see the [Docusaurus](https://foxminchan.githu
 
 # External Services
 
+## 🧑‍⚕️ Health Check
+
 <p align="justify">
 For the API health check, I have used the <b>ASP.NET Core Health Checks</b> library to monitor the health of the application. The health check endpoint is exposed at <b>/hc</b> or <b>/hc-ui</b> and can be accessed via HTTP GET.
 </p>
@@ -245,6 +251,8 @@ For the API health check, I have used the <b>ASP.NET Core Health Checks</b> libr
 <p align="center">
 	<img src="./resources/Assets/HealthCheck.png">
 </p>
+
+## 📝 Logging
 
 <p align="justify">
 I set up the <b>Elasticsearch</b>, <b>Kibana</b> and <b>Logstash</b> services to collect and analyze logs.
@@ -262,6 +270,8 @@ I also used the <b>Seq</b> service to collect and analyze logs.
 	<img src="./resources/Assets/Seq.png">
 </p>
 
+## 📊 Monitoring
+
 <p align="justify">
 For the monitoring service, I have used the <b>Prometheus</b> and <b>Grafana</b> services to collect and analyze metrics.
 </p>
@@ -270,11 +280,27 @@ For the monitoring service, I have used the <b>Prometheus</b> and <b>Grafana</b>
 	<img src="./resources/Assets/Prometheus.png">
 </p>
 
-<p align="justify">
-For the tracing service, I have used the <b>Jaeger</b> service to collect and analyze traces. I also used the, <b>Zipkin</b> service to collect and analyze traces.
+<p align="center">
+	<img src="./resources/Assets/Grafana.png">
 </p>
 
-> TODO: Add image
+## 📈 Tracing
+
+<p align="justify">
+For the tracing service, I have used the <b>Jaeger</b> service to collect and analyze traces.
+</p>
+
+<p align="center">
+	<img src="./resources/Assets/Jaeger.png">
+</p>
+
+<p align="justify">
+I also used the, <b>Zipkin</b> service to collect and analyze traces.
+</p>
+
+<p align="center">
+	<img src="./resources/Assets/Zipkin.png">
+</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

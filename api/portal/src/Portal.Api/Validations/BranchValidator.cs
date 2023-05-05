@@ -8,8 +8,8 @@ public class BranchValidator : AbstractValidator<BranchResponse>
     public BranchValidator()
     {
         RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("StudentId is required")
-            .Length(8).WithMessage("StudentId must be 8 characters");
+            .NotEmpty().WithMessage("Id is required")
+            .Length(8).WithMessage("Id must be 8 characters");
         RuleFor(x => x.Name)
             .NotEmpty()
             .WithMessage("BranchName is required");

@@ -48,8 +48,8 @@ public static class OpenTelemetryExtension
                 tracing.SetResourceBuilder(resourceBuilder)
                     .AddAspNetCoreInstrumentation()
                     .AddHttpClientInstrumentation()
-                    .AddEntityFrameworkCoreInstrumentation(db
-                           => db.SetDbStatementForText = true);
+                    .AddEntityFrameworkCoreInstrumentation();
+
                 if (!string.IsNullOrWhiteSpace(otlpEndpoint))
                     tracing.AddOtlpExporter();
             })

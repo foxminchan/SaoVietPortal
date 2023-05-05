@@ -119,7 +119,7 @@ public class ClassController : ControllerBase
     ///
     ///     POST /api/v1/Class
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "StartDate": "dd/MM/yyyy",
     ///         "EndDate": "dd/MM/yyyy",
     ///         "Fee": "float",
@@ -224,7 +224,7 @@ public class ClassController : ControllerBase
     ///
     ///     PUT /api/v1/Class
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "StartDate": "dd/MM/yyyy",
     ///         "EndDate": "dd/MM/yyyy",
     ///         "Fee": "float",

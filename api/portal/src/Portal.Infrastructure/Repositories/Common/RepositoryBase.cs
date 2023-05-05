@@ -87,7 +87,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
                 cursor?
                     .GetType()
                     .GetProperties()
-                    .FirstOrDefault(x => x.Name.Equals("StudentId"))?
+                    .FirstOrDefault(x => x.Name.Equals("Id"))?
                     .GetValue(cursor)?
                     .ToString(),
                 out var cursorValue);
@@ -96,8 +96,8 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : class
                 cursorValue = 0;
 
             _ = criteria.IsAscending
-                ? query.Where(x => (int)x.GetType().GetProperty("StudentId")!.GetValue(x)! > cursorValue)
-                : query.Where(x => (int)x.GetType().GetProperty("StudentId")!.GetValue(x)! < cursorValue);
+                ? query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! > cursorValue)
+                : query.Where(x => (int)x.GetType().GetProperty("Id")!.GetValue(x)! < cursorValue);
         }
 
         if (criteria.Skip > 0)

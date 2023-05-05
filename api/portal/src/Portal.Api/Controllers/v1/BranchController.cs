@@ -118,7 +118,7 @@ public class BranchController : ControllerBase
     ///
     ///     POST /api/v1/Branch
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Name": "string",
     ///         "Address": "string",
     ///         "Phone": "string"
@@ -223,7 +223,7 @@ public class BranchController : ControllerBase
     ///
     ///     PUT /api/v1/Branch
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Name": "string",
     ///         "Address": "string",
     ///         "Phone": "string"

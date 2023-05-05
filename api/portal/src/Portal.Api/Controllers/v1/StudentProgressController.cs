@@ -126,7 +126,7 @@ public class StudentProgressController : ControllerBase
     ///         "Status": "string",
     ///         "LessonRating": int,
     ///         "StaffId": "string",
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "ClassId": "string"
     ///     }
     /// </remarks>
@@ -231,14 +231,14 @@ public class StudentProgressController : ControllerBase
     ///
     ///     PUT /api/v1/StudentProgress
     ///     {
-    ///         "StudentId": "Guid",
+    ///         "Id": "Guid",
     ///         "LessonName": "string",
     ///         "LessonContent": "string",
     ///         "LessonDate": "dd/MM/yyyy",
     ///         "Status": "string",
     ///         "LessonRating": int,
     ///         "StaffId": "string",
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "ClassId": "string"
     ///     }
     /// </remarks>

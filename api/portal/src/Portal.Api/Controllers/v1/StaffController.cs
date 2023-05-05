@@ -168,7 +168,7 @@ public class StaffController : ControllerBase
     ///
     ///     POST /api/v1/Staff
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Fullname": "string",
     ///         "Dob": "dd/MM/yyyy",
     ///         "Address": "string",
@@ -286,7 +286,7 @@ public class StaffController : ControllerBase
     ///
     ///     PUT /api/v1/Staff
     ///     {
-    ///         "StudentId": "string",
+    ///         "Id": "string",
     ///         "Fullname": "string",
     ///         "Dob": "dd/MM/yyyy",
     ///         "Address": "string",

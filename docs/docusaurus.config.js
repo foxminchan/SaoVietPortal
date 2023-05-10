@@ -1,6 +1,3 @@
-// @ts-check
-// Note: type annotations allow type checking and IDEs autocompletion
-
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
@@ -10,24 +7,12 @@ const config = {
   tagline:
     'A portal for Sao Viet company to manage their business and employees',
   favicon: 'img/favicon.png',
-
-  // Set the production url of your site here
   url: 'https://foxminchan.github.io/',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/SaoVietPortal',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'foxminchan', // Usually your GitHub org/user name.
-  projectName: 'SaoVietPortal', // Usually your repo name.
-
+  organizationName: 'foxminchan',
+  projectName: 'SaoVietPortal',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-
-  // Even if you don't use internalization, you can use this field to set useful
-  // metadata like html lang. For example, if your site is Chinese, you may want
-  // to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -60,7 +45,6 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
-      // Replace with your project's social card
       image: 'img/social-card.jpg',
       navbar: {
         title: 'Developer',
@@ -75,7 +59,7 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          { to: 'docs/guides/guides', label: 'Guides', position: 'left' },
+          { to: '#', label: 'Guides', position: 'left' },
           {
             href: 'https://blogdaytinhoc.com/',
             label: 'Website',
@@ -143,7 +127,7 @@ const config = {
                 to: 'mailto:trungtamtinhocsaoviet@gmail.com',
               },
               {
-                label: 'Fanpage',
+                label: 'Facebook',
                 to: 'https://www.facebook.com/trungtamtinhocvanphongsaoviet/',
               },
               {

@@ -1,0 +1,17 @@
+<Project>
+	<PropertyGroup>
+		<Product>SaoVietPortal</Product>
+		<Authors>Nguyen Xuan Nhan</Authors>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/foxminchan/SaoVietPortal.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/foxminchan/SaoVietPortal</PackageProjectUrl>
+		<PackageLicense>https://github.com/foxminchan/SaoVietPortal/blob/main/LICENSE</PackageLicense>
+		<Copyright>Copyright (c) FoxMinChan - 2023</Copyright>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<MinVerDefaultPreReleasePhase>preview</MinVerDefaultPreReleasePhase>
+		<MinVerMinimumMajorMinor>0.1</MinVerMinimumMajorMinor>
+		<MinVerTagPrefix>v</MinVerTagPrefix>
+	</PropertyGroup>
+</Project>

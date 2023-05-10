@@ -21,16 +21,8 @@ jobs:
       with:
         dotnet-version: 7.0.x
     - name: Restore dependencies
-      run: dotnet restore ./api/portal/portal-api.sln
+      run: dotnet restore ./api/dotnet/portal-api.sln
     - name: Build
-      run: dotnet build ./api/portal/portal-api.sln --no-restore
+      run: dotnet build ./api/dotnet/portal-api.sln --no-restore
     - name: Test
-      run: dotnet test ./api/portal/portal-api.sln --no-build --verbosity normal
-    - name: Publish
-      run: dotnet publish ./api/portal/src/Portal.Api/Portal.Api.csproj -c Release -o ./api/portal/webiste
-    - name: Upload an Api Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: SaoVietApi
-        path: ./api/portal/webiste/**
-        if-no-files-found: error
+      run: dotnet test ./api/dotnet/portal-api.sln --no-build --verbosity normal

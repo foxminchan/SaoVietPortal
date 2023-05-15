@@ -48,7 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Portal.Application\SaoViet.Portal.Application.csproj" />
+	  <ProjectReference Include="..\SaoViet.Portal.Application\SaoViet.Portal.Application.csproj" />
 	</ItemGroup>
 
 </Project>

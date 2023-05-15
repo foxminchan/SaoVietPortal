@@ -81,7 +81,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Portal.Domain\SaoViet.Portal.Domain.csproj" />
+	  <ProjectReference Include="..\SaoViet.Portal.Domain\SaoViet.Portal.Domain.csproj" />
 	</ItemGroup>
 
 </Project>

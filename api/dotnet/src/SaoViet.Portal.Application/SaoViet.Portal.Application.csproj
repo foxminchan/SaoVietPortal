@@ -12,12 +12,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Portal.Infrastructure\SaoViet.Portal.Infrastructure.csproj" />
+	  <Folder Include="Branch\Handlers\" />
+	  <Folder Include="Branch\Mapping\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Branch\Handlers\" />
-	  <Folder Include="Branch\Mapping\" />
+	  <ProjectReference Include="..\SaoViet.Portal.Infrastructure\SaoViet.Portal.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

@@ -38,8 +38,8 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                     = new Uri("https://blogdaytinhoc.com/chinh-sach-chung-va-dieu-khoan-trung-tam-tin-hoc-sao-viet-222"),
                 Extensions =
                 {
-                    {
-                        "x-logo", new OpenApiObject
+            {
+                "x-logo", new OpenApiObject
                         {
                             { "url", new OpenApiString("https://i.imgur.com/Y8oYCOj.jpeg") },
                             { "altText", new OpenApiString("Sao Viet Portal") },
@@ -47,8 +47,8 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                             { "href", new OpenApiString("") }
                         }
                     }
-                }
-            });
+        }
+    });
 
         options.AddSecurityDefinition(name: "Bearer", securityScheme: new OpenApiSecurityScheme
         {
@@ -57,7 +57,7 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
             In = ParameterLocation.Header,
             Type = SecuritySchemeType.ApiKey,
             Scheme = JwtBearerDefaults.AuthenticationScheme
-        });
+});
 
         options.AddSecurityRequirement(new OpenApiSecurityRequirement
         {
@@ -76,6 +76,6 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
             }
         });
 
-        options.ResolveConflictingActions(apiDescription => apiDescription.First());
+options.ResolveConflictingActions(apiDescription => apiDescription.First());
     }
 }

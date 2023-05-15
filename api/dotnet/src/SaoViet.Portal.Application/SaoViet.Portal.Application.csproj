@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Primitives\**" />
+	  <EmbeddedResource Remove="Primitives\**" />
+	  <None Remove="Primitives\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Portal.Infrastructure\SaoViet.Portal.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Branch\Handlers\" />
+	  <Folder Include="Branch\Mapping\" />
+	</ItemGroup>
+
+</Project>

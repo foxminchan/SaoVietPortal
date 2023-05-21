@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>preview</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Primitives\**" />
+	  <EmbeddedResource Remove="Primitives\**" />
+	  <None Remove="Primitives\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Branch\Commands\" />
+	  <Folder Include="Certificate\DTO\" />
+	  <Folder Include="Certificate\Commands\" />
+	  <Folder Include="Certificate\DomainEvents\" />
+	  <Folder Include="Certificate\Queries\" />
+	  <Folder Include="Certificate\Mapping\" />
+	  <Folder Include="Certificate\Validations\" />
+	  <Folder Include="Class\Handlers\Commands\" />
+	  <Folder Include="Class\Handlers\Queries\" />
+	  <Folder Include="Class\Mapping\" />
+	  <Folder Include="Class\Validations\" />
+	  <Folder Include="CourseEnrollment\DTO\" />
+	  <Folder Include="CourseEnrollment\Handlers\Commands\" />
+	  <Folder Include="CourseEnrollment\Handlers\Queries\" />
+	  <Folder Include="CourseEnrollment\Mapping\" />
+	  <Folder Include="CourseEnrollment\Validations\" />
+	  <Folder Include="CourseRegistration\Handlers\Commands\" />
+	  <Folder Include="CourseRegistration\Handlers\Queries\" />
+	  <Folder Include="CourseRegistration\Mapping\" />
+	  <Folder Include="CourseRegistration\Validations\" />
+	  <Folder Include="CourseType\DTO\" />
+	  <Folder Include="CourseType\Handlers\Commands\" />
+	  <Folder Include="CourseType\Handlers\Queries\" />
+	  <Folder Include="CourseType\Mapping\" />
+	  <Folder Include="CourseType\Validations\" />
+	  <Folder Include="Course\Handlers\Commands\" />
+	  <Folder Include="Course\Handlers\Queries\" />
+	  <Folder Include="Course\Mapping\" />
+	  <Folder Include="Course\Validations\" />
+	  <Folder Include="Curriculum\DTO\" />
+	  <Folder Include="Curriculum\Handlers\Commands\" />
+	  <Folder Include="Curriculum\Handlers\Queries\" />
+	  <Folder Include="Curriculum\Mapping\" />
+	  <Folder Include="Curriculum\Validations\" />
+	  <Folder Include="PaymentMethod\Handlers\Commands\" />
+	  <Folder Include="PaymentMethod\Handlers\Queries\" />
+	  <Folder Include="PaymentMethod\Mapping\" />
+	  <Folder Include="PaymentMethod\Validations\" />
+	  <Folder Include="Position\Handlers\Commands\" />
+	  <Folder Include="Position\Handlers\Queries\" />
+	  <Folder Include="Position\Mapping\" />
+	  <Folder Include="Position\Validations\" />
+	  <Folder Include="ReceiptsExpenses\Handlers\Commands\" />
+	  <Folder Include="ReceiptsExpenses\Handlers\Queries\" />
+	  <Folder Include="ReceiptsExpenses\Mapping\" />
+	  <Folder Include="ReceiptsExpenses\Validations\" />
+	  <Folder Include="Staff\Handlers\Commands\" />
+	  <Folder Include="Staff\Handlers\Queries\" />
+	  <Folder Include="Staff\Mapping\" />
+	  <Folder Include="Staff\Validations\" />
+	  <Folder Include="StudentProgress\Handlers\Commands\" />
+	  <Folder Include="StudentProgress\Handlers\Queries\" />
+	  <Folder Include="StudentProgress\Mapping\" />
+	  <Folder Include="StudentProgress\Validations\" />
+	  <Folder Include="Student\Handlers\Commands\" />
+	  <Folder Include="Student\Handlers\Queries\" />
+	  <Folder Include="Student\Mapping\" />
+	  <Folder Include="Student\Validations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SaoViet.Portal.Infrastructure\SaoViet.Portal.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

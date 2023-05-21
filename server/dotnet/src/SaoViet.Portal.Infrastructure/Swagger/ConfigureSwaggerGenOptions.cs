@@ -26,12 +26,12 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                     Version = description.ApiVersion.ToString(),
 
                     Description = """
-                     Sao Viet Portal is an open source platform designed to manage and organize student information for the Sao Viet.With this portal, students, teachers, and staff can easily access and update student records, such as attendance, grades, and personal information. If you have any questions, please contact the author via email `nguyenxuannhan407@gmail.com` or guide email `nd.anh@hutech.edu.vn`
+                     Sao Viet Portal is an open source platform designed to manage and organize student information for the Sao Viet.With this portal, students, teachers, and staff can easily access and update student records, such as attendance, grades, and personal information.If you have any questions, please contact the author via email `nguyenxuannhan407@gmail.com` or guide email `nd.anh@hutech.edu.vn`
 
                      Some useful links for you:
-                     - [**Github repository**](https://github.com/foxminchan/SaoVietPortal)
-                     - [**Company**](https://blogdaytinhoc.com)
-                     - [**Redoc**](https://localhost:8080/api-docs)
+                     - [**Github repository * *](https://github.com/foxminchan/SaoVietPortal)
+                     - [**Company * *](https://blogdaytinhoc.com)
+                     - [**Redoc * *](https://localhost:8080/api-docs)
                      """,
 
                     Contact = new OpenApiContact
@@ -52,8 +52,8 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
 
                     Extensions =
                     {
-                        {
-                            "x-logo", new OpenApiObject
+                    {
+                        "x-logo", new OpenApiObject
                             {
                                 { "url", new OpenApiString("https://i.imgur.com/Y8oYCOj.jpeg") },
                                 { "altText", new OpenApiString("Sao Viet Portal") },
@@ -61,19 +61,19 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                                 { "href", new OpenApiString("") }
                             }
                         }
-                    }
-                });
+                }
+        });
 
-            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = JwtBearerDefaults.AuthenticationScheme
-            });
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = JwtBearerDefaults.AuthenticationScheme
+        });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
             {
                 {
                     new OpenApiSecurityScheme
@@ -90,8 +90,8 @@ public class ConfigureSwaggerGenOptions : IConfigureOptions<SwaggerGenOptions>
                 }
             });
 
-            options.ResolveConflictingActions(apiDescription => apiDescription.First());
-            options.EnableAnnotations();
-        }
+        options.ResolveConflictingActions(apiDescription => apiDescription.First());
+        options.EnableAnnotations();
     }
+}
 }

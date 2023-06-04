@@ -24,12 +24,12 @@ public class BranchController : BaseController
             ## Sample request:
 
             ```http
-            GET /api/v1/branch HTTP/1.1
+            GET / api / v1 / branch HTTP / 1.1
             Host: localhost:8080
-            Accept: application/json
+            Accept: application / json
             ```
 
-            The API can be invoked using *curl* like below:
+            The API can be invoked using * curl* like below:
 
             ```bash
             curl -X GET "http://localhost:8080/api/v1/branch" -H "accept: application/json"
@@ -39,32 +39,34 @@ public class BranchController : BaseController
         Tags = new[] { "Branch" })]
     [SwaggerResponse(200, "The branches information was successfully retrieved.",
         typeof(List<BranchDto>))]
-    public async Task<IActionResult> GetBranches()
-    {
-        var branches = await Mediator.Send(new GetBranchesQuery());
-        return Ok(branches);
-    }
+public async Task<IActionResult> GetBranches()
+{
+    var branches = await Mediator.Send(new GetBranchesQuery());
+    return Ok(branches);
+}
 
-    [HttpGet("{id}")]
-    [AllowAnonymous]
-    [SwaggerOperation(
-        Summary = "Get branch by id",
-        Description = """
-            Retrieves information about branch by id.
+[HttpGet("{id}")]
+[AllowAnonymous]
+[SwaggerOperation(
+    Summary = "Get branch by id",
+    Description = """
+
+        Retrieves information about branch by id.
 
             ## Permission:
 
-            This endpoint is publicly accessible.
+        This endpoint is publicly accessible.
 
             ## Sample request:
 
             ```http
-            GET /api/v1/branch/{id} HTTP/1.1
-            Host: localhost:8080
-            Accept: application/json
+
+        GET / api / v1 / branch /{id} HTTP / 1.1
+            Host: localhost: 8080
+            Accept: application / json
             ```
 
-            The API can be invoked using *curl* like below:
+            The API can be invoked using *curl * like below:
 
             ```bash
             curl -X GET "http://localhost:8080/api/v1/branch/{id}" -H "accept: application/json"
@@ -74,9 +76,9 @@ public class BranchController : BaseController
         Tags = new[] { "Branch" })]
     [SwaggerResponse(200, "The branch information was successfully retrieved.",
         typeof(BranchDto))]
-    public async Task<IActionResult> GetBranchById([FromRoute] string id)
-    {
-        var branch = await Mediator.Send(new GetBranchByIdQuery(id));
-        return Ok(branch);
-    }
+public async Task<IActionResult> GetBranchById([FromRoute] string id)
+{
+    var branch = await Mediator.Send(new GetBranchByIdQuery(id));
+    return Ok(branch);
+}
 }

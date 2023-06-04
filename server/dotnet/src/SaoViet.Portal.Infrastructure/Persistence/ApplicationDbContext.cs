@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using SaoViet.Portal.Domain.Entities;
 using SaoViet.Portal.Domain.Interfaces;
 using SaoViet.Portal.Domain.Primitives;
-using SaoViet.Portal.Infrastructure.Outbox;
 
 namespace SaoViet.Portal.Infrastructure.Persistence;
 
@@ -24,7 +23,6 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDatabas
     public DbSet<Staff>? Staffs { get; set; }
     public DbSet<Student>? Students { get; set; }
     public DbSet<StudentProgress>? StudentProgresses { get; set; }
-    public DbSet<OutboxEntity>? Outbox { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)

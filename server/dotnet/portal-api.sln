@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaoViet.Portal.Domain", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SaoViet.Portal.Infrastructure", "src\SaoViet.Portal.Infrastructure\SaoViet.Portal.Infrastructure.csproj", "{AFC16865-88CC-4E48-BBCA-3B27C4E2DDBB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaoViet.Portal.Identity", "src\SaoViet.Portal.Identity\SaoViet.Portal.Identity.csproj", "{6CA6CDF6-0A52-4AAC-A14E-0F10257CE6C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{AFC16865-88CC-4E48-BBCA-3B27C4E2DDBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFC16865-88CC-4E48-BBCA-3B27C4E2DDBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFC16865-88CC-4E48-BBCA-3B27C4E2DDBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CA6CDF6-0A52-4AAC-A14E-0F10257CE6C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CA6CDF6-0A52-4AAC-A14E-0F10257CE6C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CA6CDF6-0A52-4AAC-A14E-0F10257CE6C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CA6CDF6-0A52-4AAC-A14E-0F10257CE6C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

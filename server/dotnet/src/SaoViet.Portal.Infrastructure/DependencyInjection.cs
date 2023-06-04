@@ -11,7 +11,6 @@ using SaoViet.Portal.Infrastructure.Filters;
 using SaoViet.Portal.Infrastructure.Health;
 using SaoViet.Portal.Infrastructure.Middleware;
 using SaoViet.Portal.Infrastructure.OpenTelemetry;
-using SaoViet.Portal.Infrastructure.Outbox;
 using SaoViet.Portal.Infrastructure.Persistence;
 using SaoViet.Portal.Infrastructure.Searching;
 using SaoViet.Portal.Infrastructure.Swagger;
@@ -26,11 +25,13 @@ public static class DependencyInjection
     public static void AddServiceInfrastructure(this IServiceCollection services, WebApplicationBuilder builder)
     {
         services.AddControllers(options =>
-        {
-            options.RespectBrowserAcceptHeader = true;
-            options.ReturnHttpNotAcceptable = true;
-            options.Filters.Add<LoggingFilter>();
-        }).AddNewtonsoftJson();
+            {
+                options.RespectBrowserAcceptHeader = true;
+                options.ReturnHttpNotAcceptable = true;
+                options.Filters.Add<LoggingFilter>();
+            })
+            .AddNewtonsoftJson()
+            .AddApplicationPart(AssemblyReference.Assembly);
 
         services.AddResponseCompression(options =>
             {
@@ -48,8 +49,6 @@ public static class DependencyInjection
             .Configure<GzipCompressionProviderOptions>(options => options.Level = CompressionLevel.Optimal)
             .AddResponseCaching(options => options.MaximumBodySize = 1024)
             .AddRouting(options => options.LowercaseUrls = true);
-
-        services.AddTransientOutbox();
 
         services.AddSqlServiceCollection<ApplicationDbContext>(builder.Configuration
             .GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException());
@@ -69,7 +68,7 @@ public static class DependencyInjection
             .AddAutoMapper(AssemblyReference.AppDomainAssembly)
             .AddEndpointsApiExplorer()
             .AddProblemDetails()
-            .AddRedisCache(builder.Configuration);
+            .AddRedisCache(builder, builder.Configuration);
 
         services.AddSingleton<IDeveloperPageExceptionFilter, DeveloperPageExceptionFilter>();
     }

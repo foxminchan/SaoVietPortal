@@ -30,5 +30,6 @@ public static class RateLimiterExtension
         });
     }
 
-    public static void RequirePerUserRateLimit(this IEndpointConventionBuilder builder) => builder.RequireRateLimiting(Policy);
+    public static void RequirePerUserRateLimit(this IEndpointConventionBuilder builder)
+        => builder.RequireRateLimiting(Policy);
 }

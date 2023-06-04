@@ -9,5 +9,5 @@ namespace SaoViet.Portal.Api.Controllers;
 public class BaseController : ControllerBase
 {
     private ISender? _mediator;
-    public ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
+    protected ISender Mediator => _mediator ??= HttpContext.RequestServices.GetRequiredService<ISender>();
 }

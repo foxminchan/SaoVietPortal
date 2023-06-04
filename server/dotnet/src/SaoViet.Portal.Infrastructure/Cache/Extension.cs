@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SaoViet.Portal.Infrastructure.Cache.Redis;
 using SaoViet.Portal.Infrastructure.Cache.Redis.Internals;
@@ -10,6 +11,7 @@ public static class Extension
 {
     public static void AddRedisCache(
         this IServiceCollection services,
+        WebApplicationBuilder builder,
         IConfiguration config,
         Action<RedisCache>? setupAction = null)
     {
@@ -26,14 +28,16 @@ public static class Extension
 
         services.AddStackExchangeRedisCache(options =>
         {
-            options.ConfigurationOptions = GetRedisConfigurationOptions(redisCacheOption);
+            options.ConfigurationOptions = GetRedisConfigurationOptions(redisCacheOption, builder);
             options.InstanceName = config[redisCacheOption.Prefix];
         });
 
         services.AddSingleton<IRedisCacheService, RedisCacheService>();
     }
 
-    private static ConfigurationOptions GetRedisConfigurationOptions(RedisCache redisCacheOption)
+    private static ConfigurationOptions GetRedisConfigurationOptions(
+        RedisCache redisCacheOption,
+        WebApplicationBuilder builder)
     {
         var configurationOptions = new ConfigurationOptions
         {
@@ -48,6 +52,9 @@ public static class Extension
 
         if (!string.IsNullOrEmpty(redisCacheOption.Password))
             configurationOptions.Password = redisCacheOption.Password;
+
+        redisCacheOption.Url = builder.Configuration
+            .GetConnectionString("Redis") ?? throw new InvalidOperationException();
 
         var endpoints = redisCacheOption.Url.Split(':');
         foreach (var endpoint in endpoints)

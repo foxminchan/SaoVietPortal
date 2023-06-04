@@ -11,7 +11,7 @@ public sealed class RedisCache
     public int SyncTimeout { get; set; } = 5000;
     public string Password { get; set; } = string.Empty;
     public string Prefix { get; set; } = string.Empty;
-    public string Url { get; set; } = "localhost:6379";
+    public string Url { get; set; } = string.Empty;
 
     public string GetConnectionString()
     {

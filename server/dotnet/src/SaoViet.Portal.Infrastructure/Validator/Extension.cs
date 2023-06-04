@@ -20,7 +20,7 @@ public static class Extension
     [DebuggerStepThrough]
     public static IServiceCollection AddValidators(this IServiceCollection services)
         => services.Scan(scan => scan
-                .FromAssemblies(AssemblyReference.ExecuteAssembly)
+                .FromAssemblies(AssemblyReference.Assembly)
                 .AddClasses(c => c.AssignableTo(typeof(IValidator<>)))
                 .AsImplementedInterfaces()
                 .WithTransientLifetime());

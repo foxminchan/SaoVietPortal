@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Polly.Retry;
 using Polly;
 using SaoViet.Portal.Domain.Interfaces;
-using SaoViet.Portal.Infrastructure.Outbox;
 
 namespace SaoViet.Portal.Infrastructure.Persistence;
 
@@ -20,14 +18,13 @@ public static class Extension
         ServiceLifetime serviceLifetime = ServiceLifetime.Scoped)
         where T : DbContext, IDatabaseFacade, IDomainEventContext
     {
-        services.AddDbContext<T>((sp, options) =>
+        services.AddDbContext<T>((_, options) =>
         {
             options.UseSqlServer(connString, sqlOptions =>
                 {
                     sqlOptions.MigrationsAssembly(AssemblyReference<T>.TypeAssembly.FullName);
                     sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), null);
                 })
-                .AddInterceptors(sp.GetRequiredService<OutboxInterceptor>())
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging()
                 .UseLoggerFactory(LoggerFactory.Create(builder => builder.AddConsole()));
@@ -37,8 +34,6 @@ public static class Extension
 
         services.AddScoped<IDatabaseFacade>(p => p.GetRequiredService<T>());
         services.AddScoped<IDomainEventContext>(p => p.GetRequiredService<T>());
-
-        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(TxBehavior<,>));
 
         serviceAction?.Invoke(services);
     }
@@ -55,8 +50,7 @@ public static class Extension
         var files = assembly.GetManifestResourceNames();
         var filePrefix = $"{assembly.GetName().Name}.Data.Scripts.";
 
-        if (!files.Any(f => f.StartsWith(filePrefix) && f.EndsWith(".sql")))
-            return;
+        if (!files.Any(f => f.StartsWith(filePrefix) && f.EndsWith(".sql"))) return;
 
         foreach (var file in files
                      .Where(f => f.StartsWith(filePrefix) && f.EndsWith(".sql"))
@@ -67,8 +61,7 @@ public static class Extension
             using var reader = new StreamReader(stream!);
             var command = reader.ReadToEnd();
 
-            if (string.IsNullOrWhiteSpace(command))
-                continue;
+            if (string.IsNullOrWhiteSpace(command)) continue;
 
             migrationBuilder.Sql(command);
         }
@@ -103,11 +96,9 @@ public static class Extension
                 retries,
                 _ => TimeSpan.FromSeconds(15),
                 (exception, _, retry, _) =>
-                {
                     logger.LogWarning(exception,
                         "[{Prefix}] Exception {ExceptionType} with message {Message} detected on attempt {Retry} of {Retries}",
-                        prefix, exception.GetType().Name, exception.Message, retry, retries);
-                }
+                        prefix, exception.GetType().Name, exception.Message, retry, retries)
             );
         }
     }
